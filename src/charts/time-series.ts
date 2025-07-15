@@ -130,20 +130,38 @@ export class TimeSeriesChart {
   /**
    * Draws the x-axis on the chart.
    * @param selection - The D3 selection to append the x-axis to.
+   * @param dateFormat - Optional D3 time format string (e.g., "%Y-%m-%d").
+   * @example
+   * ```ts
+   * chart.drawXAxis(d3.select("svg"), "%b %d, %Y");
+   * ```
    */
   public drawXAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    dateFormat?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
+    const axis = d3
+      .axisBottom(this.xScale)
+      .tickSize(tickSize)
+      .tickPadding(tickPadding);
+
+    if (dateFormat?.length) {
+      axis.tickFormat((domainValue: Date | d3.NumberValue, _index: number) => {
+        if (domainValue instanceof Date) {
+          return d3.timeFormat(dateFormat)(domainValue);
+        }
+        return domainValue.toString();
+      });
+    }
+
     selection
       .selectAll<SVGGElement, unknown>(".x.axis")
       .data([null])
       .join("g")
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
-      .call(
-        d3.axisBottom(this.xScale).tickSize(tickSize).tickPadding(tickPadding)
-      );
+      .call(axis);
   }
 
   /**
