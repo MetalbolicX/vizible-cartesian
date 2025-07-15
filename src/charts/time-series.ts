@@ -167,21 +167,34 @@ export class TimeSeriesChart {
   /**
    * Draws the y-axis on the chart.
    * @param selection - The D3 selection to append the y-axis to.
+   * @param numberFormat - Optional D3 format string (e.g., ".2f").
    */
   public drawYAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    numberFormat?: string
   ): void {
     const { margin, tickSize, tickPadding } = this.options;
+    const axis = d3
+      .axisLeft(this.yScale)
+      .tickSize(tickSize)
+      .tickPadding(tickPadding);
+
+    if (numberFormat?.length) {
+      axis.tickFormat((domainValue: number | d3.NumberValue, _index: number) => {
+        if (typeof domainValue === "number") {
+          return d3.format(numberFormat)(domainValue);
+        }
+        return domainValue.toString();
+      });
+    }
+
     selection
-      // .selectAll(".y.axis")
       .selectAll<SVGGElement, unknown>(".y.axis")
       .data([null])
       .join("g")
       .attr("class", "y axis")
       .attr("transform", `translate(${margin.left}, 0)`)
-      .call(
-        d3.axisLeft(this.yScale).tickSize(tickSize).tickPadding(tickPadding)
-      );
+      .call(axis);
   }
 
   public get xScale() {
