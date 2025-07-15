@@ -16,7 +16,7 @@ interface timeSeriesChartOptions {
  * It encapsulates the logic for drawing lines, axes, and scales.
  */
 export class TimeSeriesChart {
-  #xScale: d3.ScaleTime<number, number>;
+  #xScale: d3.ScaleTime<number, number, never>;
   #yScale: d3.ScaleLinear<number, number>;
   #options: timeSeriesChartOptions;
 
@@ -136,9 +136,10 @@ export class TimeSeriesChart {
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
     selection
-      .selectAll(".x.axis")
+      .selectAll<SVGGElement, unknown>(".x.axis")
       .data([null])
       .join("g")
+      .append("g")
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(
@@ -155,7 +156,8 @@ export class TimeSeriesChart {
   ): void {
     const { margin, tickSize, tickPadding } = this.options;
     selection
-      .selectAll(".y.axis")
+      // .selectAll(".y.axis")
+      .selectAll<SVGGElement, unknown>(".y.axis")
       .data([null])
       .join("g")
       .attr("class", "y axis")
