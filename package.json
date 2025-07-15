@@ -1,0 +1,26 @@
+{
+  "name": "vizible",
+  "version": "0.1.0",
+  "description": "A collection of reusable chart writtent in d3.js",
+  "type": "module",
+  "scripts": {
+    "start": "echo \"Hello world\""
+  },
+  "author": {
+    "name": "José Martínez Santana"
+  },
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/MetalbolicX/vizible.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MetalbolicX/vizible/issues"
+  },
+  "files": ["src"],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "d3": "^7.9.0"
+  }
+}
