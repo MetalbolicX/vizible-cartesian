@@ -4,13 +4,10 @@ interface timeSeriesChartOptions {
   width: number;
   height: number;
   margin: { top: number; right: number; bottom: number; left: number };
-  xValue: (d: any) => Date;
-  yValue: (d) => number;
-  lineWidth?: number;
-  lineColor?: string;
-  isCurved?: boolean;
-  tickSize?: number;
-  tickPadding?: number;
+  lineWidth: number;
+  isCurved: boolean;
+  tickSize: number;
+  tickPadding: number;
 }
 
 /**
@@ -40,7 +37,6 @@ export class TimeSeriesChart {
    *     xValue: (d) => d.date,
    *     yValue: (d) => d.value,
    *     lineWidth: 1.5,
-   *     lineColor: "steelblue",
    *     isCurved: false,
    *     tickSize: 5,
    *     tickPadding: 10,
@@ -52,19 +48,36 @@ export class TimeSeriesChart {
   constructor(
     xDomain: [Date, Date],
     yDomain: [number, number],
-    options: timeSeriesChartOptions
+    options: Partial<timeSeriesChartOptions> = {}
   ) {
-    this.#options = { ...options };
-    const { width, height, margin } = this.#options;
+    const {
+      width = 800,
+      height = 600,
+      margin = { top: 30, right: 30, bottom: 30, left: 30 },
+      lineWidth = 1.5,
+      isCurved = false,
+      tickSize = 5,
+      tickPadding = 10,
+    } = options;
+    this.#options = {
+      width,
+      height,
+      margin,
+      lineWidth,
+      isCurved,
+      tickSize,
+      tickPadding,
+    };
+    const { width: w, height: h, margin: m } = this.#options;
     this.#xScale = d3
       .scaleTime()
       .domain(xDomain)
-      .range([margin.left, width - margin.right])
+      .range([m.left, w - m.right])
       .nice();
     this.#yScale = d3
       .scaleLinear()
       .domain(yDomain)
-      .range([height - margin.bottom, margin.top])
+      .range([h - m.bottom, m.top])
       .nice();
   }
 
@@ -74,7 +87,7 @@ export class TimeSeriesChart {
    * @param data - The data to be plotted.
    * @param xValue - A function to extract the x value from the data.
    * @param yValue - A function to extract the y value from the data.
-   * @param lineColor - Optional color for the line, defaults to options.lineColor.
+   * @param [lineColor=steelblue] - The color of the line.
    * @example
    * ```ts
    * const data = [
@@ -96,7 +109,7 @@ export class TimeSeriesChart {
     data: any[],
     xValue: (d: any) => Date,
     yValue: (d: any) => number,
-    lineColor?: string
+    lineColor: string = "steelblue"
   ): void {
     const line = d3
       .line()
@@ -109,8 +122,8 @@ export class TimeSeriesChart {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", lineColor || this.options.lineColor)
-      .attr("stroke-width", this.options.lineWidth || 1.5)
+      .attr("stroke", lineColor)
+      .attr("stroke-width", this.options.lineWidth)
       .attr("d", line);
   }
 
@@ -129,10 +142,7 @@ export class TimeSeriesChart {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(
-        d3
-          .axisBottom(this.xScale)
-          .tickSize(tickSize || 5)
-          .tickPadding(tickPadding || 10)
+        d3.axisBottom(this.xScale).tickSize(tickSize).tickPadding(tickPadding)
       );
   }
 
@@ -151,10 +161,7 @@ export class TimeSeriesChart {
       .attr("class", "y axis")
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(
-        d3
-          .axisLeft(this.yScale)
-          .tickSize(tickSize || 5)
-          .tickPadding(tickPadding || 10)
+        d3.axisLeft(this.yScale).tickSize(tickSize).tickPadding(tickPadding)
       );
   }
 
