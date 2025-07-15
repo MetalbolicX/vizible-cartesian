@@ -139,7 +139,6 @@ export class TimeSeriesChart {
       .selectAll<SVGGElement, unknown>(".x.axis")
       .data([null])
       .join("g")
-      .append("g")
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(
