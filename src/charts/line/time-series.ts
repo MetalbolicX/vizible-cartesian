@@ -1,24 +1,12 @@
 import * as d3 from "d3";
-
-interface timeSeriesChartOptions {
-  width: number;
-  height: number;
-  margin: { top: number; right: number; bottom: number; left: number };
-  lineWidth: number;
-  isCurved: boolean;
-  tickSize: number;
-  tickPadding: number;
-}
+import { LineAxes, type lineChartOptions } from "./line-axes.ts";
 
 /**
  * A class for creating a time series chart using D3.js.
  * @description
  * It encapsulates the logic for drawing lines, axes, and scales.
  */
-export class TimeSeriesChart {
-  #xScale: d3.ScaleTime<number, number, never>;
-  #yScale: d3.ScaleLinear<number, number>;
-  #options: timeSeriesChartOptions;
+export class TimeChart extends LineAxes {
 
   /**
    * Creates an instance of TimeSeriesChart.
@@ -48,7 +36,7 @@ export class TimeSeriesChart {
   constructor(
     xDomain: [Date, Date],
     yDomain: [number, number],
-    options: Partial<timeSeriesChartOptions> = {}
+    options: Partial<lineChartOptions> = {}
   ) {
     const {
       width = 800,
@@ -59,7 +47,7 @@ export class TimeSeriesChart {
       tickSize = 5,
       tickPadding = 10,
     } = options;
-    this.#options = {
+    super(xDomain, yDomain, {
       width,
       height,
       margin,
@@ -67,18 +55,7 @@ export class TimeSeriesChart {
       isCurved,
       tickSize,
       tickPadding,
-    };
-    const { width: w, height: h, margin: m } = this.#options;
-    this.#xScale = d3
-      .scaleTime()
-      .domain(xDomain)
-      .range([m.left, w - m.right])
-      .nice();
-    this.#yScale = d3
-      .scaleLinear()
-      .domain(yDomain)
-      .range([h - m.bottom, m.top])
-      .nice();
+    });
   }
 
   /**
@@ -138,7 +115,7 @@ export class TimeSeriesChart {
    */
   public drawXAxis(
     selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    dateFormat?: string
+    formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
     const axis = d3
@@ -146,10 +123,10 @@ export class TimeSeriesChart {
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
-    if (dateFormat?.length) {
+    if (formatCode?.length) {
       axis.tickFormat((domainValue: Date | d3.NumberValue, _index: number) => {
         if (domainValue instanceof Date) {
-          return d3.timeFormat(dateFormat)(domainValue);
+          return d3.timeFormat(formatCode)(domainValue);
         }
         return domainValue.toString();
       });
@@ -195,17 +172,5 @@ export class TimeSeriesChart {
       .attr("class", "y axis")
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(axis);
-  }
-
-  public get xScale() {
-    return this.#xScale;
-  }
-
-  public get yScale() {
-    return this.#yScale;
-  }
-
-  public get options() {
-    return this.#options;
   }
 }

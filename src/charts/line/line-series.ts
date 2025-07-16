@@ -1,25 +1,10 @@
 import * as d3 from "d3";
-
-interface lineChartOptions {
-  width: number;
-  height: number;
-  margin: { top: number; right: number; bottom: number; left: number };
-  lineWidth: number;
-  isCurved: boolean;
-  tickSize: number;
-  tickPadding: number;
-}
+import { LineAxes, type lineChartOptions } from "./line-axes.ts";
 
 /**
  * A class for creating a line chart with numerical x-axis using D3.js.
- * @description
- * Encapsulates logic for drawing lines, axes, and scales.
  */
-export class LineChart {
-  #xScale: d3.ScaleLinear<number, number>;
-  #yScale: d3.ScaleLinear<number, number>;
-  #options: lineChartOptions;
-
+export class LineChart extends LineAxes {
   /**
    * Creates an instance of LineChart.
    * @param xDomain - The domain for the x-axis, typically a range of numbers.
@@ -57,7 +42,7 @@ export class LineChart {
       tickSize = 5,
       tickPadding = 10,
     } = options;
-    this.#options = {
+    super(xDomain, yDomain, {
       width,
       height,
       margin,
@@ -65,18 +50,7 @@ export class LineChart {
       isCurved,
       tickSize,
       tickPadding,
-    };
-    const { width: w, height: h, margin: m } = this.#options;
-    this.#xScale = d3
-      .scaleLinear()
-      .domain(xDomain)
-      .range([m.left, w - m.right])
-      .nice();
-    this.#yScale = d3
-      .scaleLinear()
-      .domain(yDomain)
-      .range([h - m.bottom, m.top])
-      .nice();
+    });
   }
 
   /**
@@ -127,15 +101,15 @@ export class LineChart {
   /**
    * Draws the x-axis on the chart.
    * @param selection - The D3 selection to append the x-axis to.
-   * @param numberFormat - Optional D3 format string (e.g., ".2f").
+   * @param formatCode - Optional D3 format string (e.g., ".2f").
    * @example
    * ```ts
-   * chart.drawXAxis(d3.select("svg"), ".1f");
+   * chart.drawXAxis(d3.select("svg"), ".2f");
    * ```
    */
   public drawXAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    numberFormat?: string
+    selection: d3.Selection<SVGGElement, unknown, null, undefined>,
+    formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
     const axis = d3
@@ -143,13 +117,8 @@ export class LineChart {
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
-    if (numberFormat?.length) {
-      axis.tickFormat((domainValue: number | d3.NumberValue, _index: number) => {
-        if (typeof domainValue === "number") {
-          return d3.format(numberFormat)(domainValue);
-        }
-        return domainValue.toString();
-      });
+    if (formatCode) {
+      axis.tickFormat(d3.timeFormat(formatCode));
     }
 
     selection
@@ -159,50 +128,5 @@ export class LineChart {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(axis);
-  }
-
-  /**
-   * Draws the y-axis on the chart.
-   * @param selection - The D3 selection to append the y-axis to.
-   * @param numberFormat - Optional D3 format string (e.g., ".2f").
-   */
-  public drawYAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    numberFormat?: string
-  ): void {
-    const { margin, tickSize, tickPadding } = this.options;
-    const axis = d3
-      .axisLeft(this.yScale)
-      .tickSize(tickSize)
-      .tickPadding(tickPadding);
-
-    if (numberFormat?.length) {
-      axis.tickFormat((domainValue: number | d3.NumberValue, _index: number) => {
-        if (typeof domainValue === "number") {
-          return d3.format(numberFormat)(domainValue);
-        }
-        return domainValue.toString();
-      });
-    }
-
-    selection
-      .selectAll<SVGGElement, unknown>(".y.axis")
-      .data([null])
-      .join("g")
-      .attr("class", "y axis")
-      .attr("transform", `translate(${margin.left}, 0)`)
-      .call(axis);
-  }
-
-  public get xScale() {
-    return this.#xScale;
-  }
-
-  public get yScale() {
-    return this.#yScale;
-  }
-
-  public get options() {
-    return this.#options;
   }
 }
