@@ -145,6 +145,10 @@ export class TimeChart extends LineAxes {
    * Draws the y-axis on the chart.
    * @param selection - The D3 selection to append the y-axis to.
    * @param numberFormat - Optional D3 format string (e.g., ".2f").
+   * @example
+   * ```ts
+   * chart.drawYAxis(d3.select("svg"), ".2f");
+   * ```
    */
   public drawYAxis(
     selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
