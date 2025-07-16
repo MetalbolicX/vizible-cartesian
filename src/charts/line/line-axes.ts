@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { scaleLinear, scaleTime, axisLeft, format } from "../../utils.ts";
 
 export interface lineChartOptions {
   width: number;
@@ -47,20 +47,17 @@ export abstract class LineAxes {
     const [xMin, xMax] = xDomain;
     const { margin: m, width: w, height: h } = this.#options;
     if (xMin instanceof Date && xMax instanceof Date) {
-      this.#xScale = d3
-        .scaleTime()
+      this.#xScale = scaleTime()
         .domain([xMin, xMax])
         .range([m.left, w - m.right])
         .nice();
     } else {
-      this.#xScale = d3
-        .scaleLinear()
+      this.#xScale = scaleLinear()
         .domain(xDomain as [number, number])
         .range([m.left, w - m.right])
         .nice();
     }
-    this.#yScale = d3
-      .scaleLinear()
+    this.#yScale = scaleLinear()
       .domain(yDomain)
       .range([h - m.bottom, m.top])
       .nice();
@@ -81,8 +78,7 @@ export abstract class LineAxes {
     numberFormat?: string
   ): void {
     const { margin, tickSize, tickPadding } = this.options;
-    const axis = d3
-      .axisLeft(this.yScale)
+    const axis = axisLeft(this.yScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
@@ -90,7 +86,7 @@ export abstract class LineAxes {
       axis.tickFormat(
         (domainValue: number | d3.NumberValue, _index: number) => {
           if (typeof domainValue === "number") {
-            return d3.format(numberFormat)(domainValue);
+            return format(numberFormat)(domainValue);
           }
           return domainValue.toString();
         }

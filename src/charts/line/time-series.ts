@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { timeFormat, line, curveBasis, axisBottom } from "../../utils.ts";
 import { LineAxes, type lineChartOptions } from "./line-axes.ts";
 
 /**
@@ -7,7 +7,6 @@ import { LineAxes, type lineChartOptions } from "./line-axes.ts";
  * It encapsulates the logic for drawing lines, axes, and scales.
  */
 export class TimeChart extends LineAxes {
-
   /**
    * Creates an instance of TimeSeriesChart.
    * @param xDomain - The domain for the x-axis, typically a range of dates.
@@ -88,12 +87,11 @@ export class TimeChart extends LineAxes {
     yValue: (d: any) => number,
     lineColor: string = "steelblue"
   ): void {
-    const line = d3
-      .line()
+    const lineGenerator = line()
       .x((d) => this.xScale(xValue(d)))
       .y((d) => this.yScale(yValue(d)));
 
-    this.options.isCurved && line.curve(d3.curveBasis);
+    this.options.isCurved && lineGenerator.curve(curveBasis);
 
     selection
       .append("path")
@@ -101,7 +99,7 @@ export class TimeChart extends LineAxes {
       .attr("fill", "none")
       .attr("stroke", lineColor)
       .attr("stroke-width", this.options.lineWidth)
-      .attr("d", line);
+      .attr("d", lineGenerator);
   }
 
   /**
@@ -118,15 +116,14 @@ export class TimeChart extends LineAxes {
     formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
-    const axis = d3
-      .axisBottom(this.xScale)
+    const axis = axisBottom(this.xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
     if (formatCode?.length) {
       axis.tickFormat((domainValue: Date | d3.NumberValue, _index: number) => {
         if (domainValue instanceof Date) {
-          return d3.timeFormat(formatCode)(domainValue);
+          return timeFormat(formatCode)(domainValue);
         }
         return domainValue.toString();
       });
@@ -138,43 +135,6 @@ export class TimeChart extends LineAxes {
       .join("g")
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
-      .call(axis);
-  }
-
-  /**
-   * Draws the y-axis on the chart.
-   * @param selection - The D3 selection to append the y-axis to.
-   * @param numberFormat - Optional D3 format string (e.g., ".2f").
-   * @example
-   * ```ts
-   * chart.drawYAxis(d3.select("svg"), ".2f");
-   * ```
-   */
-  public drawYAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    numberFormat?: string
-  ): void {
-    const { margin, tickSize, tickPadding } = this.options;
-    const axis = d3
-      .axisLeft(this.yScale)
-      .tickSize(tickSize)
-      .tickPadding(tickPadding);
-
-    if (numberFormat?.length) {
-      axis.tickFormat((domainValue: number | d3.NumberValue, _index: number) => {
-        if (typeof domainValue === "number") {
-          return d3.format(numberFormat)(domainValue);
-        }
-        return domainValue.toString();
-      });
-    }
-
-    selection
-      .selectAll<SVGGElement, unknown>(".y.axis")
-      .data([null])
-      .join("g")
-      .attr("class", "y axis")
-      .attr("transform", `translate(${margin.left}, 0)`)
       .call(axis);
   }
 }

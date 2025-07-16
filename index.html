@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Time series</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
 </head>
 <body>
   <figure id="chart">
@@ -12,7 +12,7 @@
   </figure>
   <!-- <script type="module" src="./dist/index.js"></script> -->
   <script type="module">
-    import { TimeChart } from "./dist/index.js";
+    import { TimeChart } from "./dist/index.mjs";
 
     const svg = document.querySelector("svg");
     if (!svg) {
@@ -31,6 +31,7 @@
       [0, 40]
     );
 
+    console.log("Chart instance created:", chart);
     console.log(chart);
 
     chart.drawLine(

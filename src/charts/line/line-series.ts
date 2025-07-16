@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { line, curveBasis, axisBottom, format } from "../../utils.ts";
 import { LineAxes, type lineChartOptions } from "./line-axes.ts";
 
 /**
@@ -82,12 +82,11 @@ export class LineChart extends LineAxes {
     yValue: (d: any) => number,
     lineColor: string = "steelblue"
   ): void {
-    const line = d3
-      .line()
+    const lineGenerator = line()
       .x((d) => this.xScale(xValue(d)))
       .y((d) => this.yScale(yValue(d)));
 
-    this.options.isCurved && line.curve(d3.curveBasis);
+    this.options.isCurved && lineGenerator.curve(curveBasis);
 
     selection
       .append("path")
@@ -95,7 +94,7 @@ export class LineChart extends LineAxes {
       .attr("fill", "none")
       .attr("stroke", lineColor)
       .attr("stroke-width", this.options.lineWidth)
-      .attr("d", line);
+      .attr("d", lineGenerator);
   }
 
   /**
@@ -112,13 +111,12 @@ export class LineChart extends LineAxes {
     formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
-    const axis = d3
-      .axisBottom(this.xScale)
+    const axis = axisBottom(this.xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
     if (formatCode) {
-      axis.tickFormat(d3.format(formatCode));
+      axis.tickFormat(format(formatCode));
     }
 
     selection

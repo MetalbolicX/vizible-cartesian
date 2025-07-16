@@ -3,28 +3,29 @@
   "version": "0.1.0",
   "description": "A collection of reusable chart writtent in d3.js",
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "require": {
+      "default": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "import": {
+      "default": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "keywords": [
     "d3",
     "chart",
     "visualization",
     "typescript"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    "require": {
-      "types": "./dist/index.d.cts",
-      "default": "./dist/index.cjs"
-    },
-    "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "scripts": {
     "start": "echo \"Hello world\"",
     "dev": "vite",
-    "build": "tsup src/index.ts --format esm,cjs --dts --minify --out-dir dist"
+    "build": "vite build"
   },
   "author": {
     "name": "José Martínez Santana"
@@ -39,12 +40,15 @@
   "files": [
     "dist"
   ],
+  "peerDependencies": {
+    "d3": "^7.9.0"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
-    "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4"
   }
 }
