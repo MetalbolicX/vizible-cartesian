@@ -7,6 +7,8 @@ const dirname = import.meta.dirname ?? ".";
 export default defineConfig({
   plugins: [dts()],
   build: {
+    outDir: join(dirname, "dist"),
+    minify: true,
     lib: {
       entry: join(dirname, "src", "index.ts"),
       name: "index",
