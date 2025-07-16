@@ -24,7 +24,7 @@
   "scripts": {
     "start": "echo \"Hello world\"",
     "dev": "vite",
-    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist"
+    "build": "tsup src/index.ts --format esm,cjs --dts --minify --out-dir dist"
   },
   "author": {
     "name": "José Martínez Santana"
