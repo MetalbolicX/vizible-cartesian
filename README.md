@@ -4,88 +4,47 @@
   <img src="./images/logo.png" alt="vizible Logo" width="200" height="200" />
 </div>
 
-> `vizible` small slogan.
+> `vizible` Reduce time to build data visualizations with d3.js.
 
 **Supported Versions:**
 
-![Something](https://img.shields.io/badge/something->=1.5.5-blue)
+![d3.js](https://img.shields.io/badge/d3.js->=7.x.x-blue)
 
 
 ## Features
 
-- 1.
-- 2.
+- Simple API to build common static data visualizations.
+- It can work in the browser or using server-side rendering (SSR).
 
 ## 🚀 Quick Installation
 
-### 1. Create a ReScript Application
+### For the Browser
 
-First, create a new ReScript application using one of the following commands:
+Get the package from a CDN:
 
-```sh
-npm create rescript-app@latest
+```html
+<script src="https://cdn.jsdelivr.net/npm/vizible@latest/dist/vizible.mjs"></script>
 ```
 
-> [!NOTE]
-> For more information on setting up a ReScript project, refer to the [official ReScript documentation](https://rescript-lang.org/docs/manual/latest/installation).
-
-### 2. Install Dependencies
+### For Node.js
 
 Add the required dependencies to your project:
 
 ```sh
-npm i vanjs-core vizible
+npm i vizible
 ```
-
-### 3. Update Configuration `rescript.json` file
-
-In your `rescript.json` file, add the following dependency:
-
-```json
-{
-  "bs-dependencies": ["vizible"]
-}
-```
-
-## 🙌 Hello World Example
-
-Here's a simple example of how to use `vizible` to create a reactive UI component:
-
-1. Create a file named `Main.res` in your `src` folder.
-2. Add the following code to `Main.res`:
-
-```rescript
-@val @scope("document") @return(nullable)
-external getElementById: string => option<Dom.element> = "getElementById"
-
-let root = switch getElementById("root") {
-| Some(el) => el
-| None => Exn.raiseError("Root element not found")
-}
-
-let hello: unit => Dom.element = () => {
-  Van.Tag.make("div")
-  ->Van.Tags.addChild(Text("Hello, World!"))
-  ->Van.Tags.build
-}
-
-Van.add(root, [Dom(hello())])->ignore
-```
-
-## 🛠 Build and Run
-
-To build and run your ReScript application, see the [Compile and Run](https://metalbolicx.github.io/vizible/#/compile-run) section.
 
 ## 📚 Documentation
 
 <div align="center">
-  [![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://metalbolicx.github.io/vizible/#/api-reference)
+
+  [![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://metalbolicx.github.io/vizible/)
+
 </div>
 
 ## ✍ Do you want to learn more?
 
-- 1.
-- 2.
+ 1. Learn about [d3.js](https://d3js.org/) and how to use it.
 
 ## Contributing
 
@@ -96,15 +55,15 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 <table style="border: none;">
   <tr>
     <td align="center">
-      <a href="https://vanjs.org/" target="_blank">
-        <img src="./images/vanjs-logo.png" alt="VanJS" width="42" height="42" /><br/>
-        <b>VanJS</b><br/>
+      <a href="https://www.typescriptlang.org/" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="Typescript" width="42" height="42" /><br/>
+        <b>Typescript</b><br/>
       </a>
     </td>
     <td align="center">
-      <a href="https://rescript-lang.org/" target="_blank">
-        <img src="./images/rescript-logo.png" alt="ReScript" width="42" height="42" /><br/>
-        <b>ReScript</b><br/>
+      <a href="https://d3js.org/" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Logo_D3.svg" alt="D3.js" width="42" height="42" /><br/>
+        <b>D3.js</b><br/>
       </a>
     </td>
   </tr>
