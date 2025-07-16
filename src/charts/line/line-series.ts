@@ -108,7 +108,7 @@ export class LineChart extends LineAxes {
    * ```
    */
   public drawXAxis(
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>,
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;

@@ -67,7 +67,7 @@ export abstract class LineAxes {
   }
 
   public abstract drawXAxis(
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>,
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void;
 
@@ -111,7 +111,7 @@ export abstract class LineAxes {
    * @param selection - The D3 selection to append the y-axis grid lines to.
    */
   public drawYGridLines(
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [xMin, xMax] = this.xScale.domain();
     selection
@@ -132,7 +132,7 @@ export abstract class LineAxes {
    * @param selection - The D3 selection to append the x-axis grid lines to.
    */
   public drawXGridLines(
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [yMin, yMax] = this.yScale.domain();
     selection
