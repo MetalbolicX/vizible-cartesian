@@ -4,11 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Time series</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
   <figure id="chart">
     <svg width="800" height="600"></svg>
   </figure>
-  <script type="module" src="./examples/time/index.ts"></script>
+  <!-- <script type="module" src="./dist/index.js"></script> -->
+  <script type="module">
+    import { TimeChart } from "./dist/index.js";
+
+    const svg = document.querySelector("svg");
+    if (!svg) {
+      throw new Error("SVG element not found");
+    }
+    const data = [
+      { time: new Date("2023-01-01"), value: 10 },
+      { time: new Date("2023-01-02"), value: 20 },
+      { time: new Date("2023-01-03"), value: 15 },
+      { time: new Date("2023-01-04"), value: 25 },
+      { time: new Date("2023-01-05"), value: 30 },
+    ];
+
+    const chart = new TimeChart(
+      [new Date("2023-01-01"), new Date("2023-01-05")],
+      [0, 40]
+    );
+
+    console.log(chart);
+
+    chart.drawLine(
+      d3.select(svg),
+      data,
+      (d) => d.time,
+      (d) => d.value
+    );
+  </script>
 </body>
 </html>
