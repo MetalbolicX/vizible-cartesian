@@ -118,7 +118,7 @@ export class LineChart extends LineAxes {
       .tickPadding(tickPadding);
 
     if (formatCode) {
-      axis.tickFormat(d3.timeFormat(formatCode));
+      axis.tickFormat(d3.format(formatCode));
     }
 
     selection
