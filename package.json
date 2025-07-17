@@ -4,16 +4,16 @@
   "description": "A collection of reusable chart writtent in d3.js",
   "type": "module",
   "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     "require": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/index.d.cts",
       "default": "./dist/index.cjs"
     },
     "import": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.mjs"
+      "default": "./dist/index.js"
     }
   },
   "keywords": [
@@ -25,7 +25,7 @@
   "scripts": {
     "start": "echo \"Hello world\"",
     "dev": "vite",
-    "build": "vite build"
+    "build": "tsdown"
   },
   "author": {
     "name": "José Martínez Santana"
@@ -40,15 +40,17 @@
   "files": [
     "dist"
   ],
-  "peerDependencies": {
-    "d3": "^7.9.0"
-  },
   "license": "MIT",
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "d3": "^7.9.0",
+    "tsdown": "^0.12.9",
     "typescript": "^5.8.3",
-    "vite": "^7.0.4",
-    "vite-plugin-dts": "^4.5.4"
+    "vite": "^7.0.4"
+  },
+  "dependencies": {
+    "d3": "^7.9.0"
+  },
+  "peerDependencies": {
+    "d3": "^7.9.0"
   }
 }
