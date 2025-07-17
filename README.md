@@ -10,7 +10,6 @@
 
 ![d3.js](https://img.shields.io/badge/d3.js->=7.x.x-blue)
 
-
 ## Features
 
 - Simple API to build common static data visualizations.
@@ -23,7 +22,7 @@
 Get the package from a CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/vizible@latest/dist/vizible.mjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/vizible@latest/dist/index.js"></script>
 ```
 
 ### For Node.js
