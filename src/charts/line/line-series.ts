@@ -2,55 +2,35 @@ import { line, curveBasis, axisBottom, format } from "../../utils.ts";
 import { LineAxes, type lineChartOptions } from "./line-axes.ts";
 
 /**
- * A class for creating a line chart with numerical x-axis using D3.js.
+ * A class for creating a line chart with numerical or date x-axis using D3.js.
  */
 export class LineChart extends LineAxes {
   /**
    * Creates an instance of LineChart.
-   * @param xDomain - The domain for the x-axis, typically a range of numbers.
-   * @param yDomain - The domain for the y-axis, typically a range of numbers.
+   * @param dataset - The data array for the chart.
+   * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.
    * @example
    * ```ts
-   * const chart = new LineChart(
-   *   [0, 100],
-   *   [0, 50],
-   *   {
-   *     width: 800,
-   *     height: 600,
-   *     margin: { top: 30, right: 30, bottom: 30, left: 30 },
-   *     lineWidth: 1.5,
-   *     isCurved: false,
-   *     tickSize: 5,
-   *     tickPadding: 10,
-   *   }
-   * );
-   * // Use chart.drawLine, chart.drawXAxis, and chart.drawYAxis to render the chart.
+   * const chart = new LineChart(data, {
+   *   xSerie: { key: "x" },
+   *   ySeries: [
+   *     { key: "y1", color: "#1f77b4" },
+   *     { key: "y2", color: "#ff7f0e" }
+   *   ]
+   * });
+   * // Use chart.drawLine, chart.drawLines, chart.drawXAxis, and chart.drawYAxis to render the chart.
    * ```
    */
   constructor(
-    xDomain: [number, number],
-    yDomain: [number, number],
+    dataset: Record<string, unknown>[],
+    seriesConfig: {
+      xSerie: { key: string; };
+      ySeries: { key: string; name?: string; color?: string }[];
+    },
     options: Partial<lineChartOptions> = {}
   ) {
-    const {
-      width = 800,
-      height = 600,
-      margin = { top: 30, right: 30, bottom: 30, left: 30 },
-      lineWidth = 1.5,
-      isCurved = false,
-      tickSize = 5,
-      tickPadding = 10,
-    } = options;
-    super(xDomain, yDomain, {
-      width,
-      height,
-      margin,
-      lineWidth,
-      isCurved,
-      tickSize,
-      tickPadding,
-    });
+    super(dataset, seriesConfig, options);
   }
 
   /**
