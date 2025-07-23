@@ -8,53 +8,31 @@ import { LineAxes, type lineChartOptions } from "./line-axes.ts";
  */
 export class TimeChart extends LineAxes {
   /**
-   * Creates an instance of TimeSeriesChart.
-   * @param xDomain - The domain for the x-axis, typically a range of dates.
-   * @param yDomain - The domain for the y-axis, typically a range of numbers.
+   * Creates an instance of TimeChart.
+   * @param dataset - The data array for the chart.
+   * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.
    * @example
    * ```ts
-   * const chart = new TimeSeriesChart(
-   *   [new Date('2020-01-01'), new Date('2020-12-31')],
-   *   [0, 100],
-   *   {
-   *     width: 800,
-   *     height: 600,
-   *     margin: { top: 30, right: 30, bottom: 30, left: 30 },
-   *     xValue: (d) => d.date,
-   *     yValue: (d) => d.value,
-   *     lineWidth: 1.5,
-   *     isCurved: false,
-   *     tickSize: 5,
-   *     tickPadding: 10,
-   *   }
-   *  );
-   *  // Use chart.drawLine, chart.drawXAxis, and chart.drawYAxis to render the chart.
+   * const chart = new TimeChart(data, {
+   *   xSerie: { key: "date" },
+   *   ySeries: [
+   *     { key: "sales", color: "#1f77b4" },
+   *     { key: "cost", color: "#ff7f0e" }
+   *   ]
+   * });
+   * // Use chart.drawLine, chart.drawLines, chart.drawXAxis, and chart.drawYAxis to render the chart.
    * ```
    */
   constructor(
-    xDomain: [Date, Date],
-    yDomain: [number, number],
+    dataset: Record<string, unknown>[],
+    seriesConfig: {
+      xSerie: { key: string; name?: string; color?: string };
+      ySeries: { key: string; name?: string; color?: string }[];
+    },
     options: Partial<lineChartOptions> = {}
   ) {
-    const {
-      width = 800,
-      height = 600,
-      margin = { top: 30, right: 30, bottom: 30, left: 30 },
-      lineWidth = 1.5,
-      isCurved = false,
-      tickSize = 5,
-      tickPadding = 10,
-    } = options;
-    super(xDomain, yDomain, {
-      width,
-      height,
-      margin,
-      lineWidth,
-      isCurved,
-      tickSize,
-      tickPadding,
-    });
+    super(dataset, seriesConfig, options);
   }
 
   /**
