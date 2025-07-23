@@ -10,20 +10,71 @@ export interface lineChartOptions {
   tickPadding: number;
 }
 
+export type SeriesOption = {
+  key: string;
+  name?: string;
+  color?: string;
+};
+
+
+const getXDomain = (dataset: Record<string, unknown>[], xKey: string): [number, number] | [Date, Date] => {
+  const values = dataset.map((d) => d[xKey]).filter((v) => v !== undefined && v !== null);
+  if (!values.length) {
+    throw new Error("No values found for xKey in dataset");
+  }
+  const [first] = values;
+  if (first instanceof Date) {
+    const timestamps = values.map((v) => (v as Date).getTime());
+    const min = Math.min(...timestamps);
+    const max = Math.max(...timestamps);
+    return [new Date(min), new Date(max)];
+  } else if (typeof first === "number") {
+    const nums = values.map((v) => Number(v));
+    return [Math.min(...nums), Math.max(...nums)];
+  } else {
+    throw new Error("x values must be Date or number");
+  }
+};
+
+const getYDomain = (dataset, series) => {
+  const values = dataset.flatMap((d) =>
+    series.map((s) => Number(d[s.key])).filter((v) => !isNaN(v))
+  );
+  return [Math.min(...values), Math.max(...values)];
+};
+
+export type LineAxesSeriesConfig = {
+  xSerie: SeriesOption;
+  ySeries: SeriesOption[];
+};
+
 export abstract class LineAxes {
   #xScale: d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
   #yScale: d3.ScaleLinear<number, number>;
   #options: lineChartOptions;
+  #dataset: Record<string, unknown>[];
+  #xSerie: SeriesOption;
+  #ySeries: SeriesOption[];
 
   /**
    * Creates an instance of LineAxes.
-   * @param xDomain - The domain for the x-axis, typically a range of numbers or dates.
-   * @param yDomain - The domain for the y-axis, typically a range of numbers.
+   * @param dataset - The data array for the chart.
+   * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.
+   * @example
+   * ```ts
+   * const chart = new TimeChart(data, {
+   *   xSerie: { key: "date" },
+   *   ySeries: [
+   *     { key: "sales", color: "#1f77b4" },
+   *     { key: "cost", color: "#ff7f0e" }
+   *   ]
+   * });
+   * ```
    */
   constructor(
-    xDomain: [number, number] | [Date, Date],
-    yDomain: [number, number],
+    dataset: Record<string, unknown>[],
+    seriesConfig: LineAxesSeriesConfig,
     options: Partial<lineChartOptions> = {}
   ) {
     const {
@@ -35,6 +86,15 @@ export abstract class LineAxes {
       tickSize = 5,
       tickPadding = 10,
     } = options;
+    if (!(dataset?.length && Array.isArray(dataset))) {
+      throw new Error("Dataset must be a non-empty array.");
+    }
+    if (!seriesConfig?.xSerie?.key || !(seriesConfig?.ySeries?.length && Array.isArray(seriesConfig.ySeries))) {
+      throw new Error("seriesConfig must have xSerie and a non-empty ySeries array.");
+    }
+    this.#dataset = [...dataset];
+    this.#xSerie = { ...seriesConfig.xSerie };
+    this.#ySeries = [...seriesConfig.ySeries];
     this.#options = {
       width,
       height,
@@ -44,7 +104,8 @@ export abstract class LineAxes {
       tickSize,
       tickPadding,
     };
-    const [xMin, xMax] = xDomain;
+    const xKey = this.#xSerie.key;
+    const [xMin, xMax] = getXDomain(dataset, xKey);
     const { margin: m, width: w, height: h } = this.#options;
     if (xMin instanceof Date && xMax instanceof Date) {
       this.#xScale = scaleTime()
@@ -53,10 +114,11 @@ export abstract class LineAxes {
         .nice();
     } else {
       this.#xScale = scaleLinear()
-        .domain(xDomain as [number, number])
+        .domain([xMin, xMax] as [number, number])
         .range([m.left, w - m.right])
         .nice();
     }
+    const yDomain = getYDomain(dataset, this.#ySeries);
     this.#yScale = scaleLinear()
       .domain(yDomain)
       .range([h - m.bottom, m.top])
@@ -154,5 +216,17 @@ export abstract class LineAxes {
 
   public get xScale() {
     return this.#xScale;
+  }
+
+  public get dataset() {
+    return this.#dataset;
+  }
+
+  public get xSerie() {
+    return this.#xSerie;
+  }
+
+  public get ySeries() {
+    return this.#ySeries;
   }
 }
