@@ -1,14 +1,16 @@
 import { LineChart } from "./charts/line/line-series.ts";
 import { TimeChart } from "./charts/line/time-series.ts";
+import { ScatterChart } from "./charts/scatter/scatter.ts";
 import type { LineChartOptions, SeriesOptions } from "./types.ts";
 import { drawXAxisLabel, drawYAxisLabel, drawChartTitle } from "./utils/helpers.ts";
 
 export {
-  LineChart,
-  type LineChartOptions,
-  type SeriesOptions,
-  TimeChart,
+  drawChartTitle,
   drawXAxisLabel,
   drawYAxisLabel,
-  drawChartTitle,
+  LineChart,
+  ScatterChart,
+  TimeChart,
+  type LineChartOptions,
+  type SeriesOptions,
 };
