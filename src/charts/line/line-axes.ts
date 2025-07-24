@@ -1,20 +1,5 @@
 import { scaleLinear, scaleTime, axisLeft, format } from "../../utils.ts";
-
-export interface lineChartOptions {
-  width: number;
-  height: number;
-  margin: { top: number; right: number; bottom: number; left: number };
-  lineWidth: number;
-  isCurved: boolean;
-  tickSize: number;
-  tickPadding: number;
-}
-
-export type SeriesOption = {
-  key: string;
-  name?: string;
-  color?: string;
-};
+import type { SeriesOptions, LineChartOptions } from "../../types.ts";
 
 const getXDomain = (
   dataset: Record<string, unknown>[],
@@ -48,17 +33,17 @@ const getYDomain = (dataset, series) => {
 };
 
 export type LineAxesSeriesConfig = {
-  xSerie: SeriesOption;
-  ySeries: SeriesOption[];
+  xSerie: SeriesOptions;
+  ySeries: SeriesOptions[];
 };
 
 export abstract class LineAxes {
   #xScale: d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
   #yScale: d3.ScaleLinear<number, number>;
-  #options: lineChartOptions;
+  #options: LineChartOptions;
   #dataset: Record<string, unknown>[];
-  #xSerie: SeriesOption;
-  #ySeries: SeriesOption[];
+  #xSerie: SeriesOptions;
+  #ySeries: SeriesOptions[];
 
   /**
    * Creates an instance of LineAxes.
@@ -79,7 +64,7 @@ export abstract class LineAxes {
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: LineAxesSeriesConfig,
-    options: Partial<lineChartOptions> = {}
+    options: Partial<LineChartOptions> = {}
   ) {
     const {
       width = 800,
@@ -238,7 +223,7 @@ export abstract class LineAxes {
       .attr("transform", `translate(${x},${y})`);
 
     const itemHeight = 20;
-    legendGroup.selectAll<SVGGElement, SeriesOption>("g")
+    legendGroup.selectAll<SVGGElement, SeriesOptions>("g")
       .data(this.ySeries)
       .join("g")
       .attr("class", "legend-item")
@@ -250,7 +235,7 @@ export abstract class LineAxes {
       .attr("height", 16)
       .attr("fill", ({ color }) => color ?? "steelblue");
 
-    legendGroup.selectAll<SVGGElement, SeriesOption>("g")
+    legendGroup.selectAll<SVGGElement, SeriesOptions>("g")
       .data(this.ySeries)
       .join("g")
       .attr("class", "legend-item")

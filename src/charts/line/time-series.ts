@@ -1,6 +1,6 @@
 import { timeFormat, line, curveBasis, axisBottom } from "../../utils.ts";
-import { type lineChartOptions } from "./line-axes.ts";
 import { LineChart } from "./line-series.ts";
+import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 
 /**
  * A class for creating a time series chart using D3.js.
@@ -29,53 +29,12 @@ export class TimeChart extends LineChart {
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: { key: string; };
-      ySeries: { key: string; name?: string; color?: string }[];
+      ySeries: SeriesOptions[];
     },
-    options: Partial<lineChartOptions> = {}
+    options: Partial<LineChartOptions> = {}
   ) {
     super(dataset, seriesConfig, options);
   }
-
-  // /**
-  //  * Draws a single line for a given y series key (multi-series support).
-  //  * @param selection - The D3 selection to append the line to.
-  //  * @param yKey - The key of the y series to draw.
-  //  * @param lineColor - The color of the line.
-  //  */
-  // #drawLine(
-  //   selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-  //   yKey: string,
-  //   lineColor?: string
-  // ): void {
-  //   const xKey = this.xSerie.key;
-  //   const data = this.dataset;
-  //   const lineGenerator = line<Record<string, unknown>>()
-  //     .x((d) => this.xScale(d[xKey] as Date | number))
-  //     .y((d) => this.yScale(d[yKey] as number));
-
-  //   this.options.isCurved && lineGenerator.curve(curveBasis);
-
-  //   selection.selectAll<SVGPathElement, unknown>(`path.series-${yKey}`)
-  //     .data([data])
-  //     .join("path")
-  //     .attr("class", `series series-${yKey}`)
-  //     .attr("fill", "none")
-  //     .attr("stroke", lineColor ?? "steelblue")
-  //     .attr("stroke-width", this.options.lineWidth)
-  //     .attr("d", lineGenerator);
-  // }
-
-  // /**
-  //  * Draws all y series as lines on the chart.
-  //  * @param selection - The D3 selection to append the lines to.
-  //  */
-  // public drawLines(
-  //   selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
-  // ): void {
-  //   for (const serie of this.ySeries) {
-  //     this.#drawLine(selection, serie.key, serie.color);
-  //   }
-  // }
 
   /**
    * Draws the x-axis on the chart.

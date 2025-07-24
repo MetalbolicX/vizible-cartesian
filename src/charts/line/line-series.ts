@@ -1,5 +1,7 @@
 import { line, curveBasis, axisBottom, format } from "../../utils.ts";
-import { LineAxes, type lineChartOptions } from "./line-axes.ts";
+import { LineAxes } from "./line-axes.ts";
+import type { LineChartOptions, SeriesOptions } from "../../types.ts";
+import { drawLegend } from "../../helpers.ts";
 
 /**
  * A class for creating a line chart with numerical or date x-axis using D3.js.
@@ -26,9 +28,9 @@ export class LineChart extends LineAxes {
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: { key: string };
-      ySeries: { key: string; name?: string; color?: string }[];
+      ySeries: SeriesOptions[];
     },
-    options: Partial<lineChartOptions> = {}
+    options: Partial<LineChartOptions> = {}
   ) {
     super(dataset, seriesConfig, options);
   }
@@ -119,5 +121,23 @@ export class LineChart extends LineAxes {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(axis);
+  }
+
+  /**
+   * Draws the y-axis on the chart.
+   * @param selection - The D3 selection to append the y-axis to.
+   * @param [x=20] - The x position of the legend.
+   * @param [y=20] - The y position of the legend.
+   * @example
+   * ```ts
+   * chart.drawYAxis(d3.select("svg"), 20, 20);
+   * ```
+   */
+  public drawLegend(
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    x: number = 20,
+    y: number = 20
+  ): void {
+    drawLegend(selection, this.ySeries, x, y);
   }
 }
