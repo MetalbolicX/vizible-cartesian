@@ -3,7 +3,16 @@ applyTo: "**"
 description: General guidelines and best practices for writing code.
 ---
 
-# Genral Guidelines for Writing Code
+# Project Overview
+
+The `vizible` project is a d3.js is a collection of the reusable chart builders written in TypeScript that aims to simplify the process of creating interactive and customizable data visualizations. Focused on the static charts.
+
+## Technology Stack
+
+- TypeScript.
+- D3.js version 7.
+
+# General Guidelines for Writing Code
 
 ## General Guidelines
 
