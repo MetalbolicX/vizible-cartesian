@@ -25,7 +25,7 @@ export class LineChart extends LineAxes {
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
-      xSerie: { key: string; };
+      xSerie: { key: string };
       ySeries: { key: string; name?: string; color?: string }[];
     },
     options: Partial<lineChartOptions> = {}
@@ -34,47 +34,60 @@ export class LineChart extends LineAxes {
   }
 
   /**
-   * Draws a line on the chart.
+   * Draws a single line for a given y series key.
    * @param selection - The D3 selection to append the line to.
-   * @param data - The data to be plotted.
-   * @param xValue - A function to extract the x value from the data (number).
-   * @param yValue - A function to extract the y value from the data (number).
-   * @param [lineColor=steelblue] - The color of the line.
+   * @param yKey - The key of the y series to draw.
+   * @param [lineColor="steelblue"] - The color of the line.
    * @example
    * ```ts
-   * const data = [
-   *    { x: 0, y: 10 },
-   *    { x: 10, y: 20 },
-   *    { x: 20, y: 30 },
-   *  ];
-   * chart.drawLine(
-   *   d3.select('svg'),
-   *   data,
-   *   (d) => d.x,
-   *   (d) => d.y
-   * );
+   * chart.drawLine(d3.select("svg"), "sales", "#1f77b4");
    * ```
    */
-  public drawLine(
+  #drawLine(
     selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    data: any[],
-    xValue: (d: any) => number,
-    yValue: (d: any) => number,
+    yKey: string,
     lineColor: string = "steelblue"
   ): void {
-    const lineGenerator = line()
-      .x((d) => this.xScale(xValue(d)))
-      .y((d) => this.yScale(yValue(d)));
+    const { key: xKey } = this.xSerie;
+    const data = this.dataset.map((d) => ({
+      x: d[xKey],
+      y: Number(d[yKey]),
+    }));
+    const linePath = line<Record<string, unknown>>()
+      .x(({ x }) => this.xScale(x as number | Date))
+      .y(({ y }) => this.yScale(y as number));
 
-    this.options.isCurved && lineGenerator.curve(curveBasis);
+    this.options.isCurved && linePath.curve(curveBasis);
 
     selection
-      .append("path")
-      .datum(data)
+      .selectAll<SVGGElement, unknown>(".series")
+      .data([null])
+      .join("g")
+      .attr("class", "series")
+      .selectAll<SVGPathElement, unknown>(`.series-${yKey}`)
+      .data([data])
+      .join("path")
+      .attr("class", `series-${yKey}`)
+      .attr("d", linePath)
       .attr("fill", "none")
       .attr("stroke", lineColor)
-      .attr("stroke-width", this.options.lineWidth)
-      .attr("d", lineGenerator);
+      .attr("stroke-width", this.options.lineWidth);
+  }
+
+  /**
+   * Draws all y series as lines on the chart.
+   * @param selection - The D3 selection to append the lines to.
+   * @example
+   * ```ts
+   * chart.drawLines(d3.select("svg"));
+   * ```
+   */
+  public drawLines(
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+  ): void {
+    for (const { key, color } of this.ySeries) {
+      this.#drawLine(selection, key, color);
+    }
   }
 
   /**

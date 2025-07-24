@@ -16,9 +16,13 @@ export type SeriesOption = {
   color?: string;
 };
 
-
-const getXDomain = (dataset: Record<string, unknown>[], xKey: string): [number, number] | [Date, Date] => {
-  const values = dataset.map((d) => d[xKey]).filter((v) => v !== undefined && v !== null);
+const getXDomain = (
+  dataset: Record<string, unknown>[],
+  xKey: string
+): [number, number] | [Date, Date] => {
+  const values = dataset
+    .map((d) => d[xKey])
+    .filter((v) => v !== undefined && v !== null);
   if (!values.length) {
     throw new Error("No values found for xKey in dataset");
   }
@@ -89,8 +93,13 @@ export abstract class LineAxes {
     if (!(dataset?.length && Array.isArray(dataset))) {
       throw new Error("Dataset must be a non-empty array.");
     }
-    if (!seriesConfig?.xSerie?.key || !(seriesConfig?.ySeries?.length && Array.isArray(seriesConfig.ySeries))) {
-      throw new Error("seriesConfig must have xSerie and a non-empty ySeries array.");
+    if (
+      !seriesConfig?.xSerie?.key ||
+      !(seriesConfig?.ySeries?.length && Array.isArray(seriesConfig.ySeries))
+    ) {
+      throw new Error(
+        "seriesConfig must have xSerie and a non-empty ySeries array."
+      );
     }
     this.#dataset = [...dataset];
     this.#xSerie = { ...seriesConfig.xSerie };
@@ -204,6 +213,56 @@ export abstract class LineAxes {
       .attr("y2", this.yScale(yMax))
       .attr("stroke", "#eee")
       .attr("stroke-dasharray", "2,2");
+  }
+
+  /**
+   * Draws a legend for all y series.
+   * @param selection - The D3 selection to append the legend to.
+   * @param [x=20] - The x position of the legend.
+   * @param [y=20] - The y position of the legend.
+   * @example
+   * ```ts
+   * chart.drawLegend(d3.select("svg"), 20, 20);
+   * ```
+   */
+  public drawLegend(
+    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    x: number = 20,
+    y: number = 20
+  ): void {
+    const legendGroup = selection
+      .selectAll<SVGGElement, unknown>(".legend")
+      .data([null])
+      .join("g")
+      .attr("class", "legend")
+      .attr("transform", `translate(${x},${y})`);
+
+    const itemHeight = 20;
+    legendGroup.selectAll<SVGGElement, SeriesOption>("g")
+      .data(this.ySeries)
+      .join("g")
+      .attr("class", "legend-item")
+      .attr("transform", (_, i) => `translate(0,${i * itemHeight})`)
+      .selectAll("rect")
+      .data((d) => [d])
+      .join("rect")
+      .attr("width", 16)
+      .attr("height", 16)
+      .attr("fill", ({ color }) => color ?? "steelblue");
+
+    legendGroup.selectAll<SVGGElement, SeriesOption>("g")
+      .data(this.ySeries)
+      .join("g")
+      .attr("class", "legend-item")
+      .attr("transform", (_, i) => `translate(0,${i * itemHeight})`)
+      .selectAll("text")
+      .data((d) => [d])
+      .join("text")
+      .attr("x", 22)
+      .attr("y", 12)
+      .text(({ name, key }) => name ?? key)
+      .style("font-size", "14px")
+      .attr("alignment-baseline", "middle");
   }
 
   public get yScale() {
