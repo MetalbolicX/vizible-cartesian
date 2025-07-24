@@ -14,6 +14,7 @@
 
 - Simple API to build common static data visualizations.
 - It can work in the browser or using server-side rendering (SSR).
+- Charts available: Line (Numerical and Temporal).
 
 ## 🚀 Quick Installation
 
