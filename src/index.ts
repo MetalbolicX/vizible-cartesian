@@ -1,7 +1,7 @@
 import { LineChart } from "./charts/line/line-series.ts";
 import { TimeChart } from "./charts/line/time-series.ts";
 import type { LineChartOptions, SeriesOptions } from "./types.ts";
-import { drawXAxisLabel, drawYAxisLabel, drawChartTitle } from "./helpers.ts";
+import { drawXAxisLabel, drawYAxisLabel, drawChartTitle } from "./utils/helpers.ts";
 
 export {
   LineChart,

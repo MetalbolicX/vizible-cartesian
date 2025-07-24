@@ -1,12 +1,12 @@
 import { line, curveBasis, axisBottom, format, type Selection } from "d3";
-import { LineAxes } from "./line-axes.ts";
+import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
-import { drawLegend } from "../../helpers.ts";
+import { drawLegend } from "../../utils/helpers.ts";
 
 /**
  * A class for creating a line chart with numerical or date x-axis using D3.js.
  */
-export class LineChart extends LineAxes {
+export class LineChart extends CartesianPlane {
   /**
    * Creates an instance of LineChart.
    * @param dataset - The data array for the chart.

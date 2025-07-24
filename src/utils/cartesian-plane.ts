@@ -8,7 +8,7 @@ import {
   type ScaleTime,
   type NumberValue,
 } from "d3";
-import type { SeriesOptions, LineChartOptions } from "../../types.ts";
+import type { SeriesOptions, LineChartOptions } from "../types.ts";
 
 /**
  * Gets the x-axis domain from the dataset.
@@ -66,7 +66,7 @@ export type LineAxesSeriesConfig = {
   ySeries: SeriesOptions[];
 };
 
-export abstract class LineAxes {
+export abstract class CartesianPlane {
   #xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
   #yScale: ScaleLinear<number, number>;
   #options: LineChartOptions;
@@ -75,7 +75,7 @@ export abstract class LineAxes {
   #ySeries: SeriesOptions[];
 
   /**
-   * Creates an instance of LineAxes.
+   * Creates an instance of CartesianPlane.
    * @param dataset - The data array for the chart.
    * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.

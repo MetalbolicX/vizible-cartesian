@@ -1,5 +1,5 @@
 import type { Selection } from "d3";
-import type { SeriesOptions } from "./types.ts";
+import type { SeriesOptions } from "../types.ts";
 
 /**
  * Draws the x-axis label at the bottom right corner of the chart.
