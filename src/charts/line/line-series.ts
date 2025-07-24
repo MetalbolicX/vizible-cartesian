@@ -1,4 +1,4 @@
-import { line, curveBasis, axisBottom, format } from "../../utils.ts";
+import { line, curveBasis, axisBottom, format, type Selection } from "d3";
 import { LineAxes } from "./line-axes.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 import { drawLegend } from "../../helpers.ts";
@@ -46,7 +46,7 @@ export class LineChart extends LineAxes {
    * ```
    */
   #drawLine(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     lineColor: string = "steelblue"
   ): void {
@@ -85,7 +85,7 @@ export class LineChart extends LineAxes {
    * ```
    */
   public drawLines(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+    selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     for (const { key, color } of this.ySeries) {
       this.#drawLine(selection, key, color);
@@ -102,7 +102,7 @@ export class LineChart extends LineAxes {
    * ```
    */
   public drawXAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
@@ -134,7 +134,7 @@ export class LineChart extends LineAxes {
    * ```
    */
   public drawLegend(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     x: number = 20,
     y: number = 20
   ): void {

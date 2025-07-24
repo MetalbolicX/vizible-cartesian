@@ -1,4 +1,13 @@
-import { scaleLinear, scaleTime, axisLeft, format } from "../../utils.ts";
+import {
+  scaleLinear,
+  scaleTime,
+  axisLeft,
+  format,
+  type Selection,
+  type ScaleLinear,
+  type ScaleTime,
+  type NumberValue,
+} from "d3";
 import type { SeriesOptions, LineChartOptions } from "../../types.ts";
 
 /**
@@ -58,8 +67,8 @@ export type LineAxesSeriesConfig = {
 };
 
 export abstract class LineAxes {
-  #xScale: d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
-  #yScale: d3.ScaleLinear<number, number>;
+  #xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
+  #yScale: ScaleLinear<number, number>;
   #options: LineChartOptions;
   #dataset: Record<string, unknown>[];
   #xSerie: SeriesOptions;
@@ -140,7 +149,7 @@ export abstract class LineAxes {
   }
 
   public abstract drawXAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void;
 
@@ -150,7 +159,7 @@ export abstract class LineAxes {
    * @param numberFormat - Optional D3 format string (e.g., ".2f").
    */
   public drawYAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     numberFormat?: string
   ): void {
     const { margin, tickSize, tickPadding } = this.options;
@@ -159,14 +168,12 @@ export abstract class LineAxes {
       .tickPadding(tickPadding);
 
     if (numberFormat?.length) {
-      axis.tickFormat(
-        (domainValue: number | d3.NumberValue, _index: number) => {
-          if (typeof domainValue === "number") {
-            return format(numberFormat)(domainValue);
-          }
-          return domainValue.toString();
+      axis.tickFormat((domainValue: number | NumberValue, _index: number) => {
+        if (typeof domainValue === "number") {
+          return format(numberFormat)(domainValue);
         }
-      );
+        return domainValue.toString();
+      });
     }
 
     selection
@@ -183,7 +190,7 @@ export abstract class LineAxes {
    * @param selection - The D3 selection to append the y-axis grid lines to.
    */
   public drawYGridLines(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+    selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [xMin, xMax] = this.xScale.domain();
     selection
@@ -204,12 +211,12 @@ export abstract class LineAxes {
    * @param selection - The D3 selection to append the x-axis grid lines to.
    */
   public drawXGridLines(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>
+    selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [yMin, yMax] = this.yScale.domain();
     selection
       .selectAll<SVGGElement, unknown>(".x.grid")
-      .data(this.xScale.ticks() as d3.NumberValue[])
+      .data(this.xScale.ticks() as NumberValue[])
       .join("line")
       .attr("class", "x.grid")
       .attr("x1", (d) => this.xScale(d))
@@ -231,7 +238,7 @@ export abstract class LineAxes {
    * ```
    */
   public drawLegend(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     x: number = 20,
     y: number = 20
   ): void {
@@ -243,7 +250,8 @@ export abstract class LineAxes {
       .attr("transform", `translate(${x},${y})`);
 
     const itemHeight = 20;
-    legendGroup.selectAll<SVGGElement, SeriesOptions>("g")
+    legendGroup
+      .selectAll<SVGGElement, SeriesOptions>("g")
       .data(this.ySeries)
       .join("g")
       .attr("class", "legend-item")
@@ -255,7 +263,8 @@ export abstract class LineAxes {
       .attr("height", 16)
       .attr("fill", ({ color }) => color ?? "steelblue");
 
-    legendGroup.selectAll<SVGGElement, SeriesOptions>("g")
+    legendGroup
+      .selectAll<SVGGElement, SeriesOptions>("g")
       .data(this.ySeries)
       .join("g")
       .attr("class", "legend-item")

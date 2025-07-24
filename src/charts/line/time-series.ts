@@ -1,4 +1,4 @@
-import { timeFormat, line, curveBasis, axisBottom } from "../../utils.ts";
+import { timeFormat, axisBottom, type Selection, type NumberValue } from "d3";
 import { LineChart } from "./line-series.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 
@@ -28,7 +28,7 @@ export class TimeChart extends LineChart {
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
-      xSerie: { key: string; };
+      xSerie: { key: string };
       ySeries: SeriesOptions[];
     },
     options: Partial<LineChartOptions> = {}
@@ -46,7 +46,7 @@ export class TimeChart extends LineChart {
    * ```
    */
   public drawXAxis(
-    selection: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
     const { height, margin, tickSize, tickPadding } = this.options;
@@ -55,7 +55,7 @@ export class TimeChart extends LineChart {
       .tickPadding(tickPadding);
 
     if (formatCode?.length) {
-      axis.tickFormat((domainValue: Date | d3.NumberValue, _index: number) => {
+      axis.tickFormat((domainValue: Date | NumberValue, _index: number) => {
         if (domainValue instanceof Date) {
           return timeFormat(formatCode)(domainValue);
         }
