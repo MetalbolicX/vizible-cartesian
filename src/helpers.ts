@@ -2,6 +2,85 @@ import type { Selection } from "d3";
 import type { SeriesOptions } from "./types.ts";
 
 /**
+ * Draws the x-axis label at the bottom right corner of the chart.
+ * @param selection - The D3 selection to append the label to.
+ * @param label - The label text.
+ * @param width - The width of the chart.
+ * @param height - The height of the chart.
+ * @param margin - The margin object of the chart.
+ */
+export const drawXAxisLabel = (
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  label: string,
+  margin: { left: number; right: number; top: number; bottom: number }
+): void => {
+  const width = selection.node()?.getBoundingClientRect().width || 0;
+  const w = typeof width === "string" ? parseFloat(width) : width;
+  const height = selection.node()?.getBoundingClientRect().height || 0;
+  const h = typeof height === "string" ? parseFloat(height) : height;
+  selection.selectAll<SVGTextElement, unknown>(".x-axis-label")
+    .data([null])
+    .join("text")
+    .attr("class", "x-axis-label")
+    .attr("x", w - margin.right)
+    .attr("y", h - margin.bottom)
+    .attr("dy", "-20")
+    .attr("text-anchor", "end")
+    .style("font-size", "14px")
+    .text(label);
+};
+
+/**
+ * Draws the y-axis label rotated -90° at the left middle of the chart.
+ * @param selection - The D3 selection to append the label to.
+ * @param label - The label text.
+ * @param height - The height of the chart.
+ * @param margin - The margin object of the chart.
+ */
+export const drawYAxisLabel = (
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  label: string,
+  margin: { left: number; right: number; top: number; bottom: number }
+): void => {
+  selection.selectAll<SVGTextElement, unknown>(".y-axis-label")
+    .data([null])
+    .join("text")
+    .attr("class", "y-axis-label")
+    .attr("x", -10)
+    .attr("y", margin.top)
+    .attr("dy", "20")
+    .attr("transform", `rotate(-90, ${margin.left / 2}, ${margin.top})`)
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text(label);
+};
+
+/**
+ * Draws the chart title at the top center of the chart.
+ * @param selection - The D3 selection to append the title to.
+ * @param title - The title text.
+ * @param width - The width of the chart.
+ * @param margin - The margin object of the chart.
+ */
+export const drawChartTitle = (
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  title: string,
+  margin: { left: number; right: number; top: number; bottom: number }
+): void => {
+  const width = selection.node()?.getBoundingClientRect().width || 0;
+  selection.selectAll<SVGTextElement, unknown>(".chart-title")
+    .data([null])
+    .join("text")
+    .attr("class", "chart-title")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2 + 8)
+    .attr("text-anchor", "middle")
+    .style("font-size", "18px")
+    .style("font-weight", "bold")
+    .text(title);
+};
+
+/**
  * Draws a legend for the given series options.
  * @param selection - The D3 selection to append the legend to.
  * @param series - Array of series options containing key, name, and color.
