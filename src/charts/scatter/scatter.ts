@@ -1,6 +1,7 @@
 import { CartesianPlane } from "../../utils/cartesian-plane";
 import type { ChartOptions, ScatterChartOptions } from "../../types.ts";
 import { type Selection, axisBottom, format } from "d3";
+import { drawLegend } from "../../utils/helpers.ts";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
@@ -111,6 +112,23 @@ export class ScatterChart extends CartesianPlane {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(axis);
+  }
+
+  /**
+   * Draws the y-axis for the scatter chart.
+   * @param selection - The D3 selection to append the y-axis to.
+   * @param [formatCode] - Optional format code for the y-axis labels.
+   * @example
+   * ```ts
+   * chart.drawYAxis(d3.select("svg"), ".2f");
+   * ```
+   */
+  public drawLegend(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    x: number = 20,
+    y: number = 20
+  ): void {
+    drawLegend(selection, this.ySeries, x, y);
   }
 
   public get ySeries() {
