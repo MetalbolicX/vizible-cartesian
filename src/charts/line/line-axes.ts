@@ -1,6 +1,16 @@
 import { scaleLinear, scaleTime, axisLeft, format } from "../../utils.ts";
 import type { SeriesOptions, LineChartOptions } from "../../types.ts";
 
+/**
+ * Gets the x-axis domain from the dataset.
+ * @param dataset - The data array for the chart.
+ * @param xKey - The key for the x-axis data.
+ * @returns A tuple representing the min and max values for the x-axis.
+ * @example
+ * ```ts
+ * const [min, max] = getXDomain(data, "date");
+ * ```
+ */
 const getXDomain = (
   dataset: Record<string, unknown>[],
   xKey: string
@@ -25,6 +35,16 @@ const getXDomain = (
   }
 };
 
+/**
+ * Gets the y-axis domain from the dataset.
+ * @param dataset - The data array for the chart.
+ * @param series - Array of series options containing keys for y-axis data.
+ * @returns A tuple representing the min and max values for the y-axis.
+ * @example
+ * ```ts
+ * const [min, max] = getYDomain(data, [{ key: "sales" }, { key: "cost" }]);
+ * ```
+ */
 const getYDomain = (dataset, series) => {
   const values = dataset.flatMap((d) =>
     series.map((s) => Number(d[s.key])).filter((v) => !isNaN(v))

@@ -33,11 +33,16 @@ export const drawLegend = (
     .attr("class", "legend-item")
     .attr("transform", (_, i) => `translate(0,${i * itemHeight})`)
     .call((group) => {
-      group.append("rect")
+      group.selectAll<SVGRectElement, SeriesOptions>("rect")
+        .data(d => [d])
+        .join("rect")
         .attr("width", 16)
         .attr("height", 16)
         .attr("fill", ({ color }) => color ?? "steelblue");
-      group.append("text")
+
+      group.selectAll<SVGTextElement, SeriesOptions>("text")
+        .data(d => [d])
+        .join("text")
         .attr("x", 22)
         .attr("y", 12)
         .text(({ name, key }) => name ?? key)
