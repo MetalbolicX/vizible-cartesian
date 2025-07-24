@@ -227,58 +227,6 @@ export abstract class LineAxes {
       .attr("stroke-dasharray", "2,2");
   }
 
-  /**
-   * Draws a legend for all y series.
-   * @param selection - The D3 selection to append the legend to.
-   * @param [x=20] - The x position of the legend.
-   * @param [y=20] - The y position of the legend.
-   * @example
-   * ```ts
-   * chart.drawLegend(d3.select("svg"), 20, 20);
-   * ```
-   */
-  public drawLegend(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
-    x: number = 20,
-    y: number = 20
-  ): void {
-    const legendGroup = selection
-      .selectAll<SVGGElement, unknown>(".legend")
-      .data([null])
-      .join("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(${x},${y})`);
-
-    const itemHeight = 20;
-    legendGroup
-      .selectAll<SVGGElement, SeriesOptions>("g")
-      .data(this.ySeries)
-      .join("g")
-      .attr("class", "legend-item")
-      .attr("transform", (_, i) => `translate(0,${i * itemHeight})`)
-      .selectAll("rect")
-      .data((d) => [d])
-      .join("rect")
-      .attr("width", 16)
-      .attr("height", 16)
-      .attr("fill", ({ color }) => color ?? "steelblue");
-
-    legendGroup
-      .selectAll<SVGGElement, SeriesOptions>("g")
-      .data(this.ySeries)
-      .join("g")
-      .attr("class", "legend-item")
-      .attr("transform", (_, i) => `translate(0,${i * itemHeight})`)
-      .selectAll("text")
-      .data((d) => [d])
-      .join("text")
-      .attr("x", 22)
-      .attr("y", 12)
-      .text(({ name, key }) => name ?? key)
-      .style("font-size", "14px")
-      .attr("alignment-baseline", "middle");
-  }
-
   public get yScale() {
     return this.#yScale;
   }
