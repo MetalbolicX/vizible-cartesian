@@ -1,20 +1,23 @@
 import { CartesianPlane } from "../../utils/cartesian-plane";
-import type { LineChartOptions, SeriesOptions } from "../../types.ts";
-import { type Selection } from "d3";
+import type { ChartOptions, ScatterChartOptions } from "../../types.ts";
+import { type Selection, axisBottom, format } from "d3";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
  */
 export class ScatterChart extends CartesianPlane {
+  #ySeries: ScatterChartOptions[];
+
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: { key: string };
-      ySeries: SeriesOptions[];
+      ySeries: ScatterChartOptions[];
     },
-    options: Partial<LineChartOptions> = {}
+    options: Partial<ChartOptions> = {}
   ) {
     super(dataset, seriesConfig, options);
+    this.#ySeries = [...seriesConfig.ySeries];
   }
 
   /**
@@ -38,19 +41,27 @@ export class ScatterChart extends CartesianPlane {
     const data = this.dataset.map((d) => ({
       x: d[xKey],
       y: d[yKey],
-      color: pointColor
+      color: pointColor,
+      radius:
+        typeof d["radii"] === "number" && !isNaN(d["radii"])
+          ? d["radii"]
+          : radii,
     }));
-    selection.selectAll<SVGGElement, unknown>(".series")
+    selection
+      .selectAll<SVGGElement, unknown>(".series")
       .data([null])
       .join("g")
       .attr("class", "series")
-      .selectAll<SVGCircleElement, { x: number; y: number; color: string }>(`.scatter-point.${yKey}`)
+      .selectAll<
+        SVGCircleElement,
+        { x: number; y: number; color: string; radius: number }
+      >(`.scatter-point.${yKey}`)
       .data(data)
       .join("circle")
       .attr("class", `scatter-point ${yKey}`)
       .attr("cx", ({ x }) => this.xScale(x as number))
       .attr("cy", ({ y }) => this.yScale(y as number))
-      .attr("r", radii)
+      .attr("r", ({ radius }) => radius)
       .attr("fill", ({ color }) => color);
   }
 
@@ -64,15 +75,45 @@ export class ScatterChart extends CartesianPlane {
    * ```
    */
   public drawSeries(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
-    radii: number = 4
+    selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    for (const { key, color } of this.ySeries) {
+    for (const { key, color, radii } of this.ySeries) {
       this._drawSerie(selection, key, color, radii);
     }
   }
 
-  public drawXAxis(selection: Selection<SVGSVGElement, unknown, null, undefined>, formatCode?: string): void {
-    console.log(selection, formatCode);
+  /**
+   * Draws the y-axis for the scatter chart.
+   * @param selection - The D3 selection to append the y-axis to.
+   * @param [formatCode] - Optional format code for the y-axis labels.
+   * @example
+   * ```ts
+   * chart.drawYAxis(d3.select("svg"), ".2f");
+   * ```
+   */
+  public drawXAxis(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    formatCode?: string
+  ): void {
+    const { height, margin, tickSize, tickPadding } = this.options;
+    const axis = axisBottom(this.xScale)
+      .tickSize(tickSize)
+      .tickPadding(tickPadding);
+
+    if (formatCode) {
+      axis.tickFormat(format(formatCode));
+    }
+
+    selection
+      .selectAll<SVGGElement, unknown>(".x.axis")
+      .data([null])
+      .join("g")
+      .attr("class", "x axis")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(axis);
+  }
+
+  public get ySeries() {
+    return this.#ySeries;
   }
 }

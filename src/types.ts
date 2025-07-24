@@ -1,15 +1,22 @@
-export interface LineChartOptions {
+export interface ChartOptions {
   width: number;
   height: number;
   margin: { top: number; right: number; bottom: number; left: number };
-  lineWidth: number;
-  isCurved: boolean;
   tickSize: number;
   tickPadding: number;
 }
 
-export type SeriesOptions = {
+export interface LineChartOptions extends ChartOptions {
+  lineWidth: number;
+  isCurved: boolean;
+}
+
+export interface SeriesOptions {
   key: string;
   name?: string;
   color?: string;
-};
+}
+
+export interface ScatterChartOptions extends SeriesOptions {
+  radii?: number;
+}
