@@ -10,7 +10,7 @@ import {
   type NumberValue,
 } from "d3";
 import type { SeriesOptions, LineChartOptions } from "../types.ts";
-import { drawLegend } from "./helpers.ts";
+import { renderLegend } from "./helpers.ts";
 
 /**
  * Gets the x-axis domain from the dataset.
@@ -281,7 +281,7 @@ export abstract class CartesianPlane {
     x: number = 20,
     y: number = 20
   ): void {
-    drawLegend(selection, this.ySeries, x, y);
+    renderLegend(selection, this.ySeries, x, y);
   }
 
   public get yScale() {
