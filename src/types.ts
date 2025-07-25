@@ -20,3 +20,8 @@ export interface SeriesOptions {
 export interface ScatterChartOptions extends SeriesOptions {
   radii?: number;
 }
+
+export interface CustomerScatterChartOptions extends SeriesOptions {
+  icon?: string;
+  size?: number;
+}
