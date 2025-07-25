@@ -2,6 +2,7 @@ import {
   scaleLinear,
   scaleTime,
   axisLeft,
+  axisBottom,
   format,
   type Selection,
   type ScaleLinear,
@@ -9,6 +10,7 @@ import {
   type NumberValue,
 } from "d3";
 import type { SeriesOptions, LineChartOptions } from "../types.ts";
+import { drawLegend } from "./helpers.ts";
 
 /**
  * Gets the x-axis domain from the dataset.
@@ -61,10 +63,10 @@ const getYDomain = (dataset, series) => {
   return [Math.min(...values), Math.max(...values)];
 };
 
-export type LineAxesSeriesConfig = {
-  xSerie: SeriesOptions;
-  ySeries: SeriesOptions[];
-};
+// export type LineAxesSeriesConfig = {
+//   xSerie: SeriesOptions;
+//   ySeries: SeriesOptions[];
+// };
 
 export abstract class CartesianPlane {
   #xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
@@ -92,7 +94,10 @@ export abstract class CartesianPlane {
    */
   constructor(
     dataset: Record<string, unknown>[],
-    seriesConfig: LineAxesSeriesConfig,
+    seriesConfig: {
+      xSerie: SeriesOptions;
+      ySeries: SeriesOptions[];
+    },
     options: Partial<LineChartOptions> = {}
   ) {
     const {
@@ -127,7 +132,7 @@ export abstract class CartesianPlane {
       tickSize,
       tickPadding,
     };
-    const xKey = this.#xSerie.key;
+    const { key: xKey } = this.#xSerie;
     const [xMin, xMax] = getXDomain(dataset, xKey);
     const { margin: m, width: w, height: h } = this.#options;
     if (xMin instanceof Date && xMax instanceof Date) {
@@ -148,10 +153,36 @@ export abstract class CartesianPlane {
       .nice();
   }
 
-  public abstract drawXAxis(
+  /**
+   * Draws the x-axis on the chart.
+   * @param selection - The D3 selection to append the x-axis to.
+   * @param formatCode - Optional D3 format string (e.g., ".2f").
+   * @example
+   * ```ts
+   * chart.drawXAxis(d3.select("svg"), ".2f");
+   * ```
+   */
+  public drawXAxis(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
-  ): void;
+  ): void {
+    const { height, margin, tickSize, tickPadding } = this.options;
+    const axis = axisBottom(this.xScale)
+      .tickSize(tickSize)
+      .tickPadding(tickPadding);
+
+    if (formatCode) {
+      axis.tickFormat(format(formatCode));
+    }
+
+    selection
+      .selectAll<SVGGElement, unknown>(".x.axis")
+      .data([null])
+      .join("g")
+      .attr("class", "x axis")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(axis);
+  }
 
   /**
    * Draws the y-axis on the chart.
@@ -188,6 +219,10 @@ export abstract class CartesianPlane {
   /**
    * Draws the y-axis grid lines on the chart.
    * @param selection - The D3 selection to append the y-axis grid lines to.
+   * @example
+   * ```ts
+   * chart.drawYGridLines(d3.select("svg"));
+   * ```
    */
   public drawYGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
@@ -209,6 +244,10 @@ export abstract class CartesianPlane {
   /**
    * Draws the x-axis grid lines on the chart.
    * @param selection - The D3 selection to append the x-axis grid lines to.
+   * @example
+   * ```ts
+   * chart.drawXGridLines(d3.select("svg"));
+   * ```
    */
   public drawXGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
@@ -227,6 +266,28 @@ export abstract class CartesianPlane {
       .attr("stroke-dasharray", "2,2");
   }
 
+  public abstract drawSeries(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>
+  ): void;
+
+  /**
+   * Draws the y-axis on the chart.
+   * @param selection - The D3 selection to append the y-axis to.
+   * @param [x=20] - The x position of the legend.
+   * @param [y=20] - The y position of the legend.
+   * @example
+   * ```ts
+   * chart.drawYAxis(d3.select("svg"), 20, 20);
+   * ```
+   */
+  public drawLegend(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    x: number = 20,
+    y: number = 20
+  ): void {
+    drawLegend(selection, this.ySeries, x, y);
+  }
+
   public get yScale() {
     return this.#yScale;
   }
@@ -240,7 +301,7 @@ export abstract class CartesianPlane {
   }
 
   public get dataset() {
-    return this.#dataset;
+    return [...this.#dataset];
   }
 
   public get xSerie() {
@@ -248,6 +309,6 @@ export abstract class CartesianPlane {
   }
 
   public get ySeries() {
-    return this.#ySeries;
+    return [...this.#ySeries];
   }
 }

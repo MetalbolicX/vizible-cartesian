@@ -28,7 +28,7 @@ export class TimeChart extends LineChart {
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
-      xSerie: { key: string };
+      xSerie: SeriesOptions;
       ySeries: SeriesOptions[];
     },
     options: Partial<LineChartOptions> = {}
@@ -45,7 +45,7 @@ export class TimeChart extends LineChart {
    * chart.drawXAxis(d3.select("svg"), "%b %d, %Y");
    * ```
    */
-  public drawXAxis(
+  public override drawXAxis(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {

@@ -1,7 +1,6 @@
-import { line, curveBasis, axisBottom, format, type Selection } from "d3";
+import { line, curveBasis, type Selection } from "d3";
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
-import { drawLegend } from "../../utils/helpers.ts";
 
 /**
  * A class for creating a line chart with numerical or date x-axis using D3.js.
@@ -42,10 +41,10 @@ export class LineChart extends CartesianPlane {
    * @param [lineColor="steelblue"] - The color of the line.
    * @example
    * ```ts
-   * chart.drawLine(d3.select("svg"), "sales", "#1f77b4");
+   * chart.drawSerie(d3.select("svg"), "sales", "#1f77b4");
    * ```
    */
-  #drawLine(
+  #drawSerie(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     lineColor: string = "steelblue"
@@ -84,60 +83,11 @@ export class LineChart extends CartesianPlane {
    * chart.drawLines(d3.select("svg"));
    * ```
    */
-  public drawLines(
+  public drawSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     for (const { key, color } of this.ySeries) {
-      this.#drawLine(selection, key, color);
+      this.#drawSerie(selection, key, color);
     }
-  }
-
-  /**
-   * Draws the x-axis on the chart.
-   * @param selection - The D3 selection to append the x-axis to.
-   * @param formatCode - Optional D3 format string (e.g., ".2f").
-   * @example
-   * ```ts
-   * chart.drawXAxis(d3.select("svg"), ".2f");
-   * ```
-   */
-  public drawXAxis(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
-    formatCode?: string
-  ): void {
-    const { height, margin, tickSize, tickPadding } = this.options;
-    const axis = axisBottom(this.xScale)
-      .tickSize(tickSize)
-      .tickPadding(tickPadding);
-
-    if (formatCode) {
-      axis.tickFormat(format(formatCode));
-    }
-
-    selection
-      .selectAll<SVGGElement, unknown>(".x.axis")
-      .data([null])
-      .join("g")
-      .attr("class", "x axis")
-      .attr("transform", `translate(0, ${height - margin.bottom})`)
-      .call(axis);
-  }
-
-  /**
-   * Draws the y-axis on the chart.
-   * @param selection - The D3 selection to append the y-axis to.
-   * @param [x=20] - The x position of the legend.
-   * @param [y=20] - The y position of the legend.
-   * @example
-   * ```ts
-   * chart.drawYAxis(d3.select("svg"), 20, 20);
-   * ```
-   */
-  public drawLegend(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
-    x: number = 20,
-    y: number = 20
-  ): void {
-    drawLegend(selection, this.ySeries, x, y);
   }
 }
