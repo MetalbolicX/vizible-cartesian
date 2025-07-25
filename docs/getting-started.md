@@ -155,9 +155,9 @@ To include the `vizible-cartesian` web component via a CDN, you can use the foll
         ySeries: [{ key: 'y', color: 'blue', name: 'Y Axis', radii: 5 }],
       });
 
-      chart.drawSeries(svg);
-      chart.drawXAxis(svg);
-      chart.drawYAxis(svg);
+      chart.renderSeries(svg);
+      chart.renderXAxis(svg);
+      chart.renderYAxis(svg);
     </script>
   </body>
 </html>
