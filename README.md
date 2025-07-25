@@ -4,7 +4,7 @@
   <img src="./docs/_media/logo.svg" alt="vizible Logo" width="200" height="200" />
 </div>
 
-> `vizible-cartesian` Reduce time to build data visualizations with d3.js.
+> `vizible-cartesian` Reduce time to build common data visualizations with d3.js.
 
 **Supported Versions:**
 
@@ -17,21 +17,11 @@ The collection of reusable charts that can be used to visualize data in a cartes
 - **Line Chart**: Line tendency and Time series.
 - **Scatter Plot**: Scatter points and customizable icons and sizes.
 
+> 📝**Note:** The library focuses on building static visualizations.
+
 ## 🚀 Quick Installation
 
-### For the Browser
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/vizible-cartesian@latest/dist/index.js"></script>
-```
-
-### For Node.js
-
-Add the required dependencies to your project:
-
-```sh
-npm i vizible-cartesian
-```
+See: [Installation Guide](https://metalbolicx.github.io/vizible-cartesian/#/getting-started)
 
 ## 📚 Documentation
 
