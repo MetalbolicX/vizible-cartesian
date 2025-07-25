@@ -2,6 +2,7 @@
   "name": "vizible-cartesian",
   "version": "0.1.0",
   "description": "A collection of reusable charts that can be used to visualize data in a cartesian coordinate system.",
+  "homepage": "https://metalbolicx.github.io/vizible-cartesian/",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
