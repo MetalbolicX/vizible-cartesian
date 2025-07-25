@@ -236,9 +236,7 @@ export abstract class CartesianPlane {
       .attr("x1", this.xScale(xMin))
       .attr("x2", this.xScale(xMax))
       .attr("y1", (d) => this.yScale(d))
-      .attr("y2", (d) => this.yScale(d))
-      .attr("stroke", "#eee")
-      .attr("stroke-dasharray", "2,2");
+      .attr("y2", (d) => this.yScale(d));
   }
 
   /**
@@ -261,9 +259,7 @@ export abstract class CartesianPlane {
       .attr("x1", (d) => this.xScale(d))
       .attr("x2", (d) => this.xScale(d))
       .attr("y1", this.yScale(yMin))
-      .attr("y2", this.yScale(yMax))
-      .attr("stroke", "#eee")
-      .attr("stroke-dasharray", "2,2");
+      .attr("y2", this.yScale(yMax));
   }
 
   public abstract renderSeries(
@@ -313,10 +309,14 @@ export abstract class CartesianPlane {
   }
 
   public get innerWidth() {
-    return this.options.width - this.options.margin.left - this.options.margin.right;
+    return (
+      this.options.width - this.options.margin.left - this.options.margin.right
+    );
   }
 
   public get innerHeight() {
-    return this.options.height - this.options.margin.top - this.options.margin.bottom;
+    return (
+      this.options.height - this.options.margin.top - this.options.margin.bottom
+    );
   }
 }

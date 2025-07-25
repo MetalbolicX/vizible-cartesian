@@ -25,7 +25,6 @@ export const renderXAxisLabel = (
     .attr("class", "x axis-label")
     .attr("x", w / 2)
     .attr("y", h - 2 * margin.bottom)
-    .attr("text-anchor", "middle")
     .text(label);
 };
 
@@ -53,8 +52,7 @@ export const renderYAxisLabel = (
     .attr("y", margin.left)
     .attr("dy", "1em")
     .attr("transform", `rotate(-90, 0, ${margin.top})`)
-    .text(label)
-    .attr("text-anchor", "middle");
+    .text(label);
 };
 
 /**
@@ -79,7 +77,6 @@ export const renderChartTitle = (
     .attr("x", w / 2)
     .attr("y", margin.top / 2)
     .attr("dy", "0.5em")
-    .attr("text-anchor", "middle")
     .text(title);
 };
 

@@ -136,6 +136,8 @@ renderYAxis(selection: Selection<SVGSVGElement, unknown, null, undefined>,
 
 ### renderXAxis
 
+Draws the X-axis on the chart. You can optionally pass a D3 time format string for time series or a number format string for numeric axes.
+
 ```ts
 renderXAxis(
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
@@ -149,8 +151,104 @@ renderXAxis(
 
 ### renderYGridLines
 
+Draws horizontal grid lines across the chart based on the Y-axis scale.
+
 ```ts
 renderYGridLines(
   selection: Selection<SVGSVGElement, unknown, null, undefined>
 ): void;
 ```
+
+### renderXGridLines
+
+Draws vertical grid lines across the chart based on the X-axis scale.
+
+```ts
+renderXGridLines(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>
+): void;
+```
+
+> [!Note]
+> To style lines that represent the grid created by `renderYGridLines` and `renderXGridLines` you can use the `.grid` class in your CSS. For example:
+> ```css
+> .grid {
+>   stroke: #eee;
+>   stroke-opacity: 0.7;
+>   stroke-dasharray: 2, 2; /* Dashed lines */
+> }
+> ```
+
+### renderLegend
+
+Draws a legend to represent the name and color of each series.
+
+```ts
+renderLegend(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  x?: number, // X position for the legend
+  y?: number // Y position for the legend
+): void;
+```
+
+> [!Note]
+> `x` and `y` positions for the legend are optional and by default the value of both is 20.
+
+## Helpers Functions
+
+`vizible-cartesian` provides several helper functions to assist with rendering common chart elements.
+
+### renderChartTitle
+
+Draws the chart title at the top.
+
+```ts
+renderChartTitle(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  title: string,
+  margin: { top: number; left: number; right: number; bottom: number; }
+): void;
+```
+> [!Note]
+> To style the chart title, you can use the `.chart-title` class in your CSS. For example:
+> ```css
+> .chart-title {
+>   font-size: 16px;
+>   font-weight: bold;
+>   text-anchor: middle;
+> }
+> ```
+
+### renderXAxisLabel
+
+Draws the X-axis label.
+
+```ts
+renderXAxisLabel(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  label: string,
+  margin: { left: number; right: number; top: number; bottom: number }
+): void;
+```
+
+### renderYAxisLabel
+
+Draws the Y-axis label.
+
+```ts
+renderYAxisLabel(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  label: string,
+  margin: { left: number; right: number; top: number; bottom: number }
+): void;
+```
+
+> [!Note]
+> To style the axis labels created by the `renderXAxisLabel` and `renderYAxisLabel` functions, you can use the `.axis-label` class in your CSS. For example:
+> ```css
+> .axis-label {
+>   font-size: 12px;
+>   font-weight: bold;
+>   text-anchor: middle;
+> }
+> ```
