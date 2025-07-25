@@ -33,7 +33,7 @@ See: [Installation Guide](https://metalbolicx.github.io/vizible-cartesian/#/gett
 
 ## ✍ Do you want to learn more?
 
- 1. Learn about [d3.js](https://d3js.org/) and how to use it.
+ 1. Learn about [D3.js](https://d3js.org/) and how to use it.
 
 ## Contributing
 
