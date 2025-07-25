@@ -35,6 +35,7 @@ export const drawXAxisLabel = (
  * @param label - The label text.
  * @param height - The height of the chart.
  * @param margin - The margin object of the chart.
+ * @link [Source to position y label](https://datatricks.co.uk/animated-d3-js-scatter-plot-in-r)
  */
 export const drawYAxisLabel = (
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
@@ -69,16 +70,16 @@ export const drawChartTitle = (
   margin: { left: number; right: number; top: number; bottom: number }
 ): void => {
   const width = selection.node()?.getBoundingClientRect().width || 0;
+  const w = typeof width === "string" ? parseFloat(width) : width;
   selection
     .selectAll<SVGTextElement, unknown>(".chart-title")
     .data([null])
     .join("text")
     .attr("class", "chart-title")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2 + 8)
+    .attr("x", w / 2)
+    .attr("y", margin.top / 2)
+    .attr("dy", "0.5em")
     .attr("text-anchor", "middle")
-    .style("font-size", "18px")
-    .style("font-weight", "bold")
     .text(title);
 };
 
@@ -130,7 +131,6 @@ export const drawLegend = (
         .attr("x", 22)
         .attr("y", 12)
         .text(({ name, key }) => name ?? key)
-        .style("font-size", "14px")
         .attr("alignment-baseline", "middle");
     });
 };
