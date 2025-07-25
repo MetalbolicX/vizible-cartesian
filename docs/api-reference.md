@@ -117,6 +117,40 @@ Each chart object provides methods to render the chart and manipulate its state.
 
 ### renderSeries
 
+Draws the series data on the chart.
+
 ```ts
-renderSeries(seriesKey: string): void;
+renderSeries(selection: Selection<SVGSVGElement, unknown, null, undefined>
+): void;
+```
+
+### renderYAxis
+
+Draws the Y-axis on the chart. In addition your can optionally pass a D3 number format string to format the Y-axis labels.
+
+```ts
+renderYAxis(selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  numberFormat?: string // Optional D3 number format string (e.g., ".2f")
+): void;
+```
+
+### renderXAxis
+
+```ts
+renderXAxis(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
+  formatCode?: string // Optional D3 time format string (e.g., "%Y-%m-%d") or number format string (e.g., ".2f")
+): void;
+```
+
+> [!Note]
+> - `formatCode` in the `renderXAxis` method can be either a D3 time format string (e.g., "%Y-%m-%d") for time series or a number format string (e.g., ".2f") for numeric axes.
+> - For more information about D3 format strings, refer to the [D3 documentation](https://github.com/d3/d3-format).
+
+### renderYGridLines
+
+```ts
+renderYGridLines(
+  selection: Selection<SVGSVGElement, unknown, null, undefined>
+): void;
 ```
