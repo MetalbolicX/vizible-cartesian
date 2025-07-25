@@ -1,10 +1,10 @@
-# vizible
+# vizible-cartesian
 
 <div align="center">
   <img src="./images/logo.png" alt="vizible Logo" width="200" height="200" />
 </div>
 
-> `vizible` Reduce time to build data visualizations with d3.js.
+> `vizible-cartesian` Reduce time to build data visualizations with d3.js.
 
 **Supported Versions:**
 
@@ -12,18 +12,17 @@
 
 ## Features
 
-- Simple API to build common static data visualizations.
-- It can work in the browser or using server-side rendering (SSR).
-- Charts available: Line (Numerical and Temporal).
+The collection of reusable charts that can be used to visualize data in a cartesian coordinate system. The library renders the next charts:
+
+- **Line Chart**: Line tendency and Time series.
+- **Scatter Plot**: Scatter points and customizable icons and sizes.
 
 ## 🚀 Quick Installation
 
 ### For the Browser
 
-Get the package from a CDN:
-
 ```html
-<script src="https://cdn.jsdelivr.net/npm/vizible@latest/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vizible-cartesian@latest/dist/index.js"></script>
 ```
 
 ### For Node.js
@@ -31,7 +30,7 @@ Get the package from a CDN:
 Add the required dependencies to your project:
 
 ```sh
-npm i vizible
+npm i vizible-cartesian
 ```
 
 ## 📚 Documentation

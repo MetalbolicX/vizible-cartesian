@@ -1,7 +1,7 @@
 {
-  "name": "vizible",
+  "name": "vizible-cartesian",
   "version": "0.1.0",
-  "description": "A collection of reusable chart writtent in d3.js",
+  "description": "A collection of reusable charts that can be used to visualize data in a cartesian coordinate system.",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
