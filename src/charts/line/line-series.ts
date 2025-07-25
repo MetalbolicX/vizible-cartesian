@@ -41,10 +41,10 @@ export class LineChart extends CartesianPlane {
    * @param [lineColor="steelblue"] - The color of the line.
    * @example
    * ```ts
-   * chart.drawSerie(d3.select("svg"), "sales", "#1f77b4");
+   * chart.renderSerie(d3.select("svg"), "sales", "#1f77b4");
    * ```
    */
-  #drawSerie(
+  #renderSerie(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     lineColor: string = "steelblue"
@@ -76,18 +76,18 @@ export class LineChart extends CartesianPlane {
   }
 
   /**
-   * Draws all y series as lines on the chart.
+   * Renders all y series as lines on the chart.
    * @param selection - The D3 selection to append the lines to.
    * @example
    * ```ts
-   * chart.drawLines(d3.select("svg"));
+   * chart.renderSeries(d3.select("svg"));
    * ```
    */
-  public drawSeries(
+  public renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     for (const { key, color } of this.ySeries) {
-      this.#drawSerie(selection, key, color);
+      this.#renderSerie(selection, key, color);
     }
   }
 }

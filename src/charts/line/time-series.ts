@@ -37,15 +37,15 @@ export class TimeChart extends LineChart {
   }
 
   /**
-   * Draws the x-axis on the chart.
+   * Renders the x-axis on the chart.
    * @param selection - The D3 selection to append the x-axis to.
    * @param dateFormat - Optional D3 time format string (e.g., "%Y-%m-%d").
    * @example
    * ```ts
-   * chart.drawXAxis(d3.select("svg"), "%b %d, %Y");
+   * chart.renderXAxis(d3.select("svg"), "%b %d, %Y");
    * ```
    */
-  public override drawXAxis(
+  public override renderXAxis(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {

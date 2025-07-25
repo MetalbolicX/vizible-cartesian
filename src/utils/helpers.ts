@@ -2,14 +2,14 @@ import type { Selection } from "d3";
 import type { SeriesOptions } from "../types.ts";
 
 /**
- * Draws the x-axis label at the bottom right corner of the chart.
+ * Renders the x-axis label at the bottom right corner of the chart.
  * @param selection - The D3 selection to append the label to.
  * @param label - The label text.
  * @param width - The width of the chart.
  * @param height - The height of the chart.
  * @param margin - The margin object of the chart.
  */
-export const drawXAxisLabel = (
+export const renderXAxisLabel = (
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
   label: string,
   margin: { left: number; right: number; top: number; bottom: number }
@@ -30,14 +30,14 @@ export const drawXAxisLabel = (
 };
 
 /**
- * Draws the y-axis label rotated -90° at the left middle of the chart.
+ * Renders the y-axis label rotated -90° at the left middle of the chart.
  * @param selection - The D3 selection to append the label to.
  * @param label - The label text.
  * @param height - The height of the chart.
  * @param margin - The margin object of the chart.
  * @link [Source to position y label](https://datatricks.co.uk/animated-d3-js-scatter-plot-in-r)
  */
-export const drawYAxisLabel = (
+export const renderYAxisLabel = (
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
   label: string,
   margin: { left: number; right: number; top: number; bottom: number }
@@ -58,13 +58,13 @@ export const drawYAxisLabel = (
 };
 
 /**
- * Draws the chart title at the top center of the chart.
+ * Renders the chart title at the top center of the chart.
  * @param selection - The D3 selection to append the title to.
  * @param title - The title text.
  * @param width - The width of the chart.
  * @param margin - The margin object of the chart.
  */
-export const drawChartTitle = (
+export const renderChartTitle = (
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
   title: string,
   margin: { left: number; right: number; top: number; bottom: number }
@@ -84,7 +84,7 @@ export const drawChartTitle = (
 };
 
 /**
- * Draws a legend for the given series options.
+ * Renders a legend for the given series options.
  * @param selection - The D3 selection to append the legend to.
  * @param series - Array of series options containing key, name, and color.
  * @param [x=20] - The x position of the legend.
@@ -92,10 +92,10 @@ export const drawChartTitle = (
  * @param [itemHeight=20] - The height of each legend item.
  * @example
  * ```ts
- * drawLegend(d3.select("svg"), seriesData);
+ * renderLegend(d3.select("svg"), seriesData);
  * ```
  */
-export const drawLegend = (
+export const renderLegend = (
   selection: Selection<SVGSVGElement, unknown, null, undefined>,
   series: SeriesOptions[],
   x: number = 20,

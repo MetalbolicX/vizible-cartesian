@@ -36,13 +36,13 @@ export class ScatterChart extends CartesianPlane {
   }
 
   /**
-   * Draws a scatter plot for a given y series key.
+   * Renders a scatter plot for a given y series key.
    * @param selection - The D3 selection to append the scatter points to.
    * @param yKey - The key of the y series to draw.
    * @param [pointColor="steelblue"] - The color of the points.
    * @param [radii=4] - The radius of the points.
    */
-  #drawSerie(
+  #renderSerie(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     pointColor: string = "steelblue",
@@ -77,18 +77,18 @@ export class ScatterChart extends CartesianPlane {
   }
 
   /**
-   * Draws all series in the scatter chart.
+   * Renders all series in the scatter chart.
    * @param selection - The D3 selection to draw the series on.
    * @example
    * ```ts
-   * chart.drawSeries(d3.select("svg"));
+   * chart.renderSeries(d3.select("svg"));
    * ```
    */
-  public drawSeries(
+  public renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     for (const { key, color, radii } of this.ySeries) {
-      this.#drawSerie(selection, key, color, radii);
+      this.#renderSerie(selection, key, color, radii);
     }
   }
 

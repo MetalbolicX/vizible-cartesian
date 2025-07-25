@@ -9,15 +9,15 @@ import type {
   SeriesOptions,
 } from "./types.ts";
 import {
-  drawXAxisLabel,
-  drawYAxisLabel,
-  drawChartTitle,
+  renderXAxisLabel,
+  renderYAxisLabel,
+  renderChartTitle,
 } from "./utils/helpers.ts";
 
 export {
-  drawChartTitle,
-  drawXAxisLabel,
-  drawYAxisLabel,
+  renderChartTitle,
+  renderXAxisLabel,
+  renderYAxisLabel,
   CustomScatterChart,
   LineChart,
   ScatterChart,

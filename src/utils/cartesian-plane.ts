@@ -154,15 +154,15 @@ export abstract class CartesianPlane {
   }
 
   /**
-   * Draws the x-axis on the chart.
+   * Renders the x-axis on the chart.
    * @param selection - The D3 selection to append the x-axis to.
    * @param formatCode - Optional D3 format string (e.g., ".2f").
    * @example
    * ```ts
-   * chart.drawXAxis(d3.select("svg"), ".2f");
+   * chart.renderXAxis(d3.select("svg"), ".2f");
    * ```
    */
-  public drawXAxis(
+  public renderXAxis(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
@@ -185,11 +185,11 @@ export abstract class CartesianPlane {
   }
 
   /**
-   * Draws the y-axis on the chart.
+   * Renders the y-axis on the chart.
    * @param selection - The D3 selection to append the y-axis to.
    * @param numberFormat - Optional D3 format string (e.g., ".2f").
    */
-  public drawYAxis(
+  public renderYAxis(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     numberFormat?: string
   ): void {
@@ -217,14 +217,14 @@ export abstract class CartesianPlane {
   }
 
   /**
-   * Draws the y-axis grid lines on the chart.
+   * Renders the y-axis grid lines on the chart.
    * @param selection - The D3 selection to append the y-axis grid lines to.
    * @example
    * ```ts
-   * chart.drawYGridLines(d3.select("svg"));
+   * chart.renderYGridLines(d3.select("svg"));
    * ```
    */
-  public drawYGridLines(
+  public renderYGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [xMin, xMax] = this.xScale.domain();
@@ -242,14 +242,14 @@ export abstract class CartesianPlane {
   }
 
   /**
-   * Draws the x-axis grid lines on the chart.
+   * Renders the x-axis grid lines on the chart.
    * @param selection - The D3 selection to append the x-axis grid lines to.
    * @example
    * ```ts
-   * chart.drawXGridLines(d3.select("svg"));
+   * chart.renderXGridLines(d3.select("svg"));
    * ```
    */
-  public drawXGridLines(
+  public renderXGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
     const [yMin, yMax] = this.yScale.domain();
@@ -266,21 +266,21 @@ export abstract class CartesianPlane {
       .attr("stroke-dasharray", "2,2");
   }
 
-  public abstract drawSeries(
+  public abstract renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void;
 
   /**
-   * Draws the y-axis on the chart.
-   * @param selection - The D3 selection to append the y-axis to.
+   * Renders the legend on the chart.
+   * @param selection - The D3 selection to append the legend to.
    * @param [x=20] - The x position of the legend.
    * @param [y=20] - The y position of the legend.
    * @example
    * ```ts
-   * chart.drawYAxis(d3.select("svg"), 20, 20);
+   * chart.renderLegend(d3.select("svg"), 20, 20);
    * ```
    */
-  public drawLegend(
+  public renderLegend(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     x: number = 20,
     y: number = 20
