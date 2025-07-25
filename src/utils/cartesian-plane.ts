@@ -311,4 +311,12 @@ export abstract class CartesianPlane {
   public get ySeries() {
     return [...this.#ySeries];
   }
+
+  public get innerWidth() {
+    return this.options.width - this.options.margin.left - this.options.margin.right;
+  }
+
+  public get innerHeight() {
+    return this.options.height - this.options.margin.top - this.options.margin.bottom;
+  }
 }
