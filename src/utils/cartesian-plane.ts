@@ -166,8 +166,8 @@ export abstract class CartesianPlane {
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
-    const { height, margin, tickSize, tickPadding } = this.options;
-    const axis = axisBottom(this.xScale)
+    const { height, margin, tickSize, tickPadding } = this._options;
+    const axis = axisBottom(this._xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
@@ -193,8 +193,8 @@ export abstract class CartesianPlane {
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     numberFormat?: string
   ): void {
-    const { margin, tickSize, tickPadding } = this.options;
-    const axis = axisLeft(this.yScale)
+    const { margin, tickSize, tickPadding } = this._options;
+    const axis = axisLeft(this._yScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 
@@ -227,16 +227,16 @@ export abstract class CartesianPlane {
   public renderYGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    const [xMin, xMax] = this.xScale.domain();
+    const [xMin, xMax] = this._xScale.domain();
     selection
       .selectAll<SVGGElement, unknown>(".y.grid")
-      .data(this.yScale.ticks())
+      .data(this._yScale.ticks())
       .join("line")
       .attr("class", "y.grid")
-      .attr("x1", this.xScale(xMin))
-      .attr("x2", this.xScale(xMax))
-      .attr("y1", (d) => this.yScale(d))
-      .attr("y2", (d) => this.yScale(d));
+      .attr("x1", this._xScale(xMin))
+      .attr("x2", this._xScale(xMax))
+      .attr("y1", (d) => this._yScale(d))
+      .attr("y2", (d) => this._yScale(d));
   }
 
   /**
@@ -250,16 +250,16 @@ export abstract class CartesianPlane {
   public renderXGridLines(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    const [yMin, yMax] = this.yScale.domain();
+    const [yMin, yMax] = this._yScale.domain();
     selection
       .selectAll<SVGGElement, unknown>(".x.grid")
-      .data(this.xScale.ticks() as NumberValue[])
+      .data(this._xScale.ticks() as NumberValue[])
       .join("line")
       .attr("class", "x.grid")
-      .attr("x1", (d) => this.xScale(d))
-      .attr("x2", (d) => this.xScale(d))
-      .attr("y1", this.yScale(yMin))
-      .attr("y2", this.yScale(yMax));
+      .attr("x1", (d) => this._xScale(d))
+      .attr("x2", (d) => this._xScale(d))
+      .attr("y1", this._yScale(yMin))
+      .attr("y2", this._yScale(yMax));
   }
 
   public abstract renderSeries(
@@ -281,42 +281,42 @@ export abstract class CartesianPlane {
     x: number = 20,
     y: number = 20
   ): void {
-    renderLegend(selection, this.ySeries, x, y);
+    renderLegend(selection, this._ySeries, x, y);
   }
 
-  protected get yScale() {
+  protected get _yScale() {
     return this.#yScale;
   }
 
-  protected get options() {
+  protected get _options() {
     return this.#options;
   }
 
-  protected get xScale() {
+  protected get _xScale() {
     return this.#xScale;
   }
 
-  protected get dataset() {
+  protected get _dataset() {
     return [...this.#dataset];
   }
 
-  protected get xSerie() {
+  protected get _xSerie() {
     return this.#xSerie;
   }
 
-  protected get ySeries() {
+  protected get _ySeries() {
     return [...this.#ySeries];
   }
 
-  protected get innerWidth() {
+  protected get _innerWidth() {
     return (
-      this.options.width - this.options.margin.left - this.options.margin.right
+      this._options.width - this._options.margin.left - this._options.margin.right
     );
   }
 
-  protected get innerHeight() {
+  protected get _innerHeight() {
     return (
-      this.options.height - this.options.margin.top - this.options.margin.bottom
+      this._options.height - this._options.margin.top - this._options.margin.bottom
     );
   }
 }

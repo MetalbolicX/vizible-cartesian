@@ -48,8 +48,8 @@ export class ScatterChart extends CartesianPlane {
     pointColor: string = "steelblue",
     radii: number = 4
   ): void {
-    const { key: xKey } = this.xSerie;
-    const data = this.dataset.map((d) => ({
+    const { key: xKey } = this._xSerie;
+    const data = this._dataset.map((d) => ({
       x: d[xKey],
       y: d[yKey],
       color: pointColor,
@@ -70,8 +70,8 @@ export class ScatterChart extends CartesianPlane {
       .data(data)
       .join("circle")
       .attr("class", `scatter-point ${yKey}`)
-      .attr("cx", ({ x }) => this.xScale(x as number))
-      .attr("cy", ({ y }) => this.yScale(y as number))
+      .attr("cx", ({ x }) => this._xScale(x as number))
+      .attr("cy", ({ y }) => this._yScale(y as number))
       .attr("r", ({ radius }) => radius)
       .attr("fill", ({ color }) => color);
   }
@@ -87,12 +87,12 @@ export class ScatterChart extends CartesianPlane {
   public renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    for (const { key, color, radii } of this.ySeries) {
+    for (const { key, color, radii } of this._ySeries) {
       this.#renderSerie(selection, key, color, radii);
     }
   }
 
-  protected override get ySeries() {
+  protected override get _ySeries() {
     return [...this.#ySeries];
   }
 }

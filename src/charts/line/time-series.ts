@@ -49,8 +49,8 @@ export class TimeChart extends LineChart {
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
-    const { height, margin, tickSize, tickPadding } = this.options;
-    const axis = axisBottom(this.xScale)
+    const { height, margin, tickSize, tickPadding } = this._options;
+    const axis = axisBottom(this._xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
 

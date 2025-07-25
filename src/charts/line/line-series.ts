@@ -49,16 +49,16 @@ export class LineChart extends CartesianPlane {
     yKey: string,
     lineColor: string = "steelblue"
   ): void {
-    const { key: xKey } = this.xSerie;
-    const data = this.dataset.map((d) => ({
+    const { key: xKey } = this._xSerie;
+    const data = this._dataset.map((d) => ({
       x: d[xKey],
       y: Number(d[yKey]),
     }));
     const linePath = line<Record<string, unknown>>()
-      .x(({ x }) => this.xScale(x as number | Date))
-      .y(({ y }) => this.yScale(y as number));
+      .x(({ x }) => this._xScale(x as number | Date))
+      .y(({ y }) => this._yScale(y as number));
 
-    this.options.isCurved && linePath.curve(curveBasis);
+    this._options.isCurved && linePath.curve(curveBasis);
 
     selection
       .selectAll<SVGGElement, unknown>(".series")
@@ -72,7 +72,7 @@ export class LineChart extends CartesianPlane {
       .attr("d", linePath)
       .attr("fill", "none")
       .attr("stroke", lineColor)
-      .attr("stroke-width", this.options.lineWidth);
+      .attr("stroke-width", this._options.lineWidth);
   }
 
   /**
@@ -86,7 +86,7 @@ export class LineChart extends CartesianPlane {
   public renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    for (const { key, color } of this.ySeries) {
+    for (const { key, color } of this._ySeries) {
       this.#renderSerie(selection, key, color);
     }
   }

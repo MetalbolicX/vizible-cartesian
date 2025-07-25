@@ -55,8 +55,8 @@ export class CustomScatterChart extends CartesianPlane {
     icon: string = "",
     size: number = 1
   ): void {
-    const { key: xKey } = this.xSerie;
-    const data = this.dataset.map((d) => ({
+    const { key: xKey } = this._xSerie;
+    const data = this._dataset.map((d) => ({
       x: d[xKey],
       y: d[yKey],
       color: pointColor,
@@ -89,7 +89,7 @@ export class CustomScatterChart extends CartesianPlane {
       .attr(
         "transform",
         ({ x, y }) =>
-          `translate(${this.xScale(x as number)},${this.yScale(
+          `translate(${this._xScale(x as number)},${this._yScale(
             y as number
           )}) scale(${size})`
       );
@@ -107,13 +107,13 @@ export class CustomScatterChart extends CartesianPlane {
   public renderSeries(
     selection: Selection<SVGSVGElement, unknown, null, undefined>
   ): void {
-    for (const { key, color, icon, size } of this.ySeries) {
+    for (const { key, color, icon, size } of this._ySeries) {
       const validatedSize = typeof size === "number" && size > 0 ? size : 1;
       this.#renderSerie(selection, key, color ?? "steelblue", icon ?? "", validatedSize);
     }
   }
 
-  protected override get ySeries() {
+  protected override get _ySeries() {
     return [...this.#ySeries];
   }
 }
