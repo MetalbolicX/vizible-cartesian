@@ -113,7 +113,7 @@ export class CustomScatterChart extends CartesianPlane {
     }
   }
 
-  public override get ySeries() {
+  protected override get ySeries() {
     return [...this.#ySeries];
   }
 }

@@ -284,37 +284,37 @@ export abstract class CartesianPlane {
     renderLegend(selection, this.ySeries, x, y);
   }
 
-  public get yScale() {
+  protected get yScale() {
     return this.#yScale;
   }
 
-  public get options() {
+  protected get options() {
     return this.#options;
   }
 
-  public get xScale() {
+  protected get xScale() {
     return this.#xScale;
   }
 
-  public get dataset() {
+  protected get dataset() {
     return [...this.#dataset];
   }
 
-  public get xSerie() {
+  protected get xSerie() {
     return this.#xSerie;
   }
 
-  public get ySeries() {
+  protected get ySeries() {
     return [...this.#ySeries];
   }
 
-  public get innerWidth() {
+  protected get innerWidth() {
     return (
       this.options.width - this.options.margin.left - this.options.margin.right
     );
   }
 
-  public get innerHeight() {
+  protected get innerHeight() {
     return (
       this.options.height - this.options.margin.top - this.options.margin.bottom
     );
