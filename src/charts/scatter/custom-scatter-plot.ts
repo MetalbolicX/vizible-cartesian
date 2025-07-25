@@ -12,6 +12,22 @@ import { type Selection } from "d3";
 export class CustomScatterChart extends CartesianPlane {
   #ySeries: CustomerScatterChartOptions[];
 
+  /**
+   * Constructs a CustomScatterChart instance.
+   * @param dataset - The data to be visualized in the scatter chart.
+   * @param seriesConfig - Configuration for the x and y series.
+   * @param options - Optional chart configuration options.
+   * @example
+   * ```ts
+   * const chart = new CustomScatterChart(data, {
+   *   xSerie: { key: "date", type: "date" },
+   *   ySeries: [
+   *     { key: "sales", color: "#1f77b4" },
+   *     { key: "profit", color: "#ff7f0e", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.5 },
+   *   ],
+   * });
+   * ```
+   */
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
@@ -24,6 +40,14 @@ export class CustomScatterChart extends CartesianPlane {
     this.#ySeries = [...seriesConfig.ySeries];
   }
 
+  /**
+   * Draws a scatter plot for a given y series key.
+   * @param selection - The D3 selection to append the scatter points to.
+   * @param yKey - The key of the y series to draw.
+   * @param [pointColor="steelblue"] - The color of the points.
+   * @param [icon=""] - The SVG path for the icon to use for each point.
+   * @param [size=1] - The size scaling factor for the icon.
+   */
   #drawSerie(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,

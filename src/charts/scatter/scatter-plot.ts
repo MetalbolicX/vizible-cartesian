@@ -8,6 +8,21 @@ import { type Selection } from "d3";
 export class ScatterChart extends CartesianPlane {
   #ySeries: ScatterChartOptions[];
 
+  /**
+   * Constructs a ScatterChart instance.
+   * @param dataset - The data to be visualized in the scatter chart.
+   * @param seriesConfig - Configuration for the x and y series.
+   * @param options - Optional chart configuration options.
+   * @example
+   * ```ts
+   * const chart = new ScatterChart(data, {
+   *   xSerie: { key: "date", type: "date" },
+   *   ySeries: [
+   *     { key: "sales", color: "#1f77b4", radii: 5 },
+   *     { key: "profit", color: "#ff7f0e", radii: 10 },
+   *   ],
+   * });
+   */
   constructor(
     dataset: Record<string, unknown>[],
     seriesConfig: {
@@ -26,10 +41,6 @@ export class ScatterChart extends CartesianPlane {
    * @param yKey - The key of the y series to draw.
    * @param [pointColor="steelblue"] - The color of the points.
    * @param [radii=4] - The radius of the points.
-   * @example
-   * ```ts
-   * chart.drawScatter(d3.select("svg"), "sales", "#1f77b4");
-   * ```
    */
   #drawSerie(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
@@ -67,11 +78,10 @@ export class ScatterChart extends CartesianPlane {
 
   /**
    * Draws all series in the scatter chart.
-   * @param selection - The D3 selection to append the scatter points to.
-   * @param [radii=4] - The radius of the points.
+   * @param selection - The D3 selection to draw the series on.
    * @example
    * ```ts
-   * chart.drawSeries(d3.select("svg"), 4);
+   * chart.drawSeries(d3.select("svg"));
    * ```
    */
   public drawSeries(
