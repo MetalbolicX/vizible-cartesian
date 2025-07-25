@@ -4,11 +4,11 @@
   <img src="./docs/_media/logo.svg" alt="vizible Logo" width="200" height="200" />
 </div>
 
-> `vizible-cartesian` Reduce time to build common data visualizations with d3.js.
+> `vizible-cartesian` Reduce time to build common data visualizations with D3.js.
 
 **Supported Versions:**
 
-![d3.js](https://img.shields.io/badge/d3.js->=7.x.x-blue)
+![D3.js](https://img.shields.io/badge/D3.js->=7.x.x-blue)
 
 ## Features
 
