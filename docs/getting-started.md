@@ -65,31 +65,31 @@ To install the `vizible-cartesian` web component using any JavaScript package ma
 #### **npm**
 
 ```sh
-npm i vizible-cartesian
+npm i d3 vizible-cartesian
 ```
 
 #### **pnpm**
 
 ```sh
-pnpm add vizible-cartesian
+pnpm add d3 vizible-cartesian
 ```
 
 #### **yarn**
 
 ```sh
-yarn add vizible-cartesian
+yarn add d3 vizible-cartesian
 ```
 
 #### **bun**
 
 ```sh
-bun add vizible-cartesian
+bun add d3 vizible-cartesian
 ```
 
 #### **deno**
 
 ```sh
-deno add --npm vizible-cartesian
+deno add --npm d3 vizible-cartesian
 ```
 
 <!-- tabs:end -->
