@@ -1,7 +1,7 @@
 # vizible-cartesian
 
 <div align="center">
-  <img src="./images/logo.png" alt="vizible Logo" width="200" height="200" />
+  <img src="./docs/_media/logo.svg" alt="vizible Logo" width="200" height="200" />
 </div>
 
 > `vizible-cartesian` Reduce time to build data visualizations with d3.js.
@@ -37,7 +37,7 @@ npm i vizible-cartesian
 
 <div align="center">
 
-  [![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://metalbolicx.github.io/vizible/)
+  [![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://metalbolicx.github.io/vizible-cartesian/)
 
 </div>
 

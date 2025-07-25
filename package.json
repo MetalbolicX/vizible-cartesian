@@ -23,6 +23,7 @@
     "typescript"
   ],
   "scripts": {
+    "docs": "docsify serve docs",
     "start": "echo \"Hello world\"",
     "dev": "vite",
     "build": "tsdown"
@@ -52,5 +53,8 @@
   },
   "peerDependencies": {
     "d3": "^7.9.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
