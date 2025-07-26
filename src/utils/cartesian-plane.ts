@@ -267,21 +267,129 @@ export abstract class CartesianPlane {
   ): void;
 
   /**
-   * Renders the legend on the chart.
+   * Renders the legend for the chart.
    * @param selection - The D3 selection to append the legend to.
-   * @param [x=20] - The x position of the legend.
-   * @param [y=20] - The y position of the legend.
+   * @param [legendItemHeight=20] - The height of each legend item.
+   * @param [x=innerWidth] - The x position of the legend. By default, it is positioned at the right edge of the chart.
+   * @param [y=margin.top] - The y position of the legend. By default, it is positioned at the top edge of the chart.
    * @example
    * ```ts
-   * chart.renderLegend(d3.select("svg"), 20, 20);
+   * chart.renderLegend(d3.select("svg"), 20, 20, 20);
    * ```
    */
   public renderLegend(
     selection: Selection<SVGSVGElement, unknown, null, undefined>,
-    x: number = 20,
-    y: number = 20
+    legendItemHeight: number = 20,
+    { x = this._innerWidth, y = this._options.margin.top } = {}
   ): void {
-    renderLegend(selection, this._ySeries, x, y);
+    const legendGroup = selection
+      .selectAll<SVGGElement, unknown>(".legend")
+      .data([null])
+      .join("g")
+      .attr("class", "legend")
+      .attr("transform", `translate(${x},${y})`);
+
+    legendGroup
+      .selectAll<SVGGElement, SeriesOptions>("g")
+      .data(this._ySeries)
+      .join("g")
+      .attr("class", "legend-item")
+      .attr("transform", (_, i) => `translate(0,${i * legendItemHeight})`)
+      .call((group) => {
+        group
+          .selectAll<SVGRectElement, SeriesOptions>("rect")
+          .data((d) => [d])
+          .join("rect")
+          .attr("width", 16)
+          .attr("height", 16)
+          .attr("fill", ({ color }) => color ?? "steelblue");
+
+        group
+          .selectAll<SVGTextElement, SeriesOptions>("text")
+          .data((d) => [d])
+          .join("text")
+          .attr("x", 22)
+          .attr("y", 12)
+          .text(({ name, key }) => name ?? key)
+          .attr("alignment-baseline", "middle");
+      });
+  }
+
+  /**
+   * Renders the chart title.
+   * @param selection - The D3 selection to append the title to.
+   * @param title - The title text to display.
+   * @example
+   * ```ts
+   * chart.renderChartTitle(d3.select("svg"), "Sales and Cost Over Time");
+   * ```
+   */
+  public renderChartTitle(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    title: string
+  ): void {
+    const { margin } = this._options;
+    selection
+      .selectAll<SVGTextElement, unknown>(".chart-title")
+      .data([null])
+      .join("text")
+      .attr("class", "chart-title")
+      .attr("x", this._innerWidth / 2 + margin.left)
+      .attr("y", margin.top / 2)
+      .attr("dy", "0.5em")
+      .text(title);
+  }
+
+  /**
+   * Renders the y-axis label for the chart.
+   * @param selection - The D3 selection to append the y-axis label to.
+   * @param label - The label text to display.
+   * @link [Source to position y label](https://datatricks.co.uk/animated-d3-js-scatter-plot-in-r)
+   * @example
+   * ```ts
+   * chart.renderYAxisLabel(d3.select("svg"), "Sales");
+   * ```
+   */
+  public renderYAxisLabel(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    label: string,
+  ): void {
+    const { margin } = this._options;
+    selection
+      .selectAll<SVGTextElement, unknown>(".y.axis-label")
+      .data([null])
+      .join("text")
+      .attr("class", "y axis-label")
+      .attr("x", -margin.top)
+      .attr("y", margin.left)
+      .attr("transform", `rotate(-90, ${margin.left}, ${margin.top})`)
+      .attr("dy", "1.2em")
+      .text(label);
+  }
+
+  /**
+   * Renders the x-axis label for the chart.
+   * @param selection - The D3 selection to append the x-axis label to.
+   * @param label - The label text to display.
+   * @example
+   * ```ts
+   * chart.renderXAxisLabel(d3.select("svg"), "Date");
+   * ```
+   */
+  public renderXAxisLabel(
+    selection: Selection<SVGSVGElement, unknown, null, undefined>,
+    label: string,
+  ): void {
+    const { margin } = this._options;
+    selection
+      .selectAll<SVGTextElement, unknown>(".x.axis-label")
+      .data([null])
+      .join("text")
+      .attr("class", "x axis-label")
+      .attr("x", this._innerWidth / 2 + margin.left)
+      .attr("y", this._innerHeight + margin.top)
+      .attr("dy", "-0.5em")
+      .text(label);
   }
 
   protected get _yScale() {
@@ -310,13 +418,17 @@ export abstract class CartesianPlane {
 
   protected get _innerWidth() {
     return (
-      this._options.width - this._options.margin.left - this._options.margin.right
+      this._options.width -
+      this._options.margin.left -
+      this._options.margin.right
     );
   }
 
   protected get _innerHeight() {
     return (
-      this._options.height - this._options.margin.top - this._options.margin.bottom
+      this._options.height -
+      this._options.margin.top -
+      this._options.margin.bottom
     );
   }
 }
