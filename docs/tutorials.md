@@ -25,7 +25,7 @@
 
 ```ts
 import { select } from "d3";
-import { TimeChart, renderChartTitle, renderYAxisLabel, renderXAxisLabel } from "../src/index.ts";
+import { TimeChart } from "../src/index.ts";
 
 const data = [
   { date: new Date("2020-01-01"), sales: 10, cost: 5 },
