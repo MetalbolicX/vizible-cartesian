@@ -25,7 +25,7 @@
 
 ```ts
 import { select } from "d3";
-import { TimeChart, renderChartTitle, renderYAxisLabel, renderXAxisLabel } from "vizible-cartesian";
+import { TimeChart, renderChartTitle, renderYAxisLabel, renderXAxisLabel } from "../src/index.ts";
 
 const data = [
   { date: new Date("2020-01-01"), sales: 10, cost: 5 },
@@ -48,28 +48,11 @@ const chart = new TimeChart(data, {
 chart.renderXAxis(selection, "%d %b");
 chart.renderYAxis(selection);
 chart.renderSeries(selection);
-chart.renderLegend(selection, 600, 25);
+chart.renderLegend(selection);
+chart.renderChartTitle(selection, "Sales and Cost Over Time");
+chart.renderYAxisLabel(selection, "Sales");
+chart.renderXAxisLabel(selection, "Date");
 
-renderChartTitle(selection, "Sales and Cost Over Time", {
-  left: 60,
-  right: 50,
-  top: 20,
-  bottom: 20
-});
-
-renderYAxisLabel(selection, "Sales", {
-  left: 60,
-  right: 50,
-  top: 20,
-  bottom: 20
-});
-
-renderXAxisLabel(selection, "Date", {
-  left: 60,
-  right: 50,
-  top: 20,
-  bottom: 20
-});
 ```
 
 This code creates a time series chart. It sets up the data, initializes the chart, and renders the axes, series, legend, and labels.
