@@ -8,16 +8,8 @@ import type {
   ScatterChartOptions,
   SeriesOptions,
 } from "./types.ts";
-import {
-  renderXAxisLabel,
-  renderYAxisLabel,
-  renderChartTitle,
-} from "./utils/helpers.ts";
 
 export {
-  renderChartTitle,
-  renderXAxisLabel,
-  renderYAxisLabel,
   CustomScatterChart,
   LineChart,
   ScatterChart,

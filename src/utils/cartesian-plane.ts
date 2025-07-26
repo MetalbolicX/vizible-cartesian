@@ -10,7 +10,6 @@ import {
   type NumberValue,
 } from "d3";
 import type { SeriesOptions, LineChartOptions } from "../types.ts";
-import { renderLegend } from "./helpers.ts";
 
 /**
  * Gets the x-axis domain from the dataset.
