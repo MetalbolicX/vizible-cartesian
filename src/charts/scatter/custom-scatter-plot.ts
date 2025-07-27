@@ -20,10 +20,10 @@ export class CustomScatterChart extends CartesianPlane {
    * @example
    * ```ts
    * const chart = new CustomScatterChart(data, {
-   *   xSerie: { key: "date", type: "date" },
+   *   xSerie: { field: "date" },
    *   ySeries: [
-   *     { key: "sales", color: "#1f77b4" },
-   *     { key: "profit", color: "#ff7f0e", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.5 },
+   *     { field: "sales", color: "#1f77b4" },
+   *     { field: "profit", color: "#ff7f0e", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.5 },
    *   ],
    * });
    * ```
@@ -54,9 +54,9 @@ export class CustomScatterChart extends CartesianPlane {
     icon: string = "",
     size: number = 1
   ): void {
-    const { key: xKey } = this._xSerie;
+    const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xKey],
+      x: d[xField],
       y: d[yKey],
       color: pointColor,
       radius:
@@ -103,9 +103,9 @@ export class CustomScatterChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { key, color, icon, size } of this._ySeries) {
+    for (const { field, color, icon, size } of this._ySeries) {
       const validatedSize = typeof size === "number" && size > 0 ? size : 1;
-      this.#renderSerie(key, color ?? "steelblue", icon ?? "", validatedSize);
+      this.#renderSerie(field, color ?? "steelblue", icon ?? "", validatedSize);
     }
   }
 

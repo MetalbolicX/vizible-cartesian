@@ -17,10 +17,10 @@ export class LineChart extends CartesianPlane {
    * ```ts
    * const svg = d3.select("svg");
    * const chart = new LineChart(svg, data, {
-   *   xSerie: { key: "x" },
+   *   xSerie: { field: "x" },
    *   ySeries: [
-   *     { key: "y1", color: "#1f77b4" },
-   *     { key: "y2", color: "#ff7f0e" }
+   *     { field: "y1", color: "#1f77b4" },
+   *     { field: "y2", color: "#ff7f0e" }
    *   ]
    * });
    * ```
@@ -29,7 +29,7 @@ export class LineChart extends CartesianPlane {
     svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
-      xSerie: { key: string };
+      xSerie: SeriesOptions;
       ySeries: SeriesOptions[];
     },
     options: Partial<LineChartOptions> = {}
@@ -46,9 +46,9 @@ export class LineChart extends CartesianPlane {
     yKey: string,
     lineColor: string = "steelblue"
   ): void {
-    const { key: xKey } = this._xSerie;
+    const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xKey],
+      x: d[xField],
       y: Number(d[yKey]),
     }));
     const linePath = line<Record<string, unknown>>()
@@ -80,8 +80,8 @@ export class LineChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { key, color } of this._ySeries) {
-      this.#renderSerie(key, color);
+    for (const { field, color } of this._ySeries) {
+      this.#renderSerie(field, color);
     }
   }
 }

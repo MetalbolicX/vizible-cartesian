@@ -16,10 +16,10 @@ export class TimeChart extends LineChart {
    * @example
    * ```ts
    * const chart = new TimeChart(data, {
-   *   xSerie: { key: "date" },
+   *   xSerie: { field: "date" },
    *   ySeries: [
-   *     { key: "sales", color: "#1f77b4" },
-   *     { key: "cost", color: "#ff7f0e" }
+   *     { field: "sales", color: "#1f77b4" },
+   *     { field: "cost", color: "#ff7f0e" }
    *   ]
    * });
    * // Use chart.drawLine, chart.drawLines, chart.drawXAxis, and chart.drawYAxis to render the chart.

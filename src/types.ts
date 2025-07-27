@@ -27,8 +27,8 @@ export interface LineChartOptions extends ChartOptions {
  * @property color - Optional color for the series (CSS color string).
  */
 export interface SeriesOptions {
-  key: string;
-  name?: string;
+  field: string;
+  label?: string;
   color?: string;
 }
 

@@ -86,10 +86,10 @@ export abstract class CartesianPlane {
    * ```ts
    * const svg = d3.select("svg");
    * const chart = new TimeChart(svg, data, {
-   *   xSerie: { key: "date" },
+   *   xSerie: { field: "date" },
    *   ySeries: [
-   *     { key: "sales", color: "#1f77b4" },
-   *     { key: "cost", color: "#ff7f0e" }
+   *     { field: "sales", color: "#1f77b4" },
+   *     { field: "cost", color: "#ff7f0e" }
    *   ]
    * });
    * ```
@@ -114,7 +114,7 @@ export abstract class CartesianPlane {
       throw new Error("Dataset must be a non-empty array.");
     }
     if (
-      !seriesConfig?.xSerie?.key ||
+      !seriesConfig?.xSerie?.field ||
       !(seriesConfig?.ySeries?.length && Array.isArray(seriesConfig.ySeries))
     ) {
       throw new Error(
@@ -132,10 +132,10 @@ export abstract class CartesianPlane {
       tickSize,
       tickPadding,
     } as LineChartOptions;
-    const { key: xKey } = this.#xSerie;
+    const { field: xField } = this.#xSerie;
     const { width: w, height: h } = this._size;
     const m = margin;
-    const [xMin, xMax] = getXDomain(dataset, xKey);
+    const [xMin, xMax] = getXDomain(dataset, xField);
     if (xMin instanceof Date && xMax instanceof Date) {
       this.#xScale = scaleTime()
         .domain([xMin, xMax])
@@ -307,7 +307,7 @@ export abstract class CartesianPlane {
           .join("text")
           .attr("x", 22)
           .attr("y", 12)
-          .text(({ name, key }) => name ?? key)
+          .text(({ label, field }) => label ?? field)
           .attr("alignment-baseline", "middle");
       });
   }

@@ -16,10 +16,10 @@ export class ScatterChart extends CartesianPlane {
    * @example
    * ```ts
    * const chart = new ScatterChart(data, {
-   *   xSerie: { key: "date", type: "date" },
+   *   xSerie: { field: "date" },
    *   ySeries: [
-   *     { key: "sales", color: "#1f77b4", radii: 5 },
-   *     { key: "profit", color: "#ff7f0e", radii: 10 },
+   *     { field: "sales", color: "#1f77b4", radii: 5 },
+   *     { field: "profit", color: "#ff7f0e", radii: 10 },
    *   ],
    * });
    */
@@ -47,9 +47,9 @@ export class ScatterChart extends CartesianPlane {
     pointColor: string = "steelblue",
     radii: number = 4
   ): void {
-    const { key: xKey } = this._xSerie;
+    const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xKey],
+      x: d[xField],
       y: d[yKey],
       color: pointColor,
       radius:
@@ -83,8 +83,8 @@ export class ScatterChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { key, color, radii } of this._ySeries) {
-      this.#renderSerie(key, color, radii);
+    for (const { field, color, radii } of this._ySeries) {
+      this.#renderSerie(field, color, radii);
     }
   }
 
