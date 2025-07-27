@@ -26,6 +26,7 @@ export class TimeChart extends LineChart {
    * ```
    */
   constructor(
+    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: SeriesOptions;
@@ -33,7 +34,7 @@ export class TimeChart extends LineChart {
     },
     options: Partial<LineChartOptions> = {}
   ) {
-    super(dataset, seriesConfig, options);
+    super(svgSelection, dataset, seriesConfig, options);
   }
 
   /**
@@ -46,10 +47,10 @@ export class TimeChart extends LineChart {
    * ```
    */
   public override renderXAxis(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
-    const { height, margin, tickSize, tickPadding } = this._options;
+    const { margin, tickSize, tickPadding } = this._options;
+    const { height: h } = this._size;
     const axis = axisBottom(this._xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
@@ -63,12 +64,12 @@ export class TimeChart extends LineChart {
       });
     }
 
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".x.axis")
       .data([null])
       .join("g")
       .attr("class", "x axis")
-      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .attr("transform", `translate(0, ${h - margin.bottom})`)
       .call(axis);
   }
 }

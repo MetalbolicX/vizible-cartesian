@@ -68,6 +68,7 @@ const getYDomain = (dataset, series) => {
 // };
 
 export abstract class CartesianPlane {
+  #svgSelection: Selection<SVGSVGElement, unknown, null, undefined>;
   #xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
   #yScale: ScaleLinear<number, number>;
   #options: LineChartOptions;
@@ -77,12 +78,14 @@ export abstract class CartesianPlane {
 
   /**
    * Creates an instance of CartesianPlane.
+   * @param svgSelection - The D3 selection of the SVG element.
    * @param dataset - The data array for the chart.
    * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.
    * @example
    * ```ts
-   * const chart = new TimeChart(data, {
+   * const svg = d3.select("svg");
+   * const chart = new TimeChart(svg, data, {
    *   xSerie: { key: "date" },
    *   ySeries: [
    *     { key: "sales", color: "#1f77b4" },
@@ -92,6 +95,7 @@ export abstract class CartesianPlane {
    * ```
    */
   constructor(
+    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: SeriesOptions;
@@ -100,8 +104,6 @@ export abstract class CartesianPlane {
     options: Partial<LineChartOptions> = {}
   ) {
     const {
-      width = 800,
-      height = 600,
       margin = { top: 30, right: 30, bottom: 30, left: 30 },
       lineWidth = 1.5,
       isCurved = false,
@@ -119,21 +121,21 @@ export abstract class CartesianPlane {
         "seriesConfig must have xSerie and a non-empty ySeries array."
       );
     }
+    this.#svgSelection = svgSelection;
     this.#dataset = [...dataset];
     this.#xSerie = { ...seriesConfig.xSerie };
     this.#ySeries = [...seriesConfig.ySeries];
     this.#options = {
-      width,
-      height,
       margin,
       lineWidth,
       isCurved,
       tickSize,
       tickPadding,
-    };
+    } as LineChartOptions;
     const { key: xKey } = this.#xSerie;
+    const { width: w, height: h } = this._size;
+    const m = margin;
     const [xMin, xMax] = getXDomain(dataset, xKey);
-    const { margin: m, width: w, height: h } = this.#options;
     if (xMin instanceof Date && xMax instanceof Date) {
       this.#xScale = scaleTime()
         .domain([xMin, xMax])
@@ -162,10 +164,10 @@ export abstract class CartesianPlane {
    * ```
    */
   public renderXAxis(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     formatCode?: string
   ): void {
-    const { height, margin, tickSize, tickPadding } = this._options;
+    const { margin, tickSize, tickPadding } = this._options;
+    const { height: h } = this._size;
     const axis = axisBottom(this._xScale)
       .tickSize(tickSize)
       .tickPadding(tickPadding);
@@ -174,12 +176,12 @@ export abstract class CartesianPlane {
       axis.tickFormat(format(formatCode));
     }
 
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".x.axis")
       .data([null])
       .join("g")
       .attr("class", "x axis")
-      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .attr("transform", `translate(0, ${h - margin.bottom})`)
       .call(axis);
   }
 
@@ -189,7 +191,6 @@ export abstract class CartesianPlane {
    * @param numberFormat - Optional D3 format string (e.g., ".2f").
    */
   public renderYAxis(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     numberFormat?: string
   ): void {
     const { margin, tickSize, tickPadding } = this._options;
@@ -206,7 +207,7 @@ export abstract class CartesianPlane {
       });
     }
 
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".y.axis")
       .data([null])
       .join("g")
@@ -223,11 +224,9 @@ export abstract class CartesianPlane {
    * chart.renderYGridLines(d3.select("svg"));
    * ```
    */
-  public renderYGridLines(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void {
+  public renderYGridLines(): void {
     const [xMin, xMax] = this._xScale.domain();
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".y.grid")
       .data(this._yScale.ticks())
       .join("line")
@@ -246,11 +245,9 @@ export abstract class CartesianPlane {
    * chart.renderXGridLines(d3.select("svg"));
    * ```
    */
-  public renderXGridLines(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void {
+  public renderXGridLines(): void {
     const [yMin, yMax] = this._yScale.domain();
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".x.grid")
       .data(this._xScale.ticks() as NumberValue[])
       .join("line")
@@ -261,9 +258,7 @@ export abstract class CartesianPlane {
       .attr("y2", this._yScale(yMax));
   }
 
-  public abstract renderSeries(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void;
+  public abstract renderSeries(): void;
 
   /**
    * Renders the legend for the chart.
@@ -277,16 +272,19 @@ export abstract class CartesianPlane {
    * ```
    */
   public renderLegend(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     legendItemHeight: number = 20,
-    { x = this._innerWidth, y = this._options.margin.top } = {}
+    { x, y }: { x?: number; y?: number } = {}
   ): void {
-    const legendGroup = selection
+    const m = this._options.margin;
+    const innerWidth = this._innerWidth;
+    const legendX = x ?? innerWidth;
+    const legendY = y ?? m.top;
+    const legendGroup = this._svgSelection
       .selectAll<SVGGElement, unknown>(".legend")
       .data([null])
       .join("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${x},${y})`);
+      .attr("transform", `translate(${legendX},${legendY})`);
 
     legendGroup
       .selectAll<SVGGElement, SeriesOptions>("g")
@@ -324,16 +322,16 @@ export abstract class CartesianPlane {
    * ```
    */
   public renderChartTitle(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     title: string
   ): void {
     const { margin } = this._options;
-    selection
+    const innerWidth = this._innerWidth;
+    this._svgSelection
       .selectAll<SVGTextElement, unknown>(".chart-title")
       .data([null])
       .join("text")
       .attr("class", "chart-title")
-      .attr("x", this._innerWidth / 2 + margin.left)
+      .attr("x", innerWidth / 2 + margin.left)
       .attr("y", margin.top / 2)
       .attr("dy", "0.5em")
       .text(title);
@@ -350,11 +348,10 @@ export abstract class CartesianPlane {
    * ```
    */
   public renderYAxisLabel(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     label: string,
   ): void {
     const { margin } = this._options;
-    selection
+    this._svgSelection
       .selectAll<SVGTextElement, unknown>(".y.axis-label")
       .data([null])
       .join("text")
@@ -376,17 +373,18 @@ export abstract class CartesianPlane {
    * ```
    */
   public renderXAxisLabel(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     label: string,
   ): void {
     const { margin } = this._options;
-    selection
+    const innerWidth = this._innerWidth;
+    const innerHeight = this._innerHeight;
+    this._svgSelection
       .selectAll<SVGTextElement, unknown>(".x.axis-label")
       .data([null])
       .join("text")
       .attr("class", "x axis-label")
-      .attr("x", this._innerWidth / 2 + margin.left)
-      .attr("y", this._innerHeight + margin.top)
+      .attr("x", innerWidth / 2 + margin.left)
+      .attr("y", innerHeight + margin.top)
       .attr("dy", "-0.5em")
       .text(label);
   }
@@ -416,18 +414,32 @@ export abstract class CartesianPlane {
   }
 
   protected get _innerWidth() {
-    return (
-      this._options.width -
-      this._options.margin.left -
-      this._options.margin.right
-    );
+    // const svgNode = this.#svgSelection.node();
+    // if (!svgNode) return 0;
+    // const rect = svgNode.getBoundingClientRect();
+    // return rect.width - this._options.margin.left - this._options.margin.right;
+    const { width } = this._size;
+    const { margin } = this._options;
+    return width - margin.left - margin.right;
   }
 
   protected get _innerHeight() {
-    return (
-      this._options.height -
-      this._options.margin.top -
-      this._options.margin.bottom
-    );
+    const { height } = this._size;
+    const { margin } = this._options;
+    return height - margin.top - margin.bottom;
+    // const rect = svgNode.getBoundingClientRect();
+    // return rect.height - this._options.margin.top - this._options.margin.bottom;
+  }
+
+  protected get _svgSelection() {
+    return this.#svgSelection;
+  }
+
+  protected get _size() {
+    const svgNode = this.#svgSelection.node();
+    if (!svgNode) return { width: 0, height: 0 };
+    const rect = svgNode.getBoundingClientRect();
+    const { width, height } = rect;
+    return { width, height };
   }
 }

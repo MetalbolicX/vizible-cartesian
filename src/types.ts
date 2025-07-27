@@ -1,14 +1,10 @@
 /**
  * Chart configuration options for all chart types.
- * @property width - The width of the chart in pixels.
- * @property height - The height of the chart in pixels.
  * @property margin - The margin object specifying top, right, bottom, left in pixels.
  * @property tickSize - The size of axis ticks in pixels.
  * @property tickPadding - The padding between ticks and labels in pixels.
  */
 export interface ChartOptions {
-  width: number;
-  height: number;
   margin: { top: number; right: number; bottom: number; left: number };
   tickSize: number;
   tickPadding: number;

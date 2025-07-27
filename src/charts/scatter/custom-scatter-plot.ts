@@ -29,6 +29,7 @@ export class CustomScatterChart extends CartesianPlane {
    * ```
    */
   constructor(
+    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: SeriesOptions;
@@ -36,20 +37,18 @@ export class CustomScatterChart extends CartesianPlane {
     },
     options: Partial<ChartOptions> = {}
   ) {
-    super(dataset, seriesConfig, options);
+    super(svgSelection, dataset, seriesConfig, options);
     this.#ySeries = [...seriesConfig.ySeries];
   }
 
   /**
    * Renders a scatter plot for a given y series key.
-   * @param selection - The D3 selection to append the scatter points to.
    * @param yKey - The key of the y series to draw.
    * @param [pointColor="steelblue"] - The color of the points.
    * @param [icon=""] - The SVG path for the icon to use for each point.
    * @param [size=1] - The size scaling factor for the icon.
    */
   #renderSerie(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     pointColor: string = "steelblue",
     icon: string = "",
@@ -64,7 +63,7 @@ export class CustomScatterChart extends CartesianPlane {
         typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
       icon: d["icon"] ?? icon,
     }));
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
       .data([null])
       .join("g")
@@ -97,19 +96,16 @@ export class CustomScatterChart extends CartesianPlane {
 
   /**
    * Renders the series on the chart.
-   * @param selection - The D3 selection to draw the series on.
    * Renders all series in the scatter chart.
    * @example
    * ```ts
-   * chart.renderSeries(d3.select("svg"));
+   * chart.renderSeries();
    * ```
    */
-  public renderSeries(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void {
+  public renderSeries(): void {
     for (const { key, color, icon, size } of this._ySeries) {
       const validatedSize = typeof size === "number" && size > 0 ? size : 1;
-      this.#renderSerie(selection, key, color ?? "steelblue", icon ?? "", validatedSize);
+      this.#renderSerie(key, color ?? "steelblue", icon ?? "", validatedSize);
     }
   }
 

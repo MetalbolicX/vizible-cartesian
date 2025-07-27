@@ -2,28 +2,31 @@ import { line, curveBasis, type Selection } from "d3";
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 
+
 /**
  * A class for creating a line chart with numerical or date x-axis using D3.js.
  */
 export class LineChart extends CartesianPlane {
   /**
    * Creates an instance of LineChart.
+   * @param svgSelection - The D3 selection of the SVG element.
    * @param dataset - The data array for the chart.
    * @param seriesConfig - Object with xSerie and ySeries arrays.
    * @param options - Configuration options for the chart.
    * @example
    * ```ts
-   * const chart = new LineChart(data, {
+   * const svg = d3.select("svg");
+   * const chart = new LineChart(svg, data, {
    *   xSerie: { key: "x" },
    *   ySeries: [
    *     { key: "y1", color: "#1f77b4" },
    *     { key: "y2", color: "#ff7f0e" }
    *   ]
    * });
-   * // Use chart.drawLine, chart.drawLines, chart.drawXAxis, and chart.drawYAxis to render the chart.
    * ```
    */
   constructor(
+    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: { key: string };
@@ -31,21 +34,15 @@ export class LineChart extends CartesianPlane {
     },
     options: Partial<LineChartOptions> = {}
   ) {
-    super(dataset, seriesConfig, options);
+    super(svgSelection, dataset, seriesConfig, options);
   }
 
   /**
    * Draws a single line for a given y series key.
-   * @param selection - The D3 selection to append the line to.
    * @param yKey - The key of the y series to draw.
    * @param [lineColor="steelblue"] - The color of the line.
-   * @example
-   * ```ts
-   * chart.renderSerie(d3.select("svg"), "sales", "#1f77b4");
-   * ```
    */
   #renderSerie(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     lineColor: string = "steelblue"
   ): void {
@@ -60,7 +57,7 @@ export class LineChart extends CartesianPlane {
 
     this._options.isCurved && linePath.curve(curveBasis);
 
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
       .data([null])
       .join("g")
@@ -77,17 +74,14 @@ export class LineChart extends CartesianPlane {
 
   /**
    * Renders all y series as lines on the chart.
-   * @param selection - The D3 selection to append the lines to.
    * @example
    * ```ts
-   * chart.renderSeries(d3.select("svg"));
+   * chart.renderSeries();
    * ```
    */
-  public renderSeries(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void {
+  public renderSeries(): void {
     for (const { key, color } of this._ySeries) {
-      this.#renderSerie(selection, key, color);
+      this.#renderSerie(key, color);
     }
   }
 }

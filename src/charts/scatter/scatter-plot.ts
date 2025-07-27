@@ -24,6 +24,7 @@ export class ScatterChart extends CartesianPlane {
    * });
    */
   constructor(
+    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
     dataset: Record<string, unknown>[],
     seriesConfig: {
       xSerie: SeriesOptions;
@@ -31,19 +32,17 @@ export class ScatterChart extends CartesianPlane {
     },
     options: Partial<ChartOptions> = {}
   ) {
-    super(dataset, seriesConfig, options);
+    super(svgSelection, dataset, seriesConfig, options);
     this.#ySeries = [...seriesConfig.ySeries];
   }
 
   /**
    * Renders a scatter plot for a given y series key.
-   * @param selection - The D3 selection to append the scatter points to.
    * @param yKey - The key of the y series to draw.
    * @param [pointColor="steelblue"] - The color of the points.
    * @param [radii=4] - The radius of the points.
    */
   #renderSerie(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>,
     yKey: string,
     pointColor: string = "steelblue",
     radii: number = 4
@@ -58,7 +57,7 @@ export class ScatterChart extends CartesianPlane {
           ? d["radii"]
           : radii,
     }));
-    selection
+    this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
       .data([null])
       .join("g")
@@ -78,17 +77,14 @@ export class ScatterChart extends CartesianPlane {
 
   /**
    * Renders all series in the scatter chart.
-   * @param selection - The D3 selection to draw the series on.
    * @example
    * ```ts
-   * chart.renderSeries(d3.select("svg"));
+   * chart.renderSeries();
    * ```
    */
-  public renderSeries(
-    selection: Selection<SVGSVGElement, unknown, null, undefined>
-  ): void {
+  public renderSeries(): void {
     for (const { key, color, radii } of this._ySeries) {
-      this.#renderSerie(selection, key, color, radii);
+      this.#renderSerie(key, color, radii);
     }
   }
 
