@@ -25,7 +25,7 @@
 
 ```ts
 import { select } from "d3";
-import { TimeChart } from "../src/index.ts";
+import { TimeChart } from "vizible-cartesian";
 
 const data = [
   { date: new Date("2020-01-01"), sales: 10, cost: 5 },
@@ -62,7 +62,7 @@ This code creates a time series chart. It sets up the data, initializes the char
 
 ```ts
 import { select } from "d3";
-import { CustomScatterChart } from "../src/index.ts";
+import { CustomScatterChart } from "vizible-cartesian";
 
 const data = [
   { x: 1, y: 2, z: 4 },
