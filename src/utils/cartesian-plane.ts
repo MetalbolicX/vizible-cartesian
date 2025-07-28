@@ -23,10 +23,10 @@ import type { SeriesOptions, LineChartOptions } from "../types.ts";
  */
 const getXDomain = (
   dataset: Record<string, unknown>[],
-  xKey: string
+  xAccessor: (data: Record<string, unknown>) => Date | number
 ): [number, number] | [Date, Date] => {
   const values = dataset
-    .map((d) => d[xKey])
+    .map((d) => xAccessor(d))
     .filter((v) => v !== undefined && v !== null);
   if (!values.length) {
     throw new Error("No values found for xKey in dataset");
@@ -57,7 +57,7 @@ const getXDomain = (
  */
 const getYDomain = (dataset, series) => {
   const values = dataset.flatMap((d) =>
-    series.map((s) => Number(d[s.key])).filter((v) => !isNaN(v))
+    series.map(({ field }) => Number(field(d))).filter((v) => !isNaN(v))
   );
   return [Math.min(...values), Math.max(...values)];
 };
@@ -307,7 +307,7 @@ export abstract class CartesianPlane {
           .join("text")
           .attr("x", 22)
           .attr("y", 12)
-          .text(({ label, field }) => label ?? field)
+          .text(({ label }) => label)
           .attr("alignment-baseline", "middle");
       });
   }
@@ -402,7 +402,7 @@ export abstract class CartesianPlane {
   }
 
   protected get _dataset() {
-    return [...this.#dataset];
+    return this.#dataset;
   }
 
   protected get _xSerie() {

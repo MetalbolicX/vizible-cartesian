@@ -17,10 +17,10 @@ export class LineChart extends CartesianPlane {
    * ```ts
    * const svg = d3.select("svg");
    * const chart = new LineChart(svg, data, {
-   *   xSerie: { field: "x" },
+   *   xSerie: { field: d => d.x, label: "X Axis" },
    *   ySeries: [
-   *     { field: "y1", color: "#1f77b4" },
-   *     { field: "y2", color: "#ff7f0e" }
+   *     { field: d => d.y1, color: "#1f77b4", label: "Y1 Axis" },
+   *     { field: d => d.y2, color: "#ff7f0e", label: "Y2 Axis" }
    *   ]
    * });
    * ```
@@ -43,17 +43,18 @@ export class LineChart extends CartesianPlane {
    * @param [lineColor="steelblue"] - The color of the line.
    */
   #renderSerie(
-    yKey: string,
-    lineColor: string = "steelblue"
+    yField: (data: Record<string, unknown>) => Date | number,
+    lineColor: string = "steelblue",
+    label: string = ""
   ): void {
     const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xField],
-      y: Number(d[yKey]),
+      x: xField(d) as number | Date,
+      y: yField(d) as number,
     }));
-    const linePath = line<Record<string, unknown>>()
-      .x(({ x }) => this._xScale(x as number | Date))
-      .y(({ y }) => this._yScale(y as number));
+    const linePath = line<{ x: number | Date; y: number }>()
+      .x(({ x }) => this._xScale(x))
+      .y(({ y }) => this._yScale(y));
 
     this._options.isCurved && linePath.curve(curveBasis);
 
@@ -62,10 +63,10 @@ export class LineChart extends CartesianPlane {
       .data([null])
       .join("g")
       .attr("class", "series")
-      .selectAll<SVGPathElement, unknown>(`.series-${yKey}`)
+      .selectAll<SVGPathElement, unknown>(`.series-${label}`)
       .data([data])
       .join("path")
-      .attr("class", `series-${yKey}`)
+      .attr("class", `series-${label}`)
       .attr("d", linePath)
       .attr("fill", "none")
       .attr("stroke", lineColor)
@@ -80,8 +81,8 @@ export class LineChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { field, color } of this._ySeries) {
-      this.#renderSerie(field, color);
+    for (const { field, color, label } of this._ySeries) {
+      this.#renderSerie(field, color, label);
     }
   }
 }

@@ -20,10 +20,10 @@ export class CustomScatterChart extends CartesianPlane {
    * @example
    * ```ts
    * const chart = new CustomScatterChart(data, {
-   *   xSerie: { field: "date" },
+   *   xSerie: { field: d => d.date, label: "Date" },
    *   ySeries: [
-   *     { field: "sales", color: "#1f77b4" },
-   *     { field: "profit", color: "#ff7f0e", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.5 },
+   *     { field: d => d.sales, color: "#1f77b4", label: "Sales" },
+   *     { field: d => d.profit, color: "#ff7f0e", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.5, label: "Profit" },
    *   ],
    * });
    * ```
@@ -49,15 +49,16 @@ export class CustomScatterChart extends CartesianPlane {
    * @param [size=1] - The size scaling factor for the icon.
    */
   #renderSerie(
-    yKey: string,
+    yField: (data: Record<string, unknown>) => number | Date,
     pointColor: string = "steelblue",
     icon: string = "",
-    size: number = 1
+    size: number = 1,
+    label: string = ""
   ): void {
     const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xField],
-      y: d[yKey],
+      x: xField(d) as number,
+      y: yField(d),
       color: pointColor,
       radius:
         typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
@@ -71,10 +72,10 @@ export class CustomScatterChart extends CartesianPlane {
       .selectAll<
         SVGPathElement,
         { x: number; y: number; color: string; radius: number; icon: string }
-      >(`.scatter-icon.${yKey}`)
+      >(`.scatter-icon.${label}`)
       .data(data)
       .join("path")
-      .attr("class", `scatter-icon ${yKey}`)
+      .attr("class", `scatter-icon ${label}`)
       .attr("d", ({ icon, radius }) => {
         if (typeof icon === "string" && icon.length > 0) {
           return icon;
@@ -89,7 +90,7 @@ export class CustomScatterChart extends CartesianPlane {
         "transform",
         ({ x, y }) =>
           `translate(${this._xScale(x as number)},${this._yScale(
-            y as number
+            y
           )}) scale(${size})`
       );
   }

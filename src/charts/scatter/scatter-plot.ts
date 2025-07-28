@@ -16,10 +16,10 @@ export class ScatterChart extends CartesianPlane {
    * @example
    * ```ts
    * const chart = new ScatterChart(data, {
-   *   xSerie: { field: "date" },
+   *   xSerie: { field: d => d.date, label: "Date" },
    *   ySeries: [
-   *     { field: "sales", color: "#1f77b4", radii: 5 },
-   *     { field: "profit", color: "#ff7f0e", radii: 10 },
+   *     { field: d => d.sales, color: "#1f77b4", radii: 5, label: "Sales" },
+   *     { field: d => d.profit, color: "#ff7f0e", radii: 10, label: "Profit" },
    *   ],
    * });
    */
@@ -43,14 +43,15 @@ export class ScatterChart extends CartesianPlane {
    * @param [radii=4] - The radius of the points.
    */
   #renderSerie(
-    yKey: string,
+    yField: (data: Record<string, unknown>) => number | Date,
     pointColor: string = "steelblue",
-    radii: number = 4
+    radii: number = 4,
+    label: string = ""
   ): void {
     const { field: xField } = this._xSerie;
     const data = this._dataset.map((d) => ({
-      x: d[xField],
-      y: d[yKey],
+      x: xField(d) as number | Date,
+      y: yField(d) as number,
       color: pointColor,
       radius:
         typeof d["radii"] === "number" && !isNaN(d["radii"])
@@ -65,12 +66,12 @@ export class ScatterChart extends CartesianPlane {
       .selectAll<
         SVGCircleElement,
         { x: number; y: number; color: string; radius: number }
-      >(`.scatter-point.${yKey}`)
+      >(`.scatter-point.${label}`)
       .data(data)
       .join("circle")
-      .attr("class", `scatter-point ${yKey}`)
+      .attr("class", `scatter-point ${label}`)
       .attr("cx", ({ x }) => this._xScale(x as number))
-      .attr("cy", ({ y }) => this._yScale(y as number))
+      .attr("cy", ({ y }) => this._yScale(y))
       .attr("r", ({ radius }) => radius)
       .attr("fill", ({ color }) => color);
   }
@@ -83,8 +84,8 @@ export class ScatterChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { field, color, radii } of this._ySeries) {
-      this.#renderSerie(field, color, radii);
+    for (const { field, color, radii, label } of this._ySeries) {
+      this.#renderSerie(field, color, radii, label);
     }
   }
 
