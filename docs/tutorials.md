@@ -37,25 +37,64 @@ const data = [
 const svg = document!.querySelector("svg") as SVGSVGElement;
 const selection = select(svg);
 
-const chart = new TimeChart(data, {
-  xSerie: { key: "date" },
+const chart = new TimeChart(selection, data, {
+  xSerie: { field: ({ date }) => date as Date, label: "Date" },
   ySeries: [
-    { key: "sales", color: "#1f77b4", name: "Sales" },
-    { key: "cost", color: "#ff7f0e", name: "Cost" },
-  ]
+    { field: ({ sales }) => sales as number, color: "#1f77b4", label: "Sales" },
+    { field: ({ cost }) => cost as number, color: "#ff7f0e", label: "Cost" },
+  ],
 });
 
-chart.renderXAxis(selection, "%d %b");
-chart.renderYAxis(selection);
-chart.renderSeries(selection);
-chart.renderLegend(selection);
-chart.renderChartTitle(selection, "Sales and Cost Over Time");
-chart.renderYAxisLabel(selection, "Sales");
-chart.renderXAxisLabel(selection, "Date");
-
+chart.renderXAxis("%d %b");
+chart.renderYAxis();
+chart.renderSeries();
+chart.renderLegend();
+chart.renderChartTitle("Sales and Cost Over Time");
+chart.renderYAxisLabel("Sales");
+chart.renderXAxisLabel("Date");
 ```
 
 This code creates a time series chart. It sets up the data, initializes the chart, and renders the axes, series, legend, and labels.
+
+## Creating a Custom Scatter Plot
+
+1. Create a new TypeScript file called `scatter.ts` and add the following code:
+
+```ts
+import { select } from "d3";
+import { CustomScatterChart } from "../src/index.ts";
+
+const data = [
+  { x: 1, y: 2, z: 4 },
+  { x: 2, y: 3, z: 5 },
+  { x: 3, y: 5, z: 6 },
+  { x: 4, y: 7, z: 8 },
+];
+
+const svg = document!.querySelector("svg") as SVGSVGElement;
+const selection = select(svg);
+const chart = new CustomScatterChart(selection, data,  {
+  xSerie: { field: ({ x }) => x as number, label: "X Axis" },
+  ySeries: [
+    // No icon key is used, a circle will be displayed
+    { field: ({ y }) => y as number, label: "Y Axis", color: "steelblue" },
+    {
+      field: ({ z }) => z as number,
+      label: "Z Axis",
+        color: "orange",
+        // The icon will draw a heart shape
+        icon: "M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z",
+        size: 0.6,
+      },
+    ],
+  },
+);
+
+chart.renderSeries();
+chart.renderYAxis();
+chart.renderXAxis();
+chart.renderLegend(20, { x: 600, y: 20 });
+```
 
 ## Working with Other Libraries
 

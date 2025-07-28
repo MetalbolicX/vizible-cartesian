@@ -10,8 +10,6 @@ The following types are used throughout the API to define configuration options 
 
 ```ts
 interface ChartOptions {
-  width: number; // Chart width in pixels.
-  height: number; // Chart height in pixels.
   margin: { top: number; right: number; bottom: number; left: number }; // Chart margins in pixels.
   tickSize: number; // Axis tick size in pixels.
   tickPadding: number; // Padding between ticks and labels in pixels.
@@ -31,8 +29,8 @@ interface LineChartOptions extends ChartOptions {
 
 ```ts
 interface SeriesOptions {
-  key: string; // Property name in the dataset for this series.
-  name?: string; // Optional display name for the series.
+  field: (data: Record<string, unknown>) => Date | number; // Function to extract value from data.
+  label: string; // Display name for the series.
   color?: string; // Optional CSS color string for the series.
 }
 ```
@@ -49,11 +47,10 @@ interface ScatterChartOptions extends SeriesOptions {
 
 ```ts
 interface CustomerScatterChartOptions extends SeriesOptions {
-  icon?: string; // Optional SVG path string for custom icon.
+  icon?: string; // Optional SVG path string for custom icon. If provided, it will be used instead of a circle.
   size?: number; // Optional scaling factor for the icon (default is 1).
 }
 ```
-
 
 ## Chart Constructors
 
@@ -63,9 +60,10 @@ Each object uses similar configuration options. The following constructors are a
 
 ```ts
 new LineChart(
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
   dataset: Record<string, unknown>[],
   seriesConfig: {
-    xSerie: { key: string };
+    xSerie: SeriesOptions;
     ySeries: SeriesOptions[];
   },
   options?: Partial<LineChartOptions>
@@ -76,12 +74,13 @@ new LineChart(
 
 ```ts
 new TimeChart(
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
   dataset: Record<string, unknown>[],
   seriesConfig: {
-    xSerie: { key: string };
+    xSerie: SeriesOptions;
     ySeries: SeriesOptions[];
   },
-  options?: Partial<TimeChartOptions>
+  options?: Partial<LineChartOptions>
 )
 ```
 
@@ -89,19 +88,21 @@ new TimeChart(
 
 ```ts
 new ScatterChart(
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
   dataset: Record<string, unknown>[],
   seriesConfig: {
     xSerie: SeriesOptions;
-    ySeries: SeriesOptions[];
+    ySeries: ScatterChartOptions[];
   },
-  options?: Partial<ScatterChartOptions>
+  options?: Partial<ChartOptions>
 )
-  ```
+```
 
 ### CustomScatterChart
 
 ```ts
 new CustomScatterChart(
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
   dataset: Record<string, unknown>[],
   seriesConfig: {
     xSerie: SeriesOptions;
@@ -122,18 +123,20 @@ Each chart object provides methods to render the chart and manipulate its state.
 Draws the series data on the chart.
 
 ```ts
-renderSeries(selection: Selection<SVGSVGElement, unknown, null, undefined>
-): void;
+renderSeries(): void;
 ```
+
+> [!Note]
+> The `scaleLinear` is used to deal with the numerical values. The other scales of D3.js were not covered in the this library.
 
 ### Axis
 
 #### renderYAxis
 
-Draws the Y-axis on the chart. In addition your can optionally pass a D3 number format string to format the Y-axis labels.
+Draws the Y-axis on the chart. You can optionally pass a D3 number format string to format the Y-axis labels.
 
 ```ts
-renderYAxis(selection: Selection<SVGSVGElement, unknown, null, undefined>,
+renderYAxis(
   numberFormat?: string // Optional D3 number format string (e.g., ".2f")
 ): void;
 ```
@@ -144,7 +147,6 @@ Draws the X-axis on the chart. You can optionally pass a D3 time format string f
 
 ```ts
 renderXAxis(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
   formatCode?: string // Optional D3 time format string (e.g., "%Y-%m-%d") or number format string (e.g., ".2f")
 ): void;
 ```
@@ -157,9 +159,7 @@ renderXAxis(
 Draws horizontal grid lines across the chart based on the Y-axis scale.
 
 ```ts
-renderYGridLines(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>
-): void;
+renderYGridLines(): void;
 ```
 
 #### renderXGridLines
@@ -167,9 +167,7 @@ renderYGridLines(
 Draws vertical grid lines across the chart based on the X-axis scale.
 
 ```ts
-renderXGridLines(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>
-): void;
+renderXGridLines(): void;
 ```
 
 > [!Note]
@@ -190,9 +188,8 @@ Draws a legend to represent the name and color of each series.
 
 ```ts
 renderLegend(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
   legendItemHeight?: number, // Optional height of each legend item in pixels (default is 20)
-  { x?: number, y?: number } = {} // Optional position for the legend (default is { x: innerWidth, y: margin.top })
+  position?: { x?: number, y?: number } // Optional position for the legend (default is { x: innerWidth, y: margin.top })
 ): void;
 ```
 
@@ -202,7 +199,6 @@ Draws the chart title at the top.
 
 ```ts
 renderChartTitle(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
   title: string
 ): void;
 ```
@@ -213,9 +209,7 @@ Draws the X-axis label.
 
 ```ts
 renderXAxisLabel(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
-  label: string,
-  margin: { left: number; right: number; top: number; bottom: number }
+  label: string
 ): void;
 ```
 
@@ -225,7 +219,6 @@ Draws the Y-axis label.
 
 ```ts
 renderYAxisLabel(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
   label: string
 ): void;
 ```
