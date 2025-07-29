@@ -109,6 +109,7 @@ export abstract class CartesianPlane {
       isCurved = false,
       tickSize = 5,
       tickPadding = 10,
+      isChartStatic = false,
     } = options;
     if (!(dataset?.length && Array.isArray(dataset))) {
       throw new Error("Dataset must be a non-empty array.");
@@ -131,6 +132,7 @@ export abstract class CartesianPlane {
       isCurved,
       tickSize,
       tickPadding,
+      isChartStatic,
     } as LineChartOptions;
     const { field: xField } = this.#xSerie;
     const { width: w, height: h } = this._size;
@@ -414,10 +416,6 @@ export abstract class CartesianPlane {
   }
 
   protected get _innerWidth() {
-    // const svgNode = this.#svgSelection.node();
-    // if (!svgNode) return 0;
-    // const rect = svgNode.getBoundingClientRect();
-    // return rect.width - this._options.margin.left - this._options.margin.right;
     const { width } = this._size;
     const { margin } = this._options;
     return width - margin.left - margin.right;
@@ -427,8 +425,6 @@ export abstract class CartesianPlane {
     const { height } = this._size;
     const { margin } = this._options;
     return height - margin.top - margin.bottom;
-    // const rect = svgNode.getBoundingClientRect();
-    // return rect.height - this._options.margin.top - this._options.margin.bottom;
   }
 
   protected get _svgSelection() {

@@ -8,6 +8,7 @@ export interface ChartOptions {
   margin: { top: number; right: number; bottom: number; left: number };
   tickSize: number;
   tickPadding: number;
+  isChartStatic?: boolean;
 }
 
 /**

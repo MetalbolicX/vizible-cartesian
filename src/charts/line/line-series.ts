@@ -1,7 +1,6 @@
-import { line, curveBasis, type Selection } from "d3";
+import { line, curveBasis, pointer, type Selection, select } from "d3";
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
-
 
 /**
  * A class for creating a line chart with numerical or date x-axis using D3.js.
@@ -51,6 +50,7 @@ export class LineChart extends CartesianPlane {
     const data = this._dataset.map((d) => ({
       x: xField(d) as number | Date,
       y: yField(d) as number,
+      label
     }));
     const linePath = line<{ x: number | Date; y: number }>()
       .x(({ x }) => this._xScale(x))
@@ -66,11 +66,92 @@ export class LineChart extends CartesianPlane {
       .selectAll<SVGPathElement, unknown>(`.series-${label}`)
       .data([data])
       .join("path")
-      .attr("class", `series-${label}`)
+      .attr("class", `series-${label} serie`)
       .attr("d", linePath)
       .attr("fill", "none")
       .attr("stroke", lineColor)
       .attr("stroke-width", this._options.lineWidth);
+  }
+
+  /**
+   * Handles the cursor movement and updates the cursor line and points.
+   * @param event - The mouse event triggering the cursor update.
+   */
+  #handleCursor = (event: MouseEvent): void => {
+    const [mouseX, mouseY] = pointer(event);
+    const [xMinRange, xMaxRange] = this._xScale.range();
+    const [yMaxRange, yMinRange] = this._yScale.range();
+
+    // Check if the mouse coordinates are within the x and y axis area
+    const isWithinXAxis = mouseX >= xMinRange && mouseX <= xMaxRange;
+    const isWithinYAxis = mouseY >= yMinRange && mouseY <= yMaxRange;
+    if (!(isWithinXAxis && isWithinYAxis)) {
+      this._svgSelection.selectAll(".cursor").remove();
+      return;
+    }
+
+    // Find the closest data point to the mouse x-coordinate
+    // This assumes the xField returns a Date or number that can be scaled
+    const { field: xField } = this._xSerie;
+    const closestDatum = this._dataset.reduce((closest, datum) => {
+      const datumX = this._xScale(xField(datum) as number | Date);
+      const closestX = this._xScale(xField(closest) as number | Date);
+      return Math.abs(datumX - mouseX) < Math.abs(closestX - mouseX)
+        ? datum
+        : closest;
+    }, this._dataset[0]);
+
+    const cursorGroup = this._svgSelection
+      .selectAll(".cursor")
+      .data([null])
+      .join("g")
+      .attr("class", "cursor");
+
+    cursorGroup
+      .selectAll<SVGLineElement, Record<string, unknown>>("line.cursor")
+      .data([closestDatum])
+      .join("line")
+      .attr("class", "cursor")
+      .attr("x1", (d) => this._xScale(xField(d) as number | Date))
+      .attr("y1", yMinRange)
+      .attr("x2", (d) => this._xScale(xField(d) as number | Date))
+      .attr("y2", yMaxRange);
+
+    cursorGroup
+      .selectAll<SVGCircleElement, Record<string, SeriesOptions>>(
+        "circle.cursor"
+      )
+      .data(this._ySeries)
+      .join("circle")
+      .attr("class", "cursor")
+      .attr("cx", this._xScale(xField(closestDatum)))
+      .attr("cy", ({ field }) => this._yScale(field(closestDatum)))
+      .attr("r", 4)
+      .attr("fill", ({ color }) => color || "steelblue");
+
+    cursorGroup
+      .selectAll<SVGTextElement, Record<string, SeriesOptions>>("text.cursor")
+      .data(this._ySeries)
+      .join("text")
+      .attr("class", "cursor")
+      .attr("x", this._xScale(xField(closestDatum)))
+      .attr("y", ({ field }) => this._yScale(field(closestDatum)))
+      .attr("dy", "-0.4em") // Adjust vertical position
+      .text(({ field }) => field(closestDatum) as number);
+  };
+
+  /**
+   * Renders the cursor line and points on the chart.
+   * This method adds an event listener for mouse movement to update the cursor position.
+   * @example
+   * ```ts
+   * chart.renderCursor();
+   * ```
+   */
+  public renderCursor(): void {
+    if (!this._options.isChartStatic) {
+      this._svgSelection.on("mousemove", this.#handleCursor);
+    }
   }
 
   /**
