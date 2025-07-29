@@ -9,46 +9,79 @@ The following types are used throughout the API to define configuration options 
 ### ChartOptions
 
 ```ts
-interface ChartOptions {
-  margin: { top: number; right: number; bottom: number; left: number }; // Chart margins in pixels.
-  tickSize: number; // Axis tick size in pixels.
-  tickPadding: number; // Padding between ticks and labels in pixels.
+/**
+ * Chart configuration options for all chart types.
+ * @property margin - The margin object specifying top, right, bottom, left in pixels.
+ * @property tickSize - The size of axis ticks in pixels.
+ * @property tickPadding - The padding between ticks and labels in pixels.
+ */
+export interface ChartOptions {
+  margin: { top: number; right: number; bottom: number; left: number };
+  tickSize: number;
+  tickPadding: number;
+  isChartStatic?: boolean;
+  transitionTime?: number; // Time in milliseconds for transitions
 }
 ```
 
 ### LineChartOptions
 
 ```ts
-interface LineChartOptions extends ChartOptions {
-  lineWidth: number; // Line thickness in pixels.
-  isCurved: boolean; // If true, lines are curved; otherwise, straight.
+/**
+ * Line chart specific options.
+ * @property lineWidth - The thickness of the line in pixels.
+ * @property isCurved - Whether the line should be curved (true) or straight (false).
+ */
+export interface LineChartOptions extends ChartOptions {
+  isCurved: boolean;
 }
 ```
 
 ### SeriesOptions
 
 ```ts
-interface SeriesOptions {
-  field: (data: Record<string, unknown>) => Date | number; // Function to extract value from data.
-  label: string; // Display name for the series.
-  color?: string; // Optional CSS color string for the series.
+/**
+ * Series configuration for x or y axes.
+ * @property key - The property name in the dataset to use for this series.
+ * @property name - Optional display name for the series.
+ * @property color - Optional color for the series (CSS color string).
+ */
+export interface SeriesOptions {
+  field: (data: Record<string, unknown>) => Date | number;
+  label: string;
+  color?: string;
 }
 ```
 
 ### ScatterChartOptions
 
 ```ts
-interface ScatterChartOptions extends SeriesOptions {
-  radii?: number; // Optional radius for scatter points (pixels).
+/**
+ * Scatter chart y series configuration.
+ * @property key - The property name in the dataset for y values.
+ * @property name - Optional display name for the series.
+ * @property color - Optional color for the points (CSS color string).
+ * @property radii - Optional radius for the points (number, pixels).
+ */
+export interface ScatterChartOptions extends SeriesOptions {
+  radii?: number;
 }
 ```
 
 ### CustomerScatterChartOptions
 
 ```ts
-interface CustomerScatterChartOptions extends SeriesOptions {
-  icon?: string; // Optional SVG path string for custom icon. If provided, it will be used instead of a circle.
-  size?: number; // Optional scaling factor for the icon (default is 1).
+/**
+ * Custom scatter chart y series configuration.
+ * @property key - The property name in the dataset for y values.
+ * @property name - Optional display name for the series.
+ * @property color - Optional color for the icons (CSS color string).
+ * @property icon - Optional SVG path string for custom icon.
+ * @property size - Optional scaling factor for the icon (number, default 1).
+ */
+export interface CustomerScatterChartOptions extends SeriesOptions {
+  icon?: string;
+  size?: number;
 }
 ```
 
@@ -127,7 +160,19 @@ renderSeries(): void;
 ```
 
 > [!Note]
-> The `scaleLinear` is used to deal with the numerical values. The other scales of D3.js were not covered in the this library.
+> - The `scaleLinear` is used to deal with the numerical values. The other scales of D3.js were not covered in the this library.
+> - To style the lines of the series, you can use the `.serie` class in your CSS. For example:
+> ```css
+> .serie {
+>   opacity: 0.8;
+>   transition: opacity 0.3s, stroke-width 0.2s;
+>
+>   &:hover {
+>     opacity: 1;
+>     stroke-width: 4;
+>   }
+> }
+> ```
 
 ### Axis
 
@@ -193,6 +238,15 @@ renderLegend(
 ): void;
 ```
 
+> [!Note]
+> To style the text of each serie legend item, you can use the `.legend-item` class in your CSS. For example:
+> ```css
+> .legend-item {
+>   font-size: 12px;
+>   font-weight: bold;
+> }
+> ```
+
 #### renderChartTitle
 
 Draws the chart title at the top.
@@ -237,5 +291,26 @@ renderYAxisLabel(
 >   font-size: 12px;
 >   font-weight: bold;
 >   text-anchor: middle;
+> }
+> ```
+
+### Cursor
+
+#### renderCursor
+
+Adds an interactive cursor to the chart that follows the mouse movement and displays the data point values.
+
+```ts
+renderCursor(): void;
+```
+
+> [!Note]
+> - The cursor functionality is only available for dynamic charts. If the chart is static, this method does nothing. The cursor will display the nearest data point values when the mouse moves over the chart area.
+> - To style the cursor, you can use the `.cursor` class in your CSS. For example:
+> ```css
+> .cursor {
+>   stroke: #000;
+>   stroke-width: 1px;
+>   pointer-events: none; /* Prevent mouse events on the cursor */
 > }
 > ```

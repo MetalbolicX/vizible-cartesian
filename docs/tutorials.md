@@ -24,26 +24,49 @@
 3. Create a new TypeScript file called `time.ts` and add the following code:
 
 ```ts
-import { select } from "d3";
+import { selectm, tsv } from "d3";
 import { TimeChart } from "vizible-cartesian";
 
-const data = [
-  { date: new Date("2020-01-01"), sales: 10, cost: 5 },
-  { date: new Date("2020-02-01"), sales: 20, cost: 10 },
-  { date: new Date("2020-03-01"), sales: 30, cost: 15 },
-  { date: new Date("2020-04-01"), sales: 40, cost: 20 },
-];
+const parseRow = (row) => {
+  row.date = new Date(row.date);
+  row.america = parseFloat(row.america);
+  row.europa = parseFloat(row.europa);
+  row.asia = parseFloat(row.asia);
+  return row;
+};
+
+const data = tsv(
+  "https://raw.githubusercontent.com/Apress/create-web-charts-w-d3/refs/heads/master/D3Charts/charts_local/data_02.tsv",
+  parseRow
+);
 
 const svg = document!.querySelector("svg") as SVGSVGElement;
 const selection = select(svg);
 
-const chart = new TimeChart(selection, data, {
-  xSerie: { field: ({ date }) => date as Date, label: "Date" },
-  ySeries: [
-    { field: ({ sales }) => sales as number, color: "#1f77b4", label: "Sales" },
-    { field: ({ cost }) => cost as number, color: "#ff7f0e", label: "Cost" },
-  ],
-});
+const chart = new TimeChart(
+  selection,
+  await data,
+  {
+    xSerie: { field: ({ date }) => date as Date, label: "Date" },
+    ySeries: [
+      {
+        field: ({ america }) => america as number,
+        color: "#1f77b4",
+        label: "America",
+      },
+      {
+        field: ({ europa }) => europa as number,
+        color: "#ff7f0e",
+        label: "Europa",
+      },
+      { field: ({ asia }) => asia as number, color: "#2ca02c", label: "Asia" },
+    ],
+  },
+  {
+    margin: { top: 20, right: 40, bottom: 25, left: 25 },
+    transitionTime: 6000,
+  }
+);
 
 chart.renderXAxis("%d %b");
 chart.renderYAxis();
@@ -52,6 +75,7 @@ chart.renderLegend();
 chart.renderChartTitle("Sales and Cost Over Time");
 chart.renderYAxisLabel("Sales");
 chart.renderXAxisLabel("Date");
+chart.renderCursor();
 ```
 
 This code creates a time series chart. It sets up the data, initializes the chart, and renders the axes, series, legend, and labels.
