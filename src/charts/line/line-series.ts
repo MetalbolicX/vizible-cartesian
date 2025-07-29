@@ -50,13 +50,18 @@ export class LineChart extends CartesianPlane {
     const data = this._dataset.map((d) => ({
       x: xField(d) as number | Date,
       y: yField(d) as number,
-      label
+      label,
     }));
     const linePath = line<{ x: number | Date; y: number }>()
       .x(({ x }) => this._xScale(x))
       .y(({ y }) => this._yScale(y));
 
     this._options.isCurved && linePath.curve(curveBasis);
+
+    const transitionTime: number =
+      !this._options.isChartStatic && this._options.transitionTime
+        ? this._options.transitionTime
+        : 0;
 
     this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
@@ -65,12 +70,34 @@ export class LineChart extends CartesianPlane {
       .attr("class", "series")
       .selectAll<SVGPathElement, unknown>(`.series-${label}`)
       .data([data])
-      .join("path")
-      .attr("class", `series-${label} serie`)
-      .attr("d", linePath)
-      .attr("fill", "none")
-      .attr("stroke", lineColor)
-      .attr("stroke-width", this._options.lineWidth);
+          .join(
+      (enter) =>
+        enter
+          .append("path")
+          .attr("class", `series-${label} serie`)
+          .attr("d", linePath)
+          .attr("fill", "none")
+          .attr("stroke", lineColor)
+          .call((path) => {
+            // Animate the path drawing from start to end
+            const node = path.node();
+            if (!node) return;
+            const totalLength = node.getTotalLength();
+            path
+              .attr("stroke-dasharray", totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+              .duration(transitionTime)
+              .attr("stroke-dashoffset", 0);
+          }),
+      (update) =>
+        update
+          .transition()
+          .duration(transitionTime)
+          .attr("stroke", lineColor)
+          .attr("d", linePath),
+      (exit) => exit.remove()
+    );
   }
 
   /**
@@ -149,9 +176,8 @@ export class LineChart extends CartesianPlane {
    * ```
    */
   public renderCursor(): void {
-    if (!this._options.isChartStatic) {
-      this._svgSelection.on("mousemove", this.#handleCursor);
-    }
+    if (this._options.isChartStatic) return;
+    this._svgSelection.on("mousemove", this.#handleCursor);
   }
 
   /**

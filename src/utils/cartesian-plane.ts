@@ -105,11 +105,11 @@ export abstract class CartesianPlane {
   ) {
     const {
       margin = { top: 30, right: 30, bottom: 30, left: 30 },
-      lineWidth = 1.5,
       isCurved = false,
       tickSize = 5,
       tickPadding = 10,
       isChartStatic = false,
+      transitionTime = 1000,
     } = options;
     if (!(dataset?.length && Array.isArray(dataset))) {
       throw new Error("Dataset must be a non-empty array.");
@@ -128,11 +128,11 @@ export abstract class CartesianPlane {
     this.#ySeries = [...seriesConfig.ySeries];
     this.#options = {
       margin,
-      lineWidth,
       isCurved,
       tickSize,
       tickPadding,
       isChartStatic,
+      transitionTime,
     } as LineChartOptions;
     const { field: xField } = this.#xSerie;
     const { width: w, height: h } = this._size;

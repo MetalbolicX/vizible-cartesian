@@ -9,6 +9,7 @@ export interface ChartOptions {
   tickSize: number;
   tickPadding: number;
   isChartStatic?: boolean;
+  transitionTime?: number; // Time in milliseconds for transitions
 }
 
 /**
@@ -17,7 +18,6 @@ export interface ChartOptions {
  * @property isCurved - Whether the line should be curved (true) or straight (false).
  */
 export interface LineChartOptions extends ChartOptions {
-  lineWidth: number;
   isCurved: boolean;
 }
 
