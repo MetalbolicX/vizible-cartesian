@@ -10,48 +10,28 @@
     font-family: Arial, sans-serif;
   }
 
-  .chart-title {
-    text-anchor: middle;
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-
-  line.cursor {
-    stroke: lightgray;
-    stroke-width: 1;
-    stroke-dasharray: 5, 5;
-  }
-
-  text.cursor {
-    font-size: 0.8em;
-    fill: black;
-    text-anchor: middle;
-  }
-
-  .serie {
-    opacity: 0.8;
-    transition: opacity 0.3s, stroke-width 0.2s;
+  .scatter-point {
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity 0.4s ease-in-out;
 
     &:hover {
       opacity: 1;
-      stroke-width: 4;
     }
   }
 
-  .axis-label {
-    font-size: 0.9em;
-    fill: #333;
-    text-anchor: middle;
+  .series:has(.scatter-point:hover) .scatter-point:not(:hover) {
+    opacity: 0.2;
   }
 
-  .legend {
-    font-size: 0.75em;
+  .series:has(.scatter-point:hover) .scatter-point.highlight {
+    opacity: 0.75;
   }
 </style>
 <body>
   <figure id="chart">
     <svg width="800" height="600"></svg>
   </figure>
-  <script type="module" src="./examples/time.ts" lang="ts"></script>
+  <script type="module" src="./examples/scatter.ts" lang="ts"></script>
 </body>
 </html>

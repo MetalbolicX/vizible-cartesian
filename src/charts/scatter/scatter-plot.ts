@@ -1,6 +1,10 @@
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
-import type { ChartOptions, ScatterChartOptions, SeriesOptions } from "../../types.ts";
-import { type Selection } from "d3";
+import type {
+  ChartOptions,
+  ScatterChartOptions,
+  SeriesOptions,
+} from "../../types.ts";
+import { select, type Selection } from "d3";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
@@ -57,7 +61,14 @@ export class ScatterChart extends CartesianPlane {
         typeof d["radii"] === "number" && !isNaN(d["radii"])
           ? d["radii"]
           : radii,
+      label
     }));
+
+    const transitionTime =
+      !this._options.isChartStatic && this._options.transitionTime
+        ? this._options.transitionTime
+        : 0;
+
     this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
       .data([null])
@@ -65,15 +76,36 @@ export class ScatterChart extends CartesianPlane {
       .attr("class", "series")
       .selectAll<
         SVGCircleElement,
-        { x: number; y: number; color: string; radius: number }
+        {
+          x: number | Date;
+          y: number;
+          color: string;
+          radius: number;
+          label: string;
+        }
       >(`.scatter-point.${label}`)
       .data(data)
-      .join("circle")
-      .attr("class", `scatter-point ${label}`)
-      .attr("cx", ({ x }) => this._xScale(x as number))
-      .attr("cy", ({ y }) => this._yScale(y))
-      .attr("r", ({ radius }) => radius)
-      .attr("fill", ({ color }) => color);
+      .join(
+        (enter) =>
+          enter
+            .append("circle")
+            .attr("class", `scatter-point ${label}`)
+            .attr("data-label", ({ label }) => label)
+            .attr("fill", ({ color }) => color)
+            .attr("r", 0)
+            .attr("cx", ({ x }) => this._xScale(x))
+            .attr("cy", ({ y }) => this._yScale(y))
+            .transition()
+            .duration(transitionTime)
+            .attr("r", ({ radius }) => radius),
+        (update) =>
+          update
+            .transition()
+            .duration(transitionTime)
+            .attr("cx", ({ x }) => this._xScale(x))
+            .attr("cy", ({ y }) => this._yScale(y)),
+        (exit) => exit.remove()
+      );
   }
 
   /**
@@ -87,6 +119,36 @@ export class ScatterChart extends CartesianPlane {
     for (const { field, color, radii, label } of this._ySeries) {
       this.#renderSerie(field, color, radii, label);
     }
+  }
+
+  /**
+   * Handles hover interaction on a scatter point.
+   * When a point is hovered for a certain delay, reduces opacity of other series.
+   * @param event - MouseEvent from the hover action.
+   */
+  #handleHoverSerie = ({ target }: MouseEvent): void => {
+    if (!(target instanceof SVGCircleElement)) return;
+    const label = target.dataset.label;
+
+    this._svgSelection
+      .selectAll<SVGCircleElement, unknown>(`.scatter-point[data-label="${label}"]`)
+      .filter(function () {
+      return this !== target;
+      })
+      .classed("highlight", true);
+  };
+
+  #handleUnhoverSerie = () => {
+    this._svgSelection
+      .selectAll<SVGCircleElement, unknown>(".highlight")
+      .classed("highlight", false);
+  };
+
+  public hoverEffect(): void {
+    if (this._options.isChartStatic) return;
+    this._svgSelection
+      .on("mouseover", this.#handleHoverSerie)
+      .on("mouseout", this.#handleUnhoverSerie);
   }
 
   protected override get _ySeries() {

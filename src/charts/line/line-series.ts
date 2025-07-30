@@ -75,6 +75,7 @@ export class LineChart extends CartesianPlane {
         enter
           .append("path")
           .attr("class", `series-${label} serie`)
+          .attr("data-label", label)
           .attr("d", linePath)
           .attr("fill", "none")
           .attr("stroke", lineColor)
