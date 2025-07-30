@@ -70,35 +70,35 @@ export class LineChart extends CartesianPlane {
       .attr("class", "series")
       .selectAll<SVGPathElement, unknown>(`.series-${label}`)
       .data([data])
-          .join(
-      (enter) =>
-        enter
-          .append("path")
-          .attr("class", `series-${label} serie`)
-          .attr("data-label", label)
-          .attr("d", linePath)
-          .attr("fill", "none")
-          .attr("stroke", lineColor)
-          .call((path) => {
-            // Animate the path drawing from start to end
-            const node = path.node();
-            if (!node) return;
-            const totalLength = node.getTotalLength();
-            path
-              .attr("stroke-dasharray", totalLength)
-              .attr("stroke-dashoffset", totalLength)
-              .transition()
-              .duration(transitionTime)
-              .attr("stroke-dashoffset", 0);
-          }),
-      (update) =>
-        update
-          .transition()
-          .duration(transitionTime)
-          .attr("stroke", lineColor)
-          .attr("d", linePath),
-      (exit) => exit.remove()
-    );
+      .join(
+        (enter) =>
+          enter
+            .append("path")
+            .attr("class", `series-${label} serie`)
+            .attr("data-label", label)
+            .attr("d", linePath)
+            .attr("fill", "none")
+            .attr("stroke", lineColor)
+            .call((path) => {
+              // Animate the path drawing from start to end
+              const node = path.node();
+              if (!node) return;
+              const totalLength = node.getTotalLength();
+              path
+                .attr("stroke-dasharray", totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(transitionTime)
+                .attr("stroke-dashoffset", 0);
+            }),
+        (update) =>
+          update
+            .transition()
+            .duration(transitionTime)
+            .attr("stroke", lineColor)
+            .attr("d", linePath),
+        (exit) => exit.remove()
+      );
   }
 
   /**
@@ -121,11 +121,11 @@ export class LineChart extends CartesianPlane {
     // Find the closest data point to the mouse x-coordinate
     // This assumes the xField returns a Date or number that can be scaled
     const { field: xField } = this._xSerie;
-    const closestDatum = this._dataset.reduce((closest, datum) => {
-      const datumX = this._xScale(xField(datum) as number | Date);
+    const closestDatum = this._dataset.reduce((closest, d) => {
+      const datumX = this._xScale(xField(d) as number | Date);
       const closestX = this._xScale(xField(closest) as number | Date);
       return Math.abs(datumX - mouseX) < Math.abs(closestX - mouseX)
-        ? datum
+        ? d
         : closest;
     }, this._dataset[0]);
 

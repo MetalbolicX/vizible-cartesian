@@ -27,11 +27,20 @@
   .series:has(.scatter-point:hover) .scatter-point.highlight {
     opacity: 0.75;
   }
+
+  .serie:hover {
+    cursor: pointer;
+    stroke-width: 4;
+  }
+
+  .series:has(.serie:hover) .serie:not(:hover) {
+    opacity: 0.2;
+  }
 </style>
 <body>
   <figure id="chart">
     <svg width="800" height="600"></svg>
   </figure>
-  <script type="module" src="./examples/scatter.ts" lang="ts"></script>
+  <script type="module" src="./examples/time.ts" lang="ts"></script>
 </body>
 </html>
