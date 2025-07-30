@@ -62,7 +62,7 @@ export class ScatterChart extends CartesianPlane {
         typeof d["radii"] === "number" && !isNaN(d["radii"])
           ? d["radii"]
           : radii,
-      label
+      label,
     }));
 
     const transitionTime =
@@ -128,13 +128,21 @@ export class ScatterChart extends CartesianPlane {
    * @param event - MouseEvent from the hover action.
    */
   #handleHoverSerie = ({ target }: MouseEvent): void => {
-    if (!(target instanceof SVGCircleElement)) return;
-    const label = target.dataset.label;
+    if (
+      !(
+        target instanceof SVGElement &&
+        target.classList.contains("scatter-point")
+      )
+    )
+      return;
 
+    const label = target.dataset.label;
     this._svgSelection
-      .selectAll<SVGCircleElement, unknown>(`.scatter-point[data-label="${label}"]`)
+      .selectAll<SVGCircleElement, unknown>(
+        `.scatter-point[data-label="${label}"]`
+      )
       .filter(function () {
-      return this !== target;
+        return this !== target;
       })
       .classed("highlight", true);
   };

@@ -1,4 +1,4 @@
-import { CartesianPlane } from "../../utils/cartesian-plane.ts";
+import { ScatterChart } from "./scatter-plot.ts";
 import type {
   ChartOptions,
   CustomerScatterChartOptions,
@@ -9,7 +9,7 @@ import { type Selection } from "d3";
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
  */
-export class CustomScatterChart extends CartesianPlane {
+export class CustomScatterChart extends ScatterChart {
   #ySeries: CustomerScatterChartOptions[];
 
   /**
@@ -39,6 +39,7 @@ export class CustomScatterChart extends CartesianPlane {
   ) {
     super(svgSelection, dataset, seriesConfig, options);
     this.#ySeries = [...seriesConfig.ySeries];
+    this._svgSelection.attr("class", "custom-scatter-chart");
   }
 
   /**
@@ -63,6 +64,7 @@ export class CustomScatterChart extends CartesianPlane {
       radius:
         typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
       icon: d["icon"] ?? icon,
+      label
     }));
     this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
@@ -71,11 +73,12 @@ export class CustomScatterChart extends CartesianPlane {
       .attr("class", "series")
       .selectAll<
         SVGPathElement,
-        { x: number; y: number; color: string; radius: number; icon: string }
-      >(`.scatter-icon.${label}`)
+        { x: number; y: number; color: string; radius: number; icon: string, label: string }
+      >(`.scatter-point[data-label="${label}"]`)
       .data(data)
       .join("path")
-      .attr("class", `scatter-icon ${label}`)
+      .attr("class", "scatter-point")
+      .attr("data-label", ({ label }) => label)
       .attr("d", ({ icon, radius }) => {
         if (typeof icon === "string" && icon.length > 0) {
           return icon;
@@ -103,10 +106,10 @@ export class CustomScatterChart extends CartesianPlane {
    * chart.renderSeries();
    * ```
    */
-  public renderSeries(): void {
-    for (const { field, color, icon, size } of this._ySeries) {
+  public override renderSeries(): void {
+    for (const { field, color, icon, size, label } of this._ySeries) {
       const validatedSize = typeof size === "number" && size > 0 ? size : 1;
-      this.#renderSerie(field, color ?? "steelblue", icon ?? "", validatedSize);
+      this.#renderSerie(field, color ?? "steelblue", icon ?? "", validatedSize, label);
     }
   }
 
