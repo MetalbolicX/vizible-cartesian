@@ -4,7 +4,7 @@ import type {
   ScatterChartOptions,
   SeriesOptions,
 } from "../../types.ts";
-import { select, type Selection } from "d3";
+import { type Selection } from "d3";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
@@ -38,6 +38,7 @@ export class ScatterChart extends CartesianPlane {
   ) {
     super(svgSelection, dataset, seriesConfig, options);
     this.#ySeries = [...seriesConfig.ySeries];
+    this._svgSelection.attr("class", "scatter-chart");
   }
 
   /**
@@ -83,13 +84,13 @@ export class ScatterChart extends CartesianPlane {
           radius: number;
           label: string;
         }
-      >(`.scatter-point.${label}`)
+      >(`.scatter-point[data-label="${label}"]`)
       .data(data)
       .join(
         (enter) =>
           enter
             .append("circle")
-            .attr("class", `scatter-point ${label}`)
+            .attr("class", "scatter-point")
             .attr("data-label", ({ label }) => label)
             .attr("fill", ({ color }) => color)
             .attr("r", 0)

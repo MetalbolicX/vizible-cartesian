@@ -293,6 +293,7 @@ export abstract class CartesianPlane {
       .data(this._ySeries)
       .join("g")
       .attr("class", "legend-item")
+      .attr("data-label", ({ label }) => label)
       .attr("transform", (_, i) => `translate(0,${i * legendItemHeight})`)
       .call((group) => {
         group
@@ -329,6 +330,10 @@ export abstract class CartesianPlane {
     const { margin } = this._options;
     const innerWidth = this._innerWidth;
     this._svgSelection
+      .selectAll<SVGGElement, unknown>(".labels")
+      .data([null])
+      .join("g")
+      .attr("class", "labels")
       .selectAll<SVGTextElement, unknown>(".chart-title")
       .data([null])
       .join("text")
@@ -354,6 +359,10 @@ export abstract class CartesianPlane {
   ): void {
     const { margin } = this._options;
     this._svgSelection
+      .selectAll<SVGGElement, unknown>(".labels")
+      .data([null])
+      .join("g")
+      .attr("class", "labels")
       .selectAll<SVGTextElement, unknown>(".y.axis-label")
       .data([null])
       .join("text")
@@ -381,6 +390,10 @@ export abstract class CartesianPlane {
     const innerWidth = this._innerWidth;
     const innerHeight = this._innerHeight;
     this._svgSelection
+      .selectAll<SVGGElement, unknown>(".labels")
+      .data([null])
+      .join("g")
+      .attr("class", "labels")
       .selectAll<SVGTextElement, unknown>(".x.axis-label")
       .data([null])
       .join("text")

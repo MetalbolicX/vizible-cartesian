@@ -34,6 +34,7 @@ export class LineChart extends CartesianPlane {
     options: Partial<LineChartOptions> = {}
   ) {
     super(svgSelection, dataset, seriesConfig, options);
+    this._svgSelection.attr("class", "line-chart");
   }
 
   /**
@@ -68,13 +69,13 @@ export class LineChart extends CartesianPlane {
       .data([null])
       .join("g")
       .attr("class", "series")
-      .selectAll<SVGPathElement, unknown>(`.series-${label}`)
+      .selectAll<SVGPathElement, unknown>(`.serie[data-label="${label}"]`)
       .data([data])
       .join(
         (enter) =>
           enter
             .append("path")
-            .attr("class", `series-${label} serie`)
+            .attr("class", "serie")
             .attr("data-label", label)
             .attr("d", linePath)
             .attr("fill", "none")
@@ -121,13 +122,15 @@ export class LineChart extends CartesianPlane {
     // Find the closest data point to the mouse x-coordinate
     // This assumes the xField returns a Date or number that can be scaled
     const { field: xField } = this._xSerie;
+    const [firstRow] = this._dataset;
+
     const closestDatum = this._dataset.reduce((closest, d) => {
       const datumX = this._xScale(xField(d) as number | Date);
       const closestX = this._xScale(xField(closest) as number | Date);
       return Math.abs(datumX - mouseX) < Math.abs(closestX - mouseX)
         ? d
         : closest;
-    }, this._dataset[0]);
+    }, firstRow);
 
     const cursorGroup = this._svgSelection
       .selectAll(".cursor")

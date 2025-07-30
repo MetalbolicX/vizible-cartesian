@@ -35,6 +35,7 @@ export class TimeChart extends LineChart {
     options: Partial<LineChartOptions> = {}
   ) {
     super(svgSelection, dataset, seriesConfig, options);
+    this._svgSelection.attr("class", "time-chart");
   }
 
   /**
