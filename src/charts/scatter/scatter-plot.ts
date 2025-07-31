@@ -96,12 +96,6 @@ export class ScatterChart extends CartesianPlane {
             .attr("r", 0)
             .attr("cx", ({ x }) => this._xScale(x))
             .attr("cy", ({ y }) => this._yScale(y))
-            .call((selection) =>
-              selection
-              .append("title")
-              .attr("class", "tooltip")
-              .text(({ y }) => y.toString())
-            )
             .transition()
             .duration(transitionTime)
             .attr("r", ({ radius }) => radius),
