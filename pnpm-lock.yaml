@@ -11,13 +11,13 @@ importers:
       d3:
         specifier: ^7.9.0
         version: 7.9.0
-      tipviz:
-        specifier: ^1.0.0
-        version: 1.0.0(d3@7.9.0)
     devDependencies:
       '@types/d3':
         specifier: ^7.4.3
         version: 7.4.3
+      tipviz:
+        specifier: ^1.0.0
+        version: 1.0.0(d3@7.9.0)
       tsdown:
         specifier: ^0.12.9
         version: 0.12.9(typescript@5.8.3)

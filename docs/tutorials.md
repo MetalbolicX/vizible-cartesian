@@ -120,9 +120,13 @@ chart.renderXAxis();
 chart.renderLegend(20, { x: 600, y: 20 });
 ```
 
+This code creates a custom scatter plot with two series. The first series uses a circle icon because the icon key is not specified, while the second series uses a heart shape icon.
+
 ## Working with Other Libraries
 
-`vizible-cartesian` can be integrated with other libraries like [`D3Snap`](https://github.com/MetalbolicX/d3-snap) that only needs a svg container for server-side rendering.
+### Server-Side Rendering with D3Snap
+
+`vizible-cartesian` can be integrated with other libraries like [`D3Snap`](https://www.npmjs.com/package/d3-snap) which is a library to create server-side rendered D3 visualizations.
 
 ```ts
 import { D3Snap } from "d3-snap";
@@ -149,4 +153,61 @@ const chart = new TimeChart(data, {
 
 chart.renderSeries(svg);
 console.log("Chart HTML:\n", node.html);
+```
+
+This code snippet demonstrates how to create a time series chart using `vizible-cartesian` and render it as an HTML string using `D3Snap`. The chart is created with sales and cost data, and the resulting SVG can be used in server-side rendering scenarios or a static chart snapshot.
+
+### Creating a Scatter Plot with Hover Effects and Tooltips
+
+In this example, we'll create the tooltip using the [`TipViz`](https://www.npmjs.com/package/tipviz) library, which provides a simple way to create tooltips for D3 visualizations.
+
+1. Create a new TypeScript file called `scatter.ts` and add the following code:
+
+```ts
+import { select, tsv } from "d3";
+import { ScatterChart } from "vizible-cartesian";
+import { TipViz } from "tipviz";
+
+const data = await tsv(
+  "https://raw.githubusercontent.com/Apress/create-web-charts-w-d3/refs/heads/master/D3Charts/charts_CDN/data_09.tsv",
+  (d) => ({
+    time: parseInt(d.time, 10),
+    intensity: Number(d.intensity),
+    group: d.group,
+  })
+);
+
+const svg = document!.querySelector("svg") as SVGSVGElement;
+const selection = select(svg);
+
+const chart = new ScatterChart(selection, data, {
+  xSerie: { field: ({ time }) => time as number, label: "Time" },
+  ySeries: [
+    {
+      field: ({ intensity }) => intensity as number,
+      color: "#1f77b4",
+      label: "Intensity",
+      radii: 5,
+    }
+  ],
+});
+
+chart.renderSeries();
+chart.renderYAxis();
+chart.renderXAxis();
+chart.renderLegend(20, { x: 600, y: 20 });
+```
+
+2.. Add the tooltip functionality using `TipViz`:
+
+```ts
+const tooltip = new TipViz(selection);
+
+chart.on("mouseover", (event, d) => {
+  tooltip.show(event, d);
+});
+
+chart.on("mouseout", () => {
+  tooltip.hide();
+});
 ```
