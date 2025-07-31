@@ -64,8 +64,14 @@ export class CustomScatterChart extends ScatterChart {
       radius:
         typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
       icon: d["icon"] ?? icon,
-      label
+      label,
     }));
+
+    const transitionTime =
+      !this._options.isChartStatic && this._options.transitionTime
+        ? this._options.transitionTime
+        : 0;
+
     this._svgSelection
       .selectAll<SVGGElement, unknown>(".series")
       .data([null])
@@ -73,28 +79,53 @@ export class CustomScatterChart extends ScatterChart {
       .attr("class", "series")
       .selectAll<
         SVGPathElement,
-        { x: number; y: number; color: string; radius: number; icon: string, label: string }
+        {
+          x: number;
+          y: number;
+          color: string;
+          radius: number;
+          icon: string;
+          label: string;
+        }
       >(`.scatter-point[data-label="${label}"]`)
       .data(data)
-      .join("path")
-      .attr("class", "scatter-point")
-      .attr("data-label", ({ label }) => label)
-      .attr("d", ({ icon, radius }) => {
-        if (typeof icon === "string" && icon.length > 0) {
-          return icon;
-        }
-        // Draw a circle path as fallback
-        return `M 0 0 m -${radius}, 0 a ${radius},${radius} 0 1,0 ${
-          2 * radius
-        },0 a ${radius},${radius} 0 1,0 -${2 * radius},0`;
-      })
-      .attr("fill", ({ color }) => color)
-      .attr(
-        "transform",
-        ({ x, y }) =>
-          `translate(${this._xScale(x as number)},${this._yScale(
-            y
-          )}) scale(${size})`
+      .join(
+        (enter) =>
+          enter
+            .append("path")
+            .attr("class", "scatter-point")
+            .attr("data-label", ({ label }) => label)
+            .attr("d", ({ icon, radius }) => {
+              if (typeof icon === "string" && icon.length > 0) {
+                return icon;
+              }
+              // Draw a circle path as fallback
+              return `M 0 0 m -${radius}, 0 a ${radius},${radius} 0 1,0 ${
+                2 * radius
+              },0 a ${radius},${radius} 0 1,0 -${2 * radius},0`;
+            })
+            .attr("fill", ({ color }) => color)
+            .transition()
+            .duration(transitionTime)
+            .attr(
+              "transform",
+              ({ x, y }) =>
+                `translate(${this._xScale(x as number)},${this._yScale(
+                  y
+                )}) scale(${size})`
+            ),
+        (update) =>
+          update
+            .transition()
+            .duration(transitionTime)
+            .attr(
+              "transform",
+              ({ x, y }) =>
+                `translate(${this._xScale(x as number)},${this._yScale(
+                  y
+                )}) scale(${size})`
+            ),
+        (exit) => exit.remove()
       );
   }
 
@@ -109,7 +140,13 @@ export class CustomScatterChart extends ScatterChart {
   public override renderSeries(): void {
     for (const { field, color, icon, size, label } of this._ySeries) {
       const validatedSize = typeof size === "number" && size > 0 ? size : 1;
-      this.#renderSerie(field, color ?? "steelblue", icon ?? "", validatedSize, label);
+      this.#renderSerie(
+        field,
+        color ?? "steelblue",
+        icon ?? "",
+        validatedSize,
+        label
+      );
     }
   }
 
