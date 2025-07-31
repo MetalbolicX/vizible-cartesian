@@ -53,7 +53,7 @@ export class LineChart extends CartesianPlane {
       y: yField(d) as number,
       label,
     }));
-    const linePath = line<{ x: number | Date; y: number }>()
+    const linePath = line<{ x: number | Date; y: number; label: string }>()
       .x(({ x }) => this._xScale(x))
       .y(({ y }) => this._yScale(y));
 
