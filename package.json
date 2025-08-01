@@ -1,6 +1,6 @@
 {
   "name": "vizible-cartesian",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A collection of reusable charts that can be used to visualize data in a cartesian coordinate system.",
   "homepage": "https://metalbolicx.github.io/vizible-cartesian/",
   "type": "module",
