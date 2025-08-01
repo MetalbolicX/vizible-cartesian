@@ -159,9 +159,11 @@ This code snippet demonstrates how to create a time series chart using `vizible-
 
 ### Creating a Scatter Plot with Hover Effects and Tooltips
 
-In this example, we'll create the tooltip using the [`TipViz`](https://www.npmjs.com/package/tipviz) web component, which couples well with D3.js visualizations.
+Most developers working with data visualizations in JavaScript or TypeScript need to create interactive and visually appealing plots. 📊 In this tutorial, you'll learn how to use `visible-cartesian` to create a scatter plot and interactivity with hover effects and custom tooltips powered by the [`TipViz`](https://www.npmjs.com/package/tipviz) web component.
 
-Create the `index.html` file in the root of your project with the following content:
+#### Setting Up the Project 🛠
+
+To get started, create an `index.html` file in the root of your project. This file will serve as the entry point for your scatter plot visualization.
 
 ```html
 <!DOCTYPE html>
@@ -171,6 +173,7 @@ Create the `index.html` file in the root of your project with the following cont
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scatter Plot</title>
     <script type="module" src="scatter.ts"></script>
+    <link rel="stylesheet" href="./scatter.css">
 </head>
 <body>
     <svg width="800" height="600"></svg>
@@ -179,7 +182,11 @@ Create the `index.html` file in the root of your project with the following cont
 </html>
 ```
 
-Create a new TypeScript file called `scatter.ts` and add the following code. First, ensure you have the `tipviz` package installed, the package will be added at the top to register the custom element. Second, we will create a scatter chart using the `ScatterChart` class from `vizible-cartesian`.
+This setup includes an SVG element for rendering the chart and a `<tip-viz-tooltip>` element for displaying tooltips. The CSS file will be used to style the scatter plot and tooltips 🎨.
+
+#### Building the Scatter Plot 📈
+
+Next, create a `scatter.ts` file where you'll implement the scatter plot logic using `vizible-cartesian`. This file will handle data loading, chart creation, and interactivity.
 
 ```ts
 import { select, tsv } from "d3";
@@ -216,9 +223,11 @@ chart.renderYAxis();
 chart.renderXAxis();
 ```
 
-Lets add the tooltip functionality to the scatter points. The `TipVizTooltip` allows to use templates to create the structure of the tooltip in the way you want and style it with CSS.
+This code loads data from a remote TSV file, initializes the scatter chart, and renders the axes and data points 🚀.
 
-The `mouseover.tooltip` and `mouseout.tooltip` events will be used to show and hide the tooltip when hovering over the scatter points.
+#### Adding Tooltips 🖱️
+
+To make your scatter plot more informative, let's add tooltips that appear when you hover over a data point. The `TipViz` web component makes this easy and customizable.
 
 ```ts
 const tooltip = document!.querySelector<TipVizTooltip>("#tooltip");
@@ -226,18 +235,16 @@ if (!tooltip) {
   throw new Error("Tooltip element not found");
 }
 
-// Behind scenes, vizible-cartesian sets the object as { x: number, y: number } object
+// Define the HTML structure for the tooltip
 tooltip.setHtml(({ x, y }) =>
-  /*html*/`
-  <ul class="tooltip-content">
+  `<ul class="tooltip-content">
     <li>Time: ${x}</li>
     <li>Intensity: ${y}</li>
-  </ul>
-`.trim()
+  </ul>`
 );
 
-// Set styles for the tooltip content
-tooltip.setStyles(/*css*/`
+// Style the tooltip for better readability
+tooltip.setStyles(`
   .tooltip-content {
     list-style: none;
     padding: 0;
@@ -253,20 +260,23 @@ tooltip.setStyles(/*css*/`
   .tooltip-content li {
     margin-bottom: 0.3em;
   }
-`.trim());
+`);
 
+// Show and hide the tooltip on hover
 selection
   .selectAll(".scatter-point")
   .on("mouseover.tooltip", ({ target }, d) => {
     if (target.tagName !== "circle") return;
     tooltip.show(d as Record<string, { x: number; y: number }>, target);
   })
-  .on("mouseout.tooltip", () => tooltip.hide())
+  .on("mouseout.tooltip", () => tooltip.hide());
 ```
 
-The hover effect will reduce the opacity of the other points when hovering over a point of certain series, making it easier to focus on the hovered point. The `mouseover.hover` and `mouseout.hover` events will be used to add and remove the `highlight` class to the other points of the same series.
+With these additions, users can easily see detailed information about each data point by hovering over it 🧐.
 
-The `highlight` class will increase the opacity of the not hovered points of the same series to a certain value but not 1, except the point being hovered over.
+#### Adding Hover Effects for Better Focus 🎯
+
+To help users focus on specific data points, you can add hover effects that adjust the opacity of other points in the same series.
 
 ```ts
 selection
@@ -288,34 +298,31 @@ selection
   });
 ```
 
-To hide all points of the same series except the hovered one. We'll create a css file called `scatter.css`.
+This effect dims other points in the same series, making the hovered point stand out 🌟.
 
-We are going to use the pseudo-class `:has()` to reduce the opacity of the points that are not hovered over. Moreover, we will use the `highlight` class to increase the opacity of not hovered points of the same series.
+#### Styling the Scatter Plot with CSS 🎨
+
+Create a `scatter.css` file to style your scatter plot and tooltips. The following CSS uses the `:has()` pseudo-class and a `highlight` class for advanced hover effects:
 
 ```css
 .scatter-point {
   opacity: 0.6;
   cursor: pointer;
   transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 1; /* Full opacity on hovered point */
-  }
 }
-
-/* Hide all points including all of the same category when a point is hovered */
+.scatter-point:hover {
+  opacity: 1;
+}
+/* Dim all points except the hovered one in the same series */
 .series:has(.scatter-point:hover) .scatter-point:not(:hover) {
   opacity: 0.2;
 }
-
-/** Increase opacity for all points with highlight class (same series) as the hovered point */
+/* Slightly increase opacity for highlighted points in the same series */
 .series:has(.scatter-point:hover) .scatter-point.highlight {
   opacity: 0.75;
 }
 ```
 
-Finally, import the CSS file in the `index.html` file:
+This styling ensures your chart is both attractive and user-friendly 🎯.
 
-```html
-<link rel="stylesheet" href="./scatter.css">
-```
+By following these steps, you've created a dynamic scatter plot with D3.js and `vizible-cartesian`, enhanced with interactive tooltips and engaging hover effects using `TipViz` 🏆. These techniques not only improve the user experience but also make your data visualizations more insightful and professional.
