@@ -305,7 +305,7 @@ renderCursor(): void;
 ```
 
 > [!Note]
-> - The cursor functionality is only available for dynamic charts. If the chart is static, this method does nothing. The cursor will display the nearest data point values when the mouse moves over the chart area.
+> - The cursor functionality is only available for dynamic charts and line charts. If the chart is static, this method does nothing. The cursor will display the nearest data point values when the mouse moves over the chart area.
 > - To style the cursor, you can use the `.cursor` class in your CSS. For example:
 > ```css
 > .cursor {
