@@ -1,10 +1,16 @@
 # Tutorials
 
-## Creating a Time Series Chart
+## Basic Usage of `vizible-cartesian` Create a Time Series Chart
 
-1. Follow the steps of the [Getting Started](/getting-started) section and start a project using Vite.
+In this tutorial, you'll learn how to create a basic time series chart using the `vizible-cartesian` library and D3.js. Each step is explained clearly and simply.
 
-2. Create the `index.html` file in the root of your project with the following content:
+### Set Up Your Project 🛠️
+
+Before you start coding, make sure you have a project set up. If you haven't already, follow the Getting Started guide to create a new project using Vite or your preferred setup.
+
+#### Create the HTML File 📝
+
+Create an `index.html` file in the root of your project. This file will serve as the container for your chart.
 
 ```html
 <!DOCTYPE html>
@@ -21,12 +27,17 @@
 </html>
 ```
 
-3. Create a new TypeScript file called `time.ts` and add the following code:
+The `<svg>` element is where your chart will be drawn. The script tag loads your TypeScript code 🖼️.
+
+#### Write the Time Series Chart Code in TypeScript 📊
+
+Create a new file called `time.ts`. This file will load your data, set up the chart, and render it.
 
 ```ts
-import { selectm, tsv } from "d3";
+import { select, tsv } from "d3";
 import { TimeChart } from "vizible-cartesian";
 
+// Parse each row of the data file
 const parseRow = (row) => {
   row.date = new Date(row.date);
   row.america = parseFloat(row.america);
@@ -35,7 +46,8 @@ const parseRow = (row) => {
   return row;
 };
 
-const data = tsv(
+// Load the data from a remote TSV file
+const data = await tsv(
   "https://raw.githubusercontent.com/Apress/create-web-charts-w-d3/refs/heads/master/D3Charts/charts_local/data_02.tsv",
   parseRow
 );
@@ -43,22 +55,15 @@ const data = tsv(
 const svg = document!.querySelector("svg") as SVGSVGElement;
 const selection = select(svg);
 
+// Create the chart with configuration
 const chart = new TimeChart(
   selection,
-  await data,
+  data,
   {
     xSerie: { field: ({ date }) => date as Date, label: "Date" },
     ySeries: [
-      {
-        field: ({ america }) => america as number,
-        color: "#1f77b4",
-        label: "America",
-      },
-      {
-        field: ({ europa }) => europa as number,
-        color: "#ff7f0e",
-        label: "Europa",
-      },
+      { field: ({ america }) => america as number, color: "#1f77b4", label: "America" },
+      { field: ({ europa }) => europa as number, color: "#ff7f0e", label: "Europa" },
       { field: ({ asia }) => asia as number, color: "#2ca02c", label: "Asia" },
     ],
   },
@@ -68,6 +73,7 @@ const chart = new TimeChart(
   }
 );
 
+// Render the chart elements
 chart.renderXAxis("%d %b");
 chart.renderYAxis();
 chart.renderSeries();
@@ -78,49 +84,18 @@ chart.renderXAxisLabel("Date");
 chart.renderCursor();
 ```
 
-This code creates a time series chart. It sets up the data, initializes the chart, and renders the axes, series, legend, and labels.
+**What does this code do?**
 
-## Creating a Custom Scatter Plot
+- Loads time series data from a TSV file.
+- Sets up the chart with three series: America, Europa, and Asia.
+- Renders axes, lines, a legend, and labels for a complete chart.
+- Adds a cursor for interactive exploration 🕵️.
 
-1. Create a new TypeScript file called `scatter.ts` and add the following code:
+#### See Your Chart in Action! 🚀
 
-```ts
-import { select } from "d3";
-import { CustomScatterChart } from "vizible-cartesian";
+Open your `index.html` file in a browser. You should see a colorful time series chart, with each line representing a different region. Hover over the chart to explore the data with the interactive cursor.
 
-const data = [
-  { x: 1, y: 2, z: 4 },
-  { x: 2, y: 3, z: 5 },
-  { x: 3, y: 5, z: 6 },
-  { x: 4, y: 7, z: 8 },
-];
-
-const svg = document!.querySelector("svg") as SVGSVGElement;
-const selection = select(svg);
-const chart = new CustomScatterChart(selection, data,  {
-  xSerie: { field: ({ x }) => x as number, label: "X Axis" },
-  ySeries: [
-    // No icon key is used, a circle will be displayed
-    { field: ({ y }) => y as number, label: "Y Axis", color: "steelblue" },
-    {
-      field: ({ z }) => z as number,
-      label: "Z Axis",
-        color: "orange",
-        // The icon will draw a heart shape
-        icon: "M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z",
-        size: 0.6,
-      },
-    ],
-  },
-);
-
-chart.renderSeries();
-chart.renderYAxis();
-chart.renderXAxis();
-chart.renderLegend(20, { x: 600, y: 20 });
-```
-
-This code creates a custom scatter plot with two series. The first series uses a circle icon because the icon key is not specified, while the second series uses a heart shape icon.
+You've created your first time series chart using D3.js and `vizible-cartesian`. This chart is a solid foundation for exploring more advanced visualizations. As you continue learning, try changing the data, colors, or labels to make the chart your own.
 
 ## Working with Other Libraries
 
