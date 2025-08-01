@@ -1,10 +1,12 @@
 # Tutorials
 
-## Basic Usage of `vizible-cartesian` Create a Time Series Chart
+## Basic Usage of `vizible-cartesian`
+
+### Create a Time Series Chart
 
 In this tutorial, you'll learn how to create a basic time series chart using the `vizible-cartesian` library and D3.js. Each step is explained clearly and simply.
 
-### Set Up Your Project 🛠️
+#### Set Up Your Project 🛠️
 
 Before you start coding, make sure you have a project set up. If you haven't already, follow the Getting Started guide to create a new project using Vite or your preferred setup.
 

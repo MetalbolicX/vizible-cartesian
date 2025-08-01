@@ -122,44 +122,6 @@ export class ScatterChart extends CartesianPlane {
     }
   }
 
-  /**
-   * Handles hover interaction on a scatter point.
-   * When a point is hovered for a certain delay, reduces opacity of other series.
-   * @param event - MouseEvent from the hover action.
-   */
-  #handleHoverSerie = ({ target }: MouseEvent): void => {
-    if (
-      !(
-        target instanceof SVGElement &&
-        target.classList.contains("scatter-point")
-      )
-    )
-      return;
-
-    const label = target.dataset.label;
-    this._svgSelection
-      .selectAll<SVGCircleElement, unknown>(
-        `.scatter-point[data-label="${label}"]`
-      )
-      .filter(function () {
-        return this !== target;
-      })
-      .classed("highlight", true);
-  };
-
-  #handleUnhoverSerie = () => {
-    this._svgSelection
-      .selectAll<SVGCircleElement, unknown>(".highlight")
-      .classed("highlight", false);
-  };
-
-  public hoverEffect(): void {
-    if (this._options.isChartStatic) return;
-    this._svgSelection
-      .on("mouseover", this.#handleHoverSerie)
-      .on("mouseout", this.#handleUnhoverSerie);
-  }
-
   protected override get _ySeries() {
     return [...this.#ySeries];
   }
