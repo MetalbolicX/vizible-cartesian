@@ -159,14 +159,33 @@ This code snippet demonstrates how to create a time series chart using `vizible-
 
 ### Creating a Scatter Plot with Hover Effects and Tooltips
 
-In this example, we'll create the tooltip using the [`TipViz`](https://www.npmjs.com/package/tipviz) library, which provides a simple way to create tooltips for D3 visualizations.
+In this example, we'll create the tooltip using the [`TipViz`](https://www.npmjs.com/package/tipviz) web component, which couples well with D3.js visualizations.
 
-1. Create a new TypeScript file called `scatter.ts` and add the following code:
+Create the `index.html` file in the root of your project with the following content:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot</title>
+    <script type="module" src="scatter.ts"></script>
+</head>
+<body>
+    <svg width="800" height="600"></svg>
+    <tip-viz id="tooltip"></tip-viz>
+</body>
+</html>
+```
+
+Create a new TypeScript file called `scatter.ts` and add the following code. First, ensure you have the `tipviz` package installed, the package will be added at the top to register the custom element. Second, we will create a scatter chart using the `ScatterChart` class from `vizible-cartesian`.
 
 ```ts
 import { select, tsv } from "d3";
-import { ScatterChart } from "vizible-cartesian";
-import { TipViz } from "tipviz";
+import { ScatterChart } from "../src/index.ts";
+import "tipviz"; // This side-effect import registers the custom element
+import { type TipVizTooltip } from "tipviz"; // Help for TypeScript to recognize the custom element
 
 const data = await tsv(
   "https://raw.githubusercontent.com/Apress/create-web-charts-w-d3/refs/heads/master/D3Charts/charts_CDN/data_09.tsv",
@@ -188,26 +207,115 @@ const chart = new ScatterChart(selection, data, {
       color: "#1f77b4",
       label: "Intensity",
       radii: 5,
-    }
+    },
   ],
 });
 
 chart.renderSeries();
 chart.renderYAxis();
 chart.renderXAxis();
-chart.renderLegend(20, { x: 600, y: 20 });
 ```
 
-2.. Add the tooltip functionality using `TipViz`:
+Lets add the tooltip functionality to the scatter points. The `TipVizTooltip` allows to use templates to create the structure of the tooltip in the way you want and style it with CSS.
+
+The `mouseover.tooltip` and `mouseout.tooltip` events will be used to show and hide the tooltip when hovering over the scatter points.
 
 ```ts
-const tooltip = new TipViz(selection);
+const tooltip = document!.querySelector<TipVizTooltip>("#tooltip");
+if (!tooltip) {
+  throw new Error("Tooltip element not found");
+}
 
-chart.on("mouseover", (event, d) => {
-  tooltip.show(event, d);
-});
+// Behind scenes, vizible-cartesian sets the object as { x: number, y: number } object
+tooltip.setHtml(({ x, y }) =>
+  /*html*/`
+  <ul class="tooltip-content">
+    <li>Time: ${x}</li>
+    <li>Intensity: ${y}</li>
+  </ul>
+`.trim()
+);
 
-chart.on("mouseout", () => {
-  tooltip.hide();
-});
+// Set styles for the tooltip content
+tooltip.setStyles(/*css*/`
+  .tooltip-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8em;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    padding: 0.5em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .tooltip-content li {
+    margin-bottom: 0.3em;
+  }
+`.trim());
+
+selection
+  .selectAll(".scatter-point")
+  .on("mouseover.tooltip", ({ target }, d) => {
+    if (target.tagName !== "circle") return;
+    tooltip.show(d as Record<string, { x: number; y: number }>, target);
+  })
+  .on("mouseout.tooltip", () => tooltip.hide())
+```
+
+The hover effect will reduce the opacity of the other points when hovering over a point of certain series, making it easier to focus on the hovered point. The `mouseover.hover` and `mouseout.hover` events will be used to add and remove the `highlight` class to the other points of the same series.
+
+The `highlight` class will increase the opacity of the not hovered points of the same series to a certain value but not 1, except the point being hovered over.
+
+```ts
+selection
+  .on("mouseover.hover", (evt) => {
+    const target = evt.target as SVGCircleElement;
+    if (!target.classList.contains("scatter-point")) return;
+    const label = target.getAttribute("data-label");
+    selection
+      .selectAll<SVGCircleElement, Record<string, { x: number; y: number }>>(
+        `.scatter-point[data-label="${label}"]`
+      )
+      .filter(function () {
+        return this !== target;
+      })
+      .classed("highlight", true);
+  })
+  .on("mouseout.hover", () => {
+    selection.selectAll(".scatter-point.highlight").classed("highlight", false);
+  });
+```
+
+To hide all points of the same series except the hovered one. We'll create a css file called `scatter.css`.
+
+We are going to use the pseudo-class `:has()` to reduce the opacity of the points that are not hovered over. Moreover, we will use the `highlight` class to increase the opacity of not hovered points of the same series.
+
+```css
+.scatter-point {
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1; /* Full opacity on hovered point */
+  }
+}
+
+/* Hide all points including all of the same category when a point is hovered */
+.series:has(.scatter-point:hover) .scatter-point:not(:hover) {
+  opacity: 0.2;
+}
+
+/** Increase opacity for all points with highlight class (same series) as the hovered point */
+.series:has(.scatter-point:hover) .scatter-point.highlight {
+  opacity: 0.75;
+}
+```
+
+Finally, import the CSS file in the `index.html` file:
+
+```html
+<link rel="stylesheet" href="./scatter.css">
 ```
