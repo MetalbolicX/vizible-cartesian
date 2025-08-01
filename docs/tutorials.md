@@ -177,7 +177,8 @@ To get started, create an `index.html` file in the root of your project. This fi
 </head>
 <body>
     <svg width="800" height="600"></svg>
-    <tip-viz id="tooltip"></tip-viz>
+    <tip-viz-tooltip id="tooltip"></tip-viz-tooltip>
+    <script type="module" src="scatter.ts" lang="ts"></script>
 </body>
 </html>
 ```
@@ -190,7 +191,7 @@ Next, create a `scatter.ts` file where you'll implement the scatter plot logic u
 
 ```ts
 import { select, tsv } from "d3";
-import { ScatterChart } from "../src/index.ts";
+import { ScatterChart } from "vizible-cartesian";
 import "tipviz"; // This side-effect import registers the custom element
 import { type TipVizTooltip } from "tipviz"; // Help for TypeScript to recognize the custom element
 
@@ -273,6 +274,9 @@ selection
 ```
 
 With these additions, users can easily see detailed information about each data point by hovering over it 🧐.
+
+> [!Warning]
+> The `visible-cartesian` library creates a new object for each data point, so the `d` parameter is and object which keys are `x`,`y` and `label` to use with `TipViz` templating.
 
 #### Adding Hover Effects for Better Focus 🎯
 
