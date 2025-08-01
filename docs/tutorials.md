@@ -126,36 +126,113 @@ This code creates a custom scatter plot with two series. The first series uses a
 
 ### Server-Side Rendering with D3Snap
 
-`vizible-cartesian` can be integrated with other libraries like [`D3Snap`](https://www.npmjs.com/package/d3-snap) which is a library to create server-side rendered D3 visualizations.
+For developers who want to generate charts on the server—perhaps for static sites, PDFs, or emails—server-side rendering is a valuable technique. In this section, you'll learn how to create a custom scatter plot using `vizible-cartesian` and render it server-side with the help of the [`D3Snap`](https://www.npmjs.com/package/d3-snap) library.
+
+#### Install the Required Packages 🛠
+
+<!-- tabs:start -->
+
+#### **npm**
+
+```sh
+npm i d3 vizible-cartesian d3-snap
+```
+
+#### **pnpm**
+
+```sh
+pnpm add d3 vizible-cartesian d3-snap
+```
+
+#### **yarn**
+
+```sh
+yarn add d3 vizible-cartesian d3-snap
+```
+
+#### **bun**
+
+```sh
+bun add d3 vizible-cartesian d3-snap
+```
+
+#### **deno**
+
+```sh
+deno add --npm d3 vizible-cartesian d3-snap
+```
+
+<!-- tabs:end -->
+
+This will provide you with all the tools needed for both chart creation and server-side SVG rendering.
+
+#### Create the Custom Scatter Plot and Prepare your Data 📊
+
+Start by importing the necessary modules in your TypeScript file. For this example, you'll use the CustomScatterChart from vizible-cartesian and the D3Snap class for server-side SVG creation.
 
 ```ts
 import { D3Snap } from "d3-snap";
-import { TimeChart } from "vizible-cartesian";
+import { CustomScatterChart } from "vizible-cartesian";
+import { select } from "d3";
+```
 
+Next, define your data. Here, each data point has `x`, `y`, and `z` values, with `z` being visualized using a custom heart-shaped icon ❤.
+
+```ts
+const data = [
+  { x: 1, y: 2, z: 4 },
+  { x: 2, y: 3, z: 5 },
+  { x: 3, y: 5, z: 6 },
+  { x: 4, y: 7, z: 8 },
+];
+```
+
+#### Create the Server-Side SVG Context 🖥️
+
+With D3Snap, you can create an SVG element entirely in Node.js (or any server environment). This SVG can then be passed to your chart for rendering.
+
+```ts
 const node = new D3Snap();
 const svg = node.createSVG(800, 600);
+const selection = select(svg);
+```
 
-const data = [
-  { date: new Date("2023-01-01"), sales: 100, cost: 80 },
-  { date: new Date("2023-02-01"), sales: 120, cost: 90 },
-  { date: new Date("2023-03-01"), sales: 150, cost: 110 },
-  { date: new Date("2023-04-01"), sales: 170, cost: 130 },
-  { date: new Date("2023-05-01"), sales: 200, cost: 150 },
-];
+#### Build and Render the Custom Scatter Plot 🎨
 
-const chart = new TimeChart(data, {
-  xSerie: { key: "date" },
+Now, instantiate the `CustomScatterChart` and render it into the server-side SVG context. You can specify custom icons, colors, and labels for each series.
+
+```ts
+const chart = new CustomScatterChart(selection, data, {
+  xSerie: { field: ({ x }) => x as number, label: "X Axis" },
   ySeries: [
-    { key: "sales", name: "Sales", color: "blue" },
-    { key: "cost", name: "Cost", color: "orange" },
+    // The first series uses a default circle icon
+    { field: ({ y }) => y as number, label: "Y Axis", color: "steelblue" },
+    // The second series uses a heart-shaped icon
+    {
+      field: ({ z }) => z as number,
+      label: "Z Axis",
+      color: "orange",
+      icon: "M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z",
+      size: 0.6,
+    },
   ],
 });
 
-chart.renderSeries(svg);
+chart.renderSeries();
+chart.renderYAxis();
+chart.renderXAxis();
+chart.renderLegend(20, { x: 600, y: 20 });
+```
+
+#### Output the SVG for Use Anywhere 📄
+
+Once the chart is rendered, you can access the SVG markup as a string. This can be saved to a file, sent in an HTTP response, or embedded in a static site.
+
+```ts
 console.log("Chart HTML:\n", node.html);
 ```
 
-This code snippet demonstrates how to create a time series chart using `vizible-cartesian` and render it as an HTML string using `D3Snap`. The chart is created with sales and cost data, and the resulting SVG can be used in server-side rendering scenarios or a static chart snapshot.
+This approach allows you to generate beautiful, consistent charts on the server, making it easy to automate reporting, create static documentation, or support environments where client-side JavaScript is not available 📝.
 
 ### Creating a Scatter Plot with Hover Effects and Tooltips
 
