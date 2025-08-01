@@ -45,7 +45,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "tipviz": "^1.1.0",
+    "tipviz": "^2.0.0",
     "tsdown": "^0.12.9",
     "typescript": "^5.9.2",
     "vite": "^7.0.6"

@@ -16,8 +16,8 @@ importers:
         specifier: ^7.4.3
         version: 7.4.3
       tipviz:
-        specifier: ^1.1.0
-        version: 1.1.0(d3@7.9.0)
+        specifier: ^2.0.0
+        version: 2.0.0
       tsdown:
         specifier: ^0.12.9
         version: 0.12.9(typescript@5.9.2)
@@ -849,11 +849,9 @@ packages:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
     engines: {node: '>=12.0.0'}
 
-  tipviz@1.1.0:
-    resolution: {integrity: sha512-qEVKd53szUzI5KHFpQAdkHzoQVPEq/Zww5doygMjckdJJVfGDB5IZR9vuOqrOFm8FmohsKBki38BEg14XU743Q==}
+  tipviz@2.0.0:
+    resolution: {integrity: sha512-3nvLM9vblmuaxxx7AT9TAzudtmGvtC5z/B5z7rz9zoPvW2ETHsqS3Vvxi5utG2WFfo4cCDk0BjhzAk4avOxM/Q==}
     engines: {node: '>=18.0.0'}
-    peerDependencies:
-      d3: ^7.9.0
 
   tsdown@0.12.9:
     resolution: {integrity: sha512-MfrXm9PIlT3saovtWKf/gCJJ/NQCdE0SiREkdNC+9Qy6UHhdeDPxnkFaBD7xttVUmgp0yUHtGirpoLB+OVLuLA==}
@@ -1679,10 +1677,7 @@ snapshots:
       fdir: 6.4.6(picomatch@4.0.3)
       picomatch: 4.0.3
 
-  tipviz@1.1.0(d3@7.9.0):
-    dependencies:
-      d3: 7.9.0
-      typescript: 5.9.2
+  tipviz@2.0.0: {}
 
   tsdown@0.12.9(typescript@5.9.2):
     dependencies:
