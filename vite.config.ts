@@ -6,6 +6,7 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       name: "VizibleCartesian",
+      fileName: (format) => `vizible-cartesian.${format}.js`,
       formats: ["es", "umd"]
     },
     rollupOptions: {
@@ -14,8 +15,13 @@ export default defineConfig({
         globals: {
           d3: "d3",
         },
+        exports: "named",
       },
     },
+    outDir: "dist",
+    emptyOutDir: true,
+    sourcemap: true,
+    minify: true,
   },
   plugins: [
     dts({
