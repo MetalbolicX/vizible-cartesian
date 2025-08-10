@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2017", // Modern JS for browser compatibility
+    "module": "ESNext", // Use ES modules for CDN/browser support
+    "declaration": true, // Generate .d.ts files for consumers
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Source directory
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Allow default imports from CommonJS
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "sourceMap": true, // Generate source maps for debugging
+    "jsx": "react-jsx", // In case JSX is used for demos/tests
+    "lib": ["ES2017", "DOM"], // Include DOM types for browser
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "noImplicitAny": false,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "test", "**/*.test.ts"]
+}
