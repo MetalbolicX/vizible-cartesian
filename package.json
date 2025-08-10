@@ -4,17 +4,17 @@
   "description": "A collection of reusable charts that can be used to visualize data in a cartesian coordinate system.",
   "homepage": "https://metalbolicx.github.io/vizible-cartesian/",
   "type": "module",
-  "main": "dist/vizible-cartesian.js",
-  "module": "dist/vizible-cartesian.js",
+  "main": "dist/vizible-cartesian.es.js",
+  "module": "dist/vizible-cartesian.es.js",
   "types": "dist/types/index.d.ts",
   "exports": {
     "require": {
       "types": "./dist/types/index.d.ts",
-      "default": "./dist/vizible-cartesian.umd.cjs"
+      "default": "./dist/vizible-cartesian.umd.js"
     },
     "import": {
       "types": "./dist/types/index.d.ts",
-      "default": "./dist/vizible-cartesian.js"
+      "default": "./dist/vizible-cartesian.es.js"
     }
   },
   "keywords": [
