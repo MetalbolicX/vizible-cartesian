@@ -2,6 +2,91 @@
 
 ## Basic Usage of `vizible-cartesian`
 
+### Create a Numerical Line Chart
+
+The `vizible-cartesian` library is easy to use and it can work with either JavaScript or TypeScript. Sometimes you just want to create a simple line chart to visualize your data without configuring a project. In the section you'll use library via CDN.
+
+#### Set Up Your HTML file
+
+Start by creating an `index.html` file (or use any HTML file). This file will include the necessary CDN links for D3.js and `vizible-cartesian`, and a script to render your chart.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Numerical Line Chart</title>
+    <!-- D3.js CDN -->
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"
+      lang="javascript"
+    ></script>
+    <!-- Vizible Cartesian CDN -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/vizible-cartesian@1.3.3/dist/vizible-cartesian.umd.min.js"
+      lang="javascript"
+    ></script>
+  </head>
+  <body>
+    <figure>
+      <svg width="400" height="400"></svg>
+    </figure>
+    <script type="text/javascript" lang="javascript">
+      // ...chart code will go here...
+    </script>
+  </body>
+</html>
+```
+
+This setup ensures you have all the tools you need right in your browser—no build steps required 🛠️.
+
+#### Add Chart Code
+
+```js
+const { LineChart } = VizibleCartesian;
+const svg = d3.select("svg");
+
+const data = [
+  { x: 1, y: 2 },
+  { x: 2, y: 3 },
+  { x: 3, y: 5 },
+  { x: 4, y: 4 },
+];
+
+const chart = new LineChart(svg, data, {
+  xSerie: { field: ({ x }) => x, label: "X Axis" },
+  ySeries: [
+    { field: ({ y }) => y, label: "Y Axis", color: "tomato" },
+  ],
+});
+
+chart.renderSeries();
+chart.renderXAxis();
+chart.renderYAxis();
+```
+
+This code does the following:
+
+- Selects the SVG element using D3.js.
+- Defines a simple dataset with `x` and `y` values.
+- Creates a new `LineChart` instance from `vizible-cartesian`.
+- Renders the line series, X axis, and Y axis.
+
+With just a few lines of code, you get a fully functional line chart 🎉.
+
+#### View Your Chart in the Browser 👀
+
+Open your HTML file in any modern browser. You should see a clean, responsive line chart displaying your data. Try editing the data array or chart options to customize your visualization. It's that easy ✨.
+
+Why Use the CDN Approach? 🌍
+
+- **No build tools required**: Perfect for quick experiments or sharing examples.
+- **Easy to embed**: Great for documentation, blogs, or educational materials.
+- **Instant feedback**: See your changes live as you edit the HTML file.
+
 ### Create a Time Series Chart
 
 In this tutorial, you'll learn how to create a basic time series chart using the `vizible-cartesian` library and D3.js. Each step is explained clearly and simply.
