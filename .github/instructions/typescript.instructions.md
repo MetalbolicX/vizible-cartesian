@@ -1,107 +1,138 @@
 ---
 applyTo: "**/*.ts, **/*.tsx, **/*.js, **/*.jsx, **/*.mjs, **/*.cjs,"
-description: This document provides guidelines and best practices for writing TypeScript and JavaScript code. It is intended to ensure consistency, readability, and maintainability across the codebase.
+description: Conventions and best practices for writing TypeScript and JavaScript code.
 ---
 # Instructions to write TypeScript/JavaScript code
 
-## General Guidelines
+The next sections provide guidelines and best practices for writing TypeScript and JavaScript code.
+In case of any ambiguity or uncertainty, refer to the examples section.
 
-- Use `ES2022` or greater version of modern JavaSript.
-- Use `ES6` modules syntax (`import` and `export`) instead of CommonJS (`require` and `module.exports`).
-- In JavaScript files, use the `strict` directive at the top.
-- In JavaScript files always use JsDoc when a variable is declared, and for functions and methods of the classes.
-- Always use `===` and `!==` for comparisons instead of `==` and `!=` to avoid type coercion issues.
-- Use `async/await` for asynchronous code instead of callbacks or `.then()` chaining.
-- In TypeScript files, for primitive types, never add the types annotation, because TypeScript will infer the type. For example, use `const name = "Alice";` instead of `const name: string = "Alice";`.
+<general_guidelines>
 
-## Naming Conventions
+- Use `ES2025` or greater version of modern JavaSript.
+- Use `ES6` modules over CommonJS for imports and exports.
+- In JavaScript files, use the `strict` directive. In additions, always use JsDoc when a variable is declared, and in functions and methods of the classes.
+- Always use `===` and `!==` over `==` and `!=`.
+- In TypeScript files, never add the types annotation for primitive types.
+- Use `async` and `await` for asynchronous operations rather than `Promise` or callbacks.
 
+<naming_conventions>
 - Use `camelCase` for variable and function names, and `PascalCase` for class names.
 - Use `UPPER_SNAKE_CASE` for constants.
+</naming_conventions>
 
-## Code Style
+In case needed, see [Examples](ts-examples.instructions.md#general-guidelines)
 
+</general_guidelines>
+
+
+<code_style>
+
+<general_formatting>
 - Always use double quotes for the strings and use semicolon at the end.
-- To concatenate a string, always use template literals.
-- Have preference for the functional programming paradigm rather than the imperative one.
-- Have preference for the functional programming paradigm of immutability, higher order functions, pure functions, etc.
-- You can use the next `curry` function to simulate functional programming.
+- To concatenate a string, always use template literals. And never use the `+` operator. In addition, use template literals for multi-line strings.
+</general_formatting>
 
-```js
-const curry = (fn) => {
-  return function curried(...args) {
-    if (args.length >= fn.length) {
-      return fn(...args);
-    } else {
-      return function(...nextArgs) {
-        return curried(...args, ...nextArgs);
-      };
-    }
-  };
-};
-```
+<codding_paradigms>
+- Use TypeScript features like interfaces, types, and enums to define data structures and types.
+- Use functional programming concepts such as pure functions, immutability, and higher-order functions.
+- Avoid side effects in functions and methods.
+- Use the `pipe` function to compose functions together.
 
-## Variables
+In case needed, see [Examples](ts-examples.instructions.md#coding-paradigms)
 
-- To assigne variable, use `const` keyword. For reassignable variables use `let` and never use `var`. In case a variable dealts with resource management, use `using` keyword. For example, database connections.
+</codding_paradigms>
 
-## Conditions and Loops
+<variable_declaration>
+- By default use `const`, unless you need to reassign the variable, in which case use `let`. Never use `var` keyword.
+- Use the `using` keyword for resource management to ensure proper cleanup of resources.
+- Use `Symbol.asyncDispose` to define an asynchronous cleanup method for resources.
+-
+In case needed, see [Examples](ts-examples.instructions.md#variable-declaration)
 
-- Take advantage of the truthy and falsy values in JavaScript to simplify conditions. For example, instead of checking if a variable is not `null` or `undefined`, you can simply check if it is truthy.
-- Use for simple conditions the ternary operator instead of `if` statements (use for two levels of conditions). For example: `const result = condition ? valueIfTrue : valueIfFalse;`.
-- Use `switch` statements for multiple conditions instead of nested `if`.
-- Use `for of` loop to iterate over arrays and `for in` loop to iterate over objects, for read only purposes. When the iteration is for writing purposes, use `forEach` or other [array methods](#arrays-and-objects).
+</variable_declaration>
+
+<conditionals>
+- Take advantage of the truthy and falsy values.
+- Use for simple conditions the ternary operator instead of `if` statements. Use if for three levels of conditions and for more than four levels of conditions use `switch` statements.
+</conditionals>
+
+<loops>
+- Have preference for `for of` loop to iterate over arrays and `for in` loop to iterate over objects.
 - Never use of `for` loop to fill arrays and use the array method methods.
-- Use `for await...of` to iterate over asynchronous iterables.
+- To iterate for asynchronous operations, use `for await of` loop.
+</loops>
 
-## Arrays and Objects
-
+<arrays>
 - To increase an array use the spread operator and not the `push` method.
-- To create an array with a specific length, use `Array.from` or `Array.fill` instead of a `for` loop. For example:
+- Use `Array.from` to create arrays from iterable objects and `Array.fromAsync` for asynchronous operations.
+- Use the array methods like `map`, `filter`, `reduce`, `find`, `some`, `every`, etc. to manipulate arrays. Do not use `for` loops to manipulate arrays.
+- Use destructuring to extract values from arrays. Verify whether a default value is needed.
+- Do not get the value of an array by index, instead use the `at` method. Especially use the `at` method to get last value of an array.
+- Use the `Array.prototype.flat` or `Array.prototype.flatMap` method to flatten arrays.
+- Use `Array.prototype.fromAsync` to create arrays from asynchronous iterables.
+- When performance is a concern, use the global iterator methods (ES2025) that turn into an iterable data structures like the array to process them.
 
-```ts
-// Not recommended
-const numbers = [];
-for (let i = 0; i < 10; i++) {
-  numbers.push(i);
-}
+In case needed, see [Examples](ts-examples.instructions.md#arrays)
 
-// Recommended
-const numbers = Array.from({ length: 10 }, (_, i) => i);
-```
+</arrays>
 
-- To create asynchronous arrays, use the new `Array.fromAsync` method.
-- Use the array methods like `map`, `filter`, `reduce`, `find`, `some`, `every`, etc. to manipulate arrays and objects.
-- To update the information of an object using the spread operator instead of mutating the object directly.
-- Use destructuring to extract values from arrays and objects. For example:
+<object_literals>
+- Use the spread operator to copy or merge objects and update or extend existing properties.
+- Use destructuring to extract values from objects. Verify whether a default value is needed.
+- Use `Object.fromEntries` to convert an array of key-value pairs into an object.
+- Use `Object.entries`, `Object.keys`, and `Object.values` to iterate over objects.
 
-```ts
-const person = { name: "Alice", age: 30, city: "Wonderland" };
-const { name, age } = person; // Destructuring an object
-const numbers = [1, 2, 3, 4, 5];
-const [first, second, ...rest] = numbers; // Destructuring an array
-```
+In case needed, see [Examples](ts-examples.instructions.md#object-literals)
 
-- Avoid to get the value of an array by index, instead use the `at` method. Especially use the `at` method to get last value of an array. For example: `const lastItem = items.at(-1);`.
+</object_literals>
 
-## Functions
 
-- Write arrow functions over normal functions and take advantage of the implicit return. For example: `const add = (a: number, b: number): number => a + b;`.
-- For complex functions, add JsDoc comments to describe the function's purpose, parameters, and return value.
-- When anonymous functions are used to process arrays, try to keep in one line and reduce the use of curly braces and `return` statements.
-- Use default parameters for functions to provide default values. For example: `const greet = (name: string = "World"): string => \`Hello, ${name}!\`;`.
-- Use rest parameters to handle variable number of arguments. For example: `const sum = (...numbers: number[]): number => numbers.reduce((total, num) => total + num, 0);`.
-- Use destructuring in function parameters to extract values from objects and arrays. For example:
+<functions>
+  - Write arrow functions over normal functions and take advantage of the implicit return.
+  - When anonymous functions are used to process arrays, try to keep in one line and reduce the use of curly braces and `return` statements.
+  - Use default parameters for functions to provide default values.
+  - Use rest parameters to handle variable number of arguments.
+  - Use destructuring in function parameters to extract values from objects and arrays.
 
-```ts
-// Functions with destructured parameters
-const printPerson = ({ name, age, city }): void =>
-  console.log(`Name: ${name}, Age: ${age}, City: ${city}`);
+In case needed, see [Examples](ts-examples.instructions.md#functions)
 
-const printCoordinates = ([x, y]: [number, number]): void =>
-  console.log(`X: ${x}, Y: ${y}`);
-```
+</functions>
 
-- Use optional chaining (`?.`) to safely access nested properties without throwing an error if a property is `null` or `undefined`. For example: `const value = obj?.property?.subProperty;`.
-- Use nullish coalescing operator (`??`) to provide a default value when dealing with `null` or `undefined`. For example: `const value = obj?.property ?? "default";`.
-- Take advantage of the nullish (`??=`), OR (`||=`) and AND (`&&=`) assigment operators.
+<error_handling>
+- Use the `throw` statement to throw custom errors.
+- Use optional chaining (`?.`) to safely access nested properties without throwing an error if a property is `null` or `undefined`.
+- Use nullish coalescing operator (`??`) to provide a default value when dealing with `null` or `undefined`.
+- Take advantage of the logical assignment operators (`&&=`, `||=`, `??=`) to conditionally assign values.
+- For error handling, use the `tryCatch` pattern for synchronous code to simulate Go's error handling.
+- Uses of `Promise.try` can be used to handle asynchronous operations in a more readable way, similar to the `try` block in synchronous code.
+- Use `async/await` wrapper to avoid repeating `catch` blocks.
+- Use `Promise.all` for parallelism.
+- Use the queue pattern for process that needs to be done one by one or controlled batches.
+- Use debounced async calls to limit the rate of function execution.
+- Use the timeout wrapper to ensure a function doesn't hang forever.
+- Use chained async reducers to execute a series of asynchronous operations in sequence.
+- Use cancelable promises when you need to abort ongoing asynchronous operations.
+- Use the event emitter pattern to handle asynchronous decoupling.
+- Use state machines to manage complex asynchronous states and model asynchronous transitions clearly.
+- Use asynchronous generators for streaming and batching to handle infinite or chunked data without blocking.
+
+In case needed, see [Examples](ts-examples.instructions.md#error-handling)
+
+</error_handling>
+
+
+<node_js>
+- Use the `node:` prefix for built-in Node.js modules to avoid conflicts with user-defined modules.
+- Use the `import.meta` object to access metadata about the current module, such as the URL of the module.
+</node_js>
+
+<web_api>
+- Never use the `innerHTML` to set or get HTML content. Instead, use `textContent` for text content and `document.createRange().createContextualFragment(htmlString)` for HTML strings.
+- Use the `CSSStyleSheet` interface to create and manipulate stylesheets. Use `CSSStyleRule` to create and manipulate CSS rules and the method `replaceSync(cssString)` to replace the content of a stylesheet.
+
+In case needed, see [Examples](ts-examples.instructions.md#web-api)
+
+</web_api>
+
+</code_style>

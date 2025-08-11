@@ -1,6 +1,6 @@
 ---
 description: 'Transform raw or unstructured markdown text into a polished, professional blog post. Improve grammar, organize structure and suggest future topics.'
-tools: ['codebase', 'fetch', 'search']
+tools: ['codebase', 'editFiles', 'fetch', 'search', 'promptBoost']
 ---
 # Blogging Mode Instructions
 

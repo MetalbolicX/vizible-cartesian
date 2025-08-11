@@ -2,36 +2,68 @@
 applyTo: "**"
 description: General guidelines and best practices for writing code.
 ---
-
-# Project Overview
-
-The `vizible` project is a d3.js is a collection of the reusable chart builders written in TypeScript that aims to simplify the process of creating interactive and customizable data visualizations. Focused on the static charts.
-
-## Technology Stack
-
-- TypeScript.
-- D3.js version 7.
-
 # General Guidelines for Writing Code
 
-## General Guidelines
+<general_guidelines>
 
-- Always verify information before presenting it. Do not make assumptions or speculate without clear evidence.
-- Make changes file by file and allow for review of mistakes.
+- Do not make assumptions or speculate without clear evidence. Verify or clarify requirements before proceeding.
+- Make changes file by file.
 - Never use apologies or give feedback about understanding in comments or documentation.
-- Don't suggest whitespace changes or summarize changes made
+- Do not suggest whitespace changes or summarize the changes made.
 - Prioritize code performance and security in suggestions.
-- Implement robust error handling and logging where necessary.
+- Analyze potential error scenarios and implement robust error handling and user-friendly messages.
 - Encourage modular design for maintainability and reusability.
 - Replace hardcoded values with named constants.
-- Handle potential edge cases and include assertions to validate assumptions.
 
-## Apply clean code principles and best practices
+<example>
+```ts
+const TAX_RATE = 0.2;
+
+function calculateTotal(price: number): number {
+  return price + price * TAX_RATE;
+}
+```
+</example>
+
+</general_guidelines>
+
+<clean_code>
+<naming_conventions>
 
 - For boolean data types, use names that simulate a question such as `hasOne`, `isAtLeastOne`, `isValid`, `isEmpty`, etc.
-- For functions, use names that simulate an action such as `validateUser`, etc.
-- Avoid using abbreviations or acronyms in names unless they are widely recognized (e.g., `HTML`, `URL`, `API`) or they are part of a convention by a given context. For example:
+- Use meaningful names that describe the purpose of the variable, function, or class.
 
+<example>
+```ts
+// Bad naming
+const x = true; // Not descriptive
+const a = 5; // Not descriptive
+const fruits = ["apple", "banana"]; // Not descriptive
+
+
+  // Good naming
+const isUserLoggedIn = true;
+const maxRetryAttempts = 5;
+function fetchUserData(userId: string): UserData {
+  // Fetch user data logic
+}
+const fruitNames = ["apple", "banana"]; // More descriptive
+const userProfile = {
+  name: "John Doe",
+  age: 30,
+  isActive: true
+};
+const fruits = [
+  { name: "apple", color: "red" },
+  { name: "banana", color: "yellow" }
+]; // Context provides more data
+```
+</example>
+
+- For functions, use names that simulate an action such as `validateUser`, etc.
+- Avoid using acronyms in names unless they are widely recognized (e.g., `HTML`, `URL`, `API`) or they are part of a convention by a given context.
+
+<example>
 ```js
 // In d3.js a callback uses d, i, ns to refer to data, index, and elements in an array respectively.
 d3.select("body")
@@ -47,9 +79,13 @@ const display = {
   fgColor: "black",
 };
 ```
+</example>
+
+</naming_conventions>
 
 - Avoid the use of nested `if` statements and take advantage of early return.
 
+<example>
 ```ts
 // Recommended
 function processData(data: DataType): ResultType {
@@ -61,19 +97,6 @@ function processData(data: DataType): ResultType {
   return result;
 }
 ```
+</example>
 
-- Use meaningful names that describe the purpose of the variable, function, or class.
-
-```ts
-// Example of a meaningful function name
-function calculateTotalPrice(items: Item[]): number {
-  return items.reduce((total, item) => total + item.price, 0);
-}
-
-// Name related to the context
-// It's a incorrect name, because the elements are
-// names of fruits. It would be better to use `fruitNames` as name.
-// The name `fruits` would be better for an array of
-// object with fruit data
-const fruits = ["apple", "banana", "cherry"];
-```
+</clean_code>
