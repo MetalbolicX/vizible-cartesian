@@ -1,13 +1,16 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
+import { join } from "node:path";
+
+const dirname = import.meta.dirname ?? ".";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/index.ts",
+      entry: join(dirname, "src", "index.ts"),
       name: "VizibleCartesian",
+      formats: ["es", "umd", "cjs"],
       fileName: (format) => `vizible-cartesian.${format}.js`,
-      formats: ["es", "umd"]
     },
     rollupOptions: {
       external: ["d3"],
@@ -15,18 +18,15 @@ export default defineConfig({
         globals: {
           d3: "d3",
         },
-        exports: "named",
       },
     },
     outDir: "dist",
     emptyOutDir: true,
-    sourcemap: true,
     minify: true,
   },
   plugins: [
     dts({
       entryRoot: "src",
-      outDir: "dist/types",
       insertTypesEntry: true,
     }),
   ],
