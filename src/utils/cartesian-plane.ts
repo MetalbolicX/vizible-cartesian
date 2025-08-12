@@ -154,6 +154,7 @@ export abstract class CartesianPlane {
       .domain(yDomain)
       .range([h - m.bottom, m.top])
       .nice();
+    this._svgSelection.attr("viewBox", `0 0 ${w} ${h}`);
   }
 
   /**
@@ -165,9 +166,7 @@ export abstract class CartesianPlane {
    * chart.renderXAxis(d3.select("svg"), ".2f");
    * ```
    */
-  public renderXAxis(
-    formatCode?: string
-  ): void {
+  public renderXAxis(formatCode?: string): void {
     const { margin, tickSize, tickPadding } = this._options;
     const { height: h } = this._size;
     const axis = axisBottom(this._xScale)
@@ -192,9 +191,7 @@ export abstract class CartesianPlane {
    * @param selection - The D3 selection to append the y-axis to.
    * @param numberFormat - Optional D3 format string (e.g., ".2f").
    */
-  public renderYAxis(
-    numberFormat?: string
-  ): void {
+  public renderYAxis(numberFormat?: string): void {
     const { margin, tickSize, tickPadding } = this._options;
     const axis = axisLeft(this._yScale)
       .tickSize(tickSize)
@@ -324,9 +321,7 @@ export abstract class CartesianPlane {
    * chart.renderChartTitle(d3.select("svg"), "Sales and Cost Over Time");
    * ```
    */
-  public renderChartTitle(
-    title: string
-  ): void {
+  public renderChartTitle(title: string): void {
     const { margin } = this._options;
     const innerWidth = this._innerWidth;
     this._svgSelection
@@ -354,9 +349,7 @@ export abstract class CartesianPlane {
    * chart.renderYAxisLabel(d3.select("svg"), "Sales");
    * ```
    */
-  public renderYAxisLabel(
-    label: string,
-  ): void {
+  public renderYAxisLabel(label: string): void {
     const { margin } = this._options;
     this._svgSelection
       .selectAll<SVGGElement, unknown>(".labels")
@@ -364,14 +357,14 @@ export abstract class CartesianPlane {
       .join("g")
       .attr("class", "labels")
       .selectAll<SVGTextElement, unknown>(".y.axis-label")
-      .data([null])
+      .data([label])
       .join("text")
       .attr("class", "y axis-label")
-      .attr("x", -margin.top)
-      .attr("y", margin.left)
+      .attr("x", -margin.left)
+      .attr("y", margin.top)
       .attr("transform", `rotate(-90, ${margin.left}, ${margin.top})`)
-      .attr("dy", "1.2em")
-      .text(label);
+      .attr("dy", "1em")
+      .text((d) => d);
   }
 
   /**
@@ -383,9 +376,7 @@ export abstract class CartesianPlane {
    * chart.renderXAxisLabel(d3.select("svg"), "Date");
    * ```
    */
-  public renderXAxisLabel(
-    label: string,
-  ): void {
+  public renderXAxisLabel(label: string): void {
     const { margin } = this._options;
     const innerWidth = this._innerWidth;
     const innerHeight = this._innerHeight;

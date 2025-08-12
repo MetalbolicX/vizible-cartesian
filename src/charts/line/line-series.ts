@@ -69,6 +69,11 @@ export class LineChart extends CartesianPlane {
       .data([null])
       .join("g")
       .attr("class", "series")
+      .selectAll(`.series-group[data-label="${label}"]`)
+      .data([label])
+      .join("g")
+      .attr("class", "series-group")
+      .attr("data-label", label)
       .selectAll<SVGPathElement, unknown>(`.serie[data-label="${label}"]`)
       .data([data])
       .join(
