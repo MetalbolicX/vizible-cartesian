@@ -38,77 +38,6 @@ export class LineChart extends CartesianPlane {
   }
 
   /**
-   * Draws a single line for a given y series key.
-   * @param yKey - The key of the y series to draw.
-   * @param [lineColor="steelblue"] - The color of the line.
-   */
-  #renderSerie(
-    yField: (data: Record<string, unknown>) => Date | number,
-    lineColor: string = "steelblue",
-    label: string = ""
-  ): void {
-    const { field: xField } = this._xSerie;
-    const data = this._dataset.map((d) => ({
-      x: xField(d) as number | Date,
-      y: yField(d) as number,
-      label,
-    }));
-    const linePath = line<{ x: number | Date; y: number; label: string }>()
-      .x(({ x }) => this._xScale(x))
-      .y(({ y }) => this._yScale(y));
-
-    this._options.isCurved && linePath.curve(curveBasis);
-
-    const transitionTime: number =
-      !this._options.isChartStatic && this._options.transitionTime
-        ? this._options.transitionTime
-        : 0;
-
-    // this._svgSelection
-    //   .selectAll<SVGGElement, unknown>(".series")
-    //   .data([null])
-    //   .join("g")
-    //   .attr("class", "series")
-    //   .selectAll(`.series-group[data-label="${label}"]`)
-    //   .data([label])
-    //   .join("g")
-    //   .attr("class", "series-group")
-    //   .attr("data-label", label)
-    this._svgSelection
-      .selectAll<SVGPathElement, unknown>(`.serie[data-label="${label}"]`)
-      .data([data])
-      .join(
-        (enter) =>
-          enter
-            .append("path")
-            .attr("class", "serie")
-            .attr("data-label", label)
-            .attr("d", linePath)
-            .attr("fill", "none")
-            .attr("stroke", lineColor)
-            .call((path) => {
-              // Animate the path drawing from start to end
-              const node = path.node();
-              if (!node) return;
-              const totalLength = node.getTotalLength();
-              path
-                .attr("stroke-dasharray", totalLength)
-                .attr("stroke-dashoffset", totalLength)
-                .transition()
-                .duration(transitionTime)
-                .attr("stroke-dashoffset", 0);
-            }),
-        (update) =>
-          update
-            .transition()
-            .duration(transitionTime)
-            .attr("stroke", lineColor)
-            .attr("d", linePath),
-        (exit) => exit.remove()
-      );
-  }
-
-  /**
    * Handles the cursor movement and updates the cursor line and points.
    * @param event - The mouse event triggering the cursor update.
    */
@@ -210,6 +139,8 @@ export class LineChart extends CartesianPlane {
     const lineGenerator = line<{ x: number | Date; y: number }>()
       .x(({ x }) => this._xScale(x))
       .y(({ y }) => this._yScale(y));
+
+    this._options.isCurved && lineGenerator.curve(curveBasis);
 
     const transitionTime: number =
       !this._options.isChartStatic && this._options.transitionTime
