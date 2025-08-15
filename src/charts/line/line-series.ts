@@ -222,14 +222,14 @@ export class LineChart extends CartesianPlane {
       .join("g")
       .attr("class", "series-group")
       .attr("data-label", ({ label }) => label)
-      .selectAll(".serie")
+      .selectAll<SVGPathElement, Record<string, unknown>>(".serie")
       .data(({ field, color, label }) => [
         {
           label,
           color: color ?? "steelblue",
           coordinates: this._dataset.map((d) => ({
             x: this._xSerie.field(d),
-            y: field(d),
+            y: field(d) as number,
           })),
         },
       ])
@@ -241,7 +241,6 @@ export class LineChart extends CartesianPlane {
             .attr("data-label", ({ label }) => label)
             .attr("d", ({ coordinates }) => lineGenerator(coordinates))
             .style("stroke", ({ color }) => color)
-            .style("fill", "none") // Add this to ensure paths have no fill
             .each(function () {
               // Animation for each individual path element
               const path = select(this);
@@ -262,10 +261,5 @@ export class LineChart extends CartesianPlane {
             .attr("d", ({ coordinates }) => lineGenerator(coordinates)),
         (exit) => exit.remove()
       );
-    // .join("path")
-    // .attr("class", "serie")
-    // .attr("data-label", ({ label }) => label)
-    // .attr("d", ({ coordinates }) => lineGenerator(coordinates))
-    // .attr("stroke", ({ color }) => color);
   }
 }
