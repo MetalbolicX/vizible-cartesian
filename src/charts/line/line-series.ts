@@ -64,16 +64,17 @@ export class LineChart extends CartesianPlane {
         ? this._options.transitionTime
         : 0;
 
+    // this._svgSelection
+    //   .selectAll<SVGGElement, unknown>(".series")
+    //   .data([null])
+    //   .join("g")
+    //   .attr("class", "series")
+    //   .selectAll(`.series-group[data-label="${label}"]`)
+    //   .data([label])
+    //   .join("g")
+    //   .attr("class", "series-group")
+    //   .attr("data-label", label)
     this._svgSelection
-      .selectAll<SVGGElement, unknown>(".series")
-      .data([null])
-      .join("g")
-      .attr("class", "series")
-      .selectAll(`.series-group[data-label="${label}"]`)
-      .data([label])
-      .join("g")
-      .attr("class", "series-group")
-      .attr("data-label", label)
       .selectAll<SVGPathElement, unknown>(`.serie[data-label="${label}"]`)
       .data([data])
       .join(
@@ -197,8 +198,74 @@ export class LineChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { field, color, label } of this._ySeries) {
-      this.#renderSerie(field, color, label);
-    }
+    // for (const { field, color, label } of this._ySeries) {
+    //   this.#renderSerie(field, color, label);
+    // }
+    const seriesGroup = this._svgSelection
+      .selectAll(".series")
+      .data([null])
+      .join("g")
+      .attr("class", "series");
+
+    const lineGenerator = line<{ x: number | Date; y: number }>()
+      .x(({ x }) => this._xScale(x))
+      .y(({ y }) => this._yScale(y));
+
+    const transitionTime: number =
+      !this._options.isChartStatic && this._options.transitionTime
+        ? this._options.transitionTime
+        : 0;
+
+    seriesGroup
+      .selectAll(".series-group")
+      .data(this._ySeries)
+      .join("g")
+      .attr("class", "series-group")
+      .attr("data-label", ({ label }) => label)
+      .selectAll(".serie")
+      .data(({ field, color, label }) => [
+        {
+          label,
+          color: color ?? "steelblue",
+          coordinates: this._dataset.map((d) => ({
+            x: this._xSerie.field(d),
+            y: field(d),
+          })),
+        },
+      ])
+      .join(
+        (enter) =>
+          enter
+            .append("path")
+            .attr("class", "serie")
+            .attr("data-label", ({ label }) => label)
+            .attr("d", ({ coordinates }) => lineGenerator(coordinates))
+            .style("stroke", ({ color }) => color)
+            .style("fill", "none") // Add this to ensure paths have no fill
+            .each(function () {
+              // Animation for each individual path element
+              const path = select(this);
+              const totalLength = this.getTotalLength();
+
+              path
+                .attr("stroke-dasharray", totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(transitionTime)
+                .attr("stroke-dashoffset", 0);
+            }),
+        (update) =>
+          update
+            .transition()
+            .duration(transitionTime)
+            .style("stroke", ({ color }) => color)
+            .attr("d", ({ coordinates }) => lineGenerator(coordinates)),
+        (exit) => exit.remove()
+      );
+    // .join("path")
+    // .attr("class", "serie")
+    // .attr("data-label", ({ label }) => label)
+    // .attr("d", ({ coordinates }) => lineGenerator(coordinates))
+    // .attr("stroke", ({ color }) => color);
   }
 }
