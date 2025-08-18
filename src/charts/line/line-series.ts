@@ -175,7 +175,7 @@ export class LineChart extends CartesianPlane {
             .each(function () {
               // Animation for each individual path element
               const path = select(this);
-              const totalLength = this.getTotalLength();
+              const totalLength = (this as SVGPathElement).getTotalLength();
 
               path
                 .attr("stroke-dasharray", totalLength)
@@ -186,6 +186,11 @@ export class LineChart extends CartesianPlane {
             }),
         (update) =>
           update
+            .each(function () {
+              select(this)
+              .attr("stroke-dasharray", null)
+              .attr("stroke-dashoffset", null);
+            })
             .transition()
             .duration(transitionTime)
             .style("stroke", ({ color }) => color)
