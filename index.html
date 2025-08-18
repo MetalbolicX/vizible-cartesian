@@ -10,38 +10,43 @@
       font-family: Arial, sans-serif;
     }
 
-    .serie {
-      fill: none;
-      stroke-width: 2;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
-
-    .scatter-point {
+    .series {
       opacity: 0.6;
-      cursor: pointer;
-      transition: opacity 0.4s ease-in-out;
+      transition: opacity 0.3s ease-in-out;
 
-      &:hover {
+      .serie {
+        fill: none;
+        stroke-width: 2;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+
+      &:has(.serie:hover, .point:hover) .series-group:not(:hover) {
+        opacity: 0.3;
+      }
+
+      &:has(.serie:hover, .point:hover) .series-group:hover {
         opacity: 1;
+
+        .serie {
+          stroke-width: 4;
+        }
       }
     }
 
-    .series:has(.scatter-point:hover) .scatter-point:not(:hover) {
-      opacity: 0.2;
-    }
+    .cursor {
 
-    .series:has(.scatter-point:hover) .scatter-point.highlight {
-      opacity: 0.75;
-    }
+      &.vertical-line {
+        stroke: #666;
+        stroke-width: 1;
+        pointer-events: none;
+        stroke-dasharray: 3, 3;
+      }
 
-    .serie:hover {
-      cursor: pointer;
-      stroke-width: 4;
-    }
-
-    .series:has(.serie:hover) .serie:not(:hover) {
-      opacity: 0.2;
+      &.point {
+        fill: white;
+        stroke-width: 2;
+      }
     }
   </style>
   <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/tipviz@2.0.0/dist/index.min.js" lang="js"></script> -->

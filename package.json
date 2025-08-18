@@ -47,7 +47,7 @@
     "@types/d3": "^7.4.3",
     "tipviz": "^2.0.1",
     "typescript": "^5.9.2",
-    "vite": "^7.1.1",
+    "vite": "^7.1.2",
     "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {

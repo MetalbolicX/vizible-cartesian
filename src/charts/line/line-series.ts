@@ -1,4 +1,4 @@
-import { line, curveBasis, pointer, type Selection, select } from "d3";
+import { line, curveBasis, pointer, type Selection, select, bisector } from "d3";
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 
@@ -37,6 +37,49 @@ export class LineChart extends CartesianPlane {
     this._svgSelection.attr("class", "line-chart");
   }
 
+  #renderCursor(closestDatum: Record<string, unknown>): void {
+    const seriesGroup = this._svgSelection
+      .selectAll(".series")
+      .data([null])
+      .join("g")
+      .attr("class", "series");
+
+    seriesGroup
+      .selectAll(".series-group")
+      .data(
+        this._ySeries.map(({ label, field, color }) => ({
+          label,
+          color: color || "steelblue",
+          x: this._xSerie.field(closestDatum) as number | Date,
+          y: field(closestDatum) as number,
+        }))
+      )
+      .join("g")
+      .attr("class", "series-group")
+      .attr("data-label", ({ label }) => label)
+      .selectAll(".cursor.point")
+      .data(({ x, y, color, label }) => [{ x, y, color, label }])
+      .join("circle")
+      .attr("class", "cursor point")
+      .attr("data-label", ({ label }) => label)
+      .attr("cx", ({ x }) => this._xScale(x))
+      .attr("cy", ({ y }) => this._yScale(y))
+      .attr("r", 4)
+      .attr("stroke", ({ color }) => color);
+
+    const [yMinRange, yMaxRange] = this._yScale.range();
+
+    seriesGroup
+      .selectAll(".cursor.vertical-line")
+      .data([closestDatum])
+      .join("line")
+      .attr("class", "cursor vertical-line")
+      .attr("x1", (d) => this._xScale(this._xSerie.field(d) as number | Date))
+      .attr("y1", yMinRange)
+      .attr("x2", (d) => this._xScale(this._xSerie.field(d) as number | Date))
+      .attr("y2", yMaxRange);
+  }
+
   /**
    * Handles the cursor movement and updates the cursor line and points.
    * @param event - The mouse event triggering the cursor update.
@@ -67,43 +110,7 @@ export class LineChart extends CartesianPlane {
         : closest;
     }, firstRow);
 
-    const cursorGroup = this._svgSelection
-      .selectAll(".cursor")
-      .data([null])
-      .join("g")
-      .attr("class", "cursor");
-
-    cursorGroup
-      .selectAll<SVGLineElement, Record<string, unknown>>("line.cursor")
-      .data([closestDatum])
-      .join("line")
-      .attr("class", "cursor")
-      .attr("x1", (d) => this._xScale(xField(d) as number | Date))
-      .attr("y1", yMinRange)
-      .attr("x2", (d) => this._xScale(xField(d) as number | Date))
-      .attr("y2", yMaxRange);
-
-    cursorGroup
-      .selectAll<SVGCircleElement, Record<string, SeriesOptions>>(
-        "circle.cursor"
-      )
-      .data(this._ySeries)
-      .join("circle")
-      .attr("class", "cursor")
-      .attr("cx", this._xScale(xField(closestDatum)))
-      .attr("cy", ({ field }) => this._yScale(field(closestDatum)))
-      .attr("r", 4)
-      .attr("fill", ({ color }) => color || "steelblue");
-
-    cursorGroup
-      .selectAll<SVGTextElement, Record<string, SeriesOptions>>("text.cursor")
-      .data(this._ySeries)
-      .join("text")
-      .attr("class", "cursor")
-      .attr("x", this._xScale(xField(closestDatum)))
-      .attr("y", ({ field }) => this._yScale(field(closestDatum)))
-      .attr("dy", "-0.4em") // Adjust vertical position
-      .text(({ field }) => field(closestDatum) as number);
+    this.#renderCursor(closestDatum);
   };
 
   /**
@@ -188,8 +195,8 @@ export class LineChart extends CartesianPlane {
           update
             .each(function () {
               select(this)
-              .attr("stroke-dasharray", null)
-              .attr("stroke-dashoffset", null);
+                .attr("stroke-dasharray", null)
+                .attr("stroke-dashoffset", null);
             })
             .transition()
             .duration(transitionTime)
