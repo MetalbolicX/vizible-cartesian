@@ -5,16 +5,16 @@
   "homepage": "https://metalbolicx.github.io/vizible-cartesian/",
   "type": "module",
   "main": "dist/index.umd.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "exports": {
     "require": {
       "types": "./dist/index.d.cts",
       "default": "./dist/index.cjs"
     },
     "import": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
   "keywords": [

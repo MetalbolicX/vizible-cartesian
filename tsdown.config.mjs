@@ -9,6 +9,7 @@ export default defineConfig({
   clean: true,
   outDir: "dist",
   tsconfig: true,
+  fixedExtension: true,
   outputOptions: {
     name: "VizibleCartesian",
     globals: {
