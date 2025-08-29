@@ -8,7 +8,7 @@
 
 **Supported Versions:**
 
-![D3.js](https://img.shields.io/badge/D3.js->=7.x.x-blue)
+![D3.js](https://img.shields.io/badge/D3.js->=7.9.0-blue)
 
 ## Features
 
@@ -43,12 +43,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 <table style="border: none;">
   <tr>
-    <td align="center">
-      <a href="https://www.typescriptlang.org/" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="Typescript" width="42" height="42" /><br/>
-        <b>Typescript</b><br/>
-      </a>
-    </td>
     <td align="center">
       <a href="https://d3js.org/" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Logo_D3.svg" alt="D3.js" width="42" height="42" /><br/>

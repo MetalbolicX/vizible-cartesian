@@ -10,6 +10,9 @@ The `vizible-cartesian` library is easy to use and it can work with either JavaS
 
 Start by creating an `index.html` file (or use any HTML file). This file will include the necessary CDN links for D3.js and `vizible-cartesian`, and a script to render your chart.
 
+> [!Note]
+> Check the latest version of the library for any updates or changes from [JSDelivr](https://www.jsdelivr.com/package/npm/vizible-cartesian).
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +29,7 @@ Start by creating an `index.html` file (or use any HTML file). This file will in
     <!-- Vizible Cartesian CDN -->
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/vizible-cartesian@1.3.3/dist/vizible-cartesian.umd.min.js"
+      src="https://cdn.jsdelivr.net/npm/vizible-cartesian@1.3.3/dist/index.umd.min.js"
       lang="javascript"
     ></script>
   </head>
