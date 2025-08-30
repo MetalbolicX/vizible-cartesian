@@ -59,11 +59,16 @@ const data = [
   { x: 4, y: 4 },
 ];
 
-const chart = new LineChart(svg, data, {
-  xSerie: { field: ({ x }) => x, label: "X Axis" },
-  ySeries: [
-    { field: ({ y }) => y, label: "Y Axis", color: "tomato" },
-  ],
+
+const chart = new LineChart({
+  svgSelection: svg,
+  dataset: data,
+  seriesConfig: {
+    xSerie: { field: ({ x }) => x, label: "X Axis" },
+    ySeries: [
+      { field: ({ y }) => y, label: "Y Axis", color: "tomato" },
+    ],
+  },
 });
 
 chart.renderSeries();
@@ -146,10 +151,11 @@ const svg = document!.querySelector("svg") as SVGSVGElement;
 const selection = select(svg);
 
 // Create the chart with configuration
-const chart = new TimeChart(
-  selection,
-  data,
-  {
+
+const chart = new TimeChart({
+  svgSelection: selection,
+  dataset: data,
+  seriesConfig: {
     xSerie: { field: ({ date }) => date as Date, label: "Date" },
     ySeries: [
       { field: ({ america }) => america as number, color: "#1f77b4", label: "America" },
@@ -157,11 +163,11 @@ const chart = new TimeChart(
       { field: ({ asia }) => asia as number, color: "#2ca02c", label: "Asia" },
     ],
   },
-  {
+  options: {
     margin: { top: 20, right: 40, bottom: 25, left: 25 },
     transitionTime: 6000,
-  }
-);
+  },
+});
 
 // Render the chart elements
 chart.renderXAxis("%d %b");
@@ -267,20 +273,25 @@ const selection = select(svg);
 Now, instantiate the `CustomScatterChart` and render it into the server-side SVG context. You can specify custom icons, colors, and labels for each series.
 
 ```ts
-const chart = new CustomScatterChart(selection, data, {
-  xSerie: { field: ({ x }) => x as number, label: "X Axis" },
-  ySeries: [
-    // The first series uses a default circle icon
-    { field: ({ y }) => y as number, label: "Y Axis", color: "steelblue" },
-    // The second series uses a heart-shaped icon
-    {
-      field: ({ z }) => z as number,
-      label: "Z Axis",
-      color: "orange",
-      icon: "M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z",
-      size: 0.6,
-    },
-  ],
+
+const chart = new CustomScatterChart({
+  svgSelection: selection,
+  dataset: data,
+  seriesConfig: {
+    xSerie: { field: ({ x }) => x as number, label: "X Axis" },
+    ySeries: [
+      // The first series uses a default circle icon
+      { field: ({ y }) => y as number, label: "Y Axis", color: "steelblue" },
+      // The second series uses a heart-shaped icon
+      {
+        field: ({ z }) => z as number,
+        label: "Z Axis",
+        color: "orange",
+        icon: "M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z",
+        size: 0.6,
+      },
+    ],
+  },
 });
 
 chart.renderSeries();
@@ -349,16 +360,21 @@ const data = await tsv(
 const svg = document!.querySelector("svg") as SVGSVGElement;
 const selection = select(svg);
 
-const chart = new ScatterChart(selection, data, {
-  xSerie: { field: ({ time }) => time as number, label: "Time" },
-  ySeries: [
-    {
-      field: ({ intensity }) => intensity as number,
-      color: "#1f77b4",
-      label: "Intensity",
-      radii: 5,
-    },
-  ],
+
+const chart = new ScatterChart({
+  svgSelection: selection,
+  dataset: data,
+  seriesConfig: {
+    xSerie: { field: ({ time }) => time as number, label: "Time" },
+    ySeries: [
+      {
+        field: ({ intensity }) => intensity as number,
+        color: "#1f77b4",
+        label: "Intensity",
+        radii: 5,
+      },
+    ],
+  },
 });
 
 chart.renderSeries();
