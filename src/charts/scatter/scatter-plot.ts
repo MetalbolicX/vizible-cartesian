@@ -3,6 +3,7 @@ import type {
   ChartOptions,
   ScatterChartOptions,
   SeriesOptions,
+  ScatterChartConfig,
 } from "../../types.ts";
 import { type Selection } from "d3";
 
@@ -14,29 +15,40 @@ export class ScatterChart extends CartesianPlane {
 
   /**
    * Constructs a ScatterChart instance.
-   * @param dataset - The data to be visualized in the scatter chart.
-   * @param seriesConfig - Configuration for the x and y series.
-   * @param options - Optional chart configuration options.
+   * @param config - Configuration object containing all necessary parameters for chart initialization.
+   * @param config.svgSelection - The D3 selection of the SVG element where the chart will be rendered.
+   * @param config.dataset - The data array for the chart. Must be a non-empty array of objects.
+   * @param config.seriesConfig - Series configuration object for scatter charts.
+   * @param config.seriesConfig.xSerie - Configuration for the x-axis series including field accessor and label.
+   * @param config.seriesConfig.ySeries - Array of scatter chart y-axis series configurations with field accessor, label, color, and radii.
+   * @param config.options - Optional chart configuration options including margins, styling, and behavior settings.
    * @example
    * ```ts
-   * const chart = new ScatterChart(data, {
-   *   xSerie: { field: d => d.date, label: "Date" },
-   *   ySeries: [
-   *     { field: d => d.sales, color: "#1f77b4", radii: 5, label: "Sales" },
-   *     { field: d => d.profit, color: "#ff7f0e", radii: 10, label: "Profit" },
-   *   ],
+   * const svg = d3.select("svg");
+   * const chart = new ScatterChart({
+   *   svgSelection: svg,
+   *   dataset: data,
+   *   seriesConfig: {
+   *     xSerie: { field: d => d.date, label: "Date" },
+   *     ySeries: [
+   *       { field: d => d.sales, color: "#1f77b4", radii: 5, label: "Sales" },
+   *       { field: d => d.profit, color: "#ff7f0e", radii: 10, label: "Profit" },
+   *     ]
+   *   }
    * });
+   * ```
    */
-  constructor(
-    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-    dataset: Record<string, unknown>[],
-    seriesConfig: {
-      xSerie: SeriesOptions;
-      ySeries: ScatterChartOptions[];
-    },
-    options: Partial<ChartOptions> = {}
-  ) {
-    super(svgSelection, dataset, seriesConfig, options);
+  constructor(config: ScatterChartConfig<ChartOptions>) {
+    const { svgSelection, dataset, seriesConfig, options } = config;
+    super({
+      svgSelection,
+      dataset,
+      seriesConfig: {
+        xSerie: seriesConfig.xSerie,
+        ySeries: seriesConfig.ySeries,
+      },
+      options,
+    });
     this.#ySeries = [...seriesConfig.ySeries];
     this._svgSelection.attr("class", "scatter-chart");
   }

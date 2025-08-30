@@ -56,3 +56,66 @@ export interface CustomerScatterChartOptions extends SeriesOptions {
   icon?: string;
   size?: number;
 }
+
+/**
+ * Configuration object for CartesianPlane constructor.
+ * @property svgSelection - The D3 selection of the SVG element.
+ * @property dataset - The data array for the chart.
+ * @property seriesConfig - Object with xSerie and ySeries arrays.
+ * @property options - Configuration options for the chart.
+ */
+export interface CartesianPlaneConfig<T extends ChartOptions = LineChartOptions> {
+  /** The D3 selection of the SVG element */
+  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  /** The data array for the chart */
+  dataset: Record<string, unknown>[];
+  /** Series configuration containing x and y series definitions */
+  seriesConfig: {
+    xSerie: SeriesOptions;
+    ySeries: SeriesOptions[];
+  };
+  /** Chart configuration options */
+  options?: Partial<T>;
+}
+
+/**
+ * Configuration object for ScatterChart constructor.
+ * @property svgSelection - The D3 selection of the SVG element.
+ * @property dataset - The data array for the chart.
+ * @property seriesConfig - Object with xSerie and ySeries arrays for scatter charts.
+ * @property options - Configuration options for the chart.
+ */
+export interface ScatterChartConfig<T extends ChartOptions = ChartOptions> {
+  /** The D3 selection of the SVG element */
+  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  /** The data array for the chart */
+  dataset: Record<string, unknown>[];
+  /** Series configuration containing x and y series definitions for scatter charts */
+  seriesConfig: {
+    xSerie: SeriesOptions;
+    ySeries: ScatterChartOptions[];
+  };
+  /** Chart configuration options */
+  options?: Partial<T>;
+}
+
+/**
+ * Configuration object for CustomScatterChart constructor.
+ * @property svgSelection - The D3 selection of the SVG element.
+ * @property dataset - The data array for the chart.
+ * @property seriesConfig - Object with xSerie and ySeries arrays for custom scatter charts.
+ * @property options - Configuration options for the chart.
+ */
+export interface CustomScatterChartConfig<T extends ChartOptions = ChartOptions> {
+  /** The D3 selection of the SVG element */
+  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  /** The data array for the chart */
+  dataset: Record<string, unknown>[];
+  /** Series configuration containing x and y series definitions for custom scatter charts */
+  seriesConfig: {
+    xSerie: SeriesOptions;
+    ySeries: CustomerScatterChartOptions[];
+  };
+  /** Chart configuration options */
+  options?: Partial<T>;
+}

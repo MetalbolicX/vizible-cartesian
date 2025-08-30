@@ -9,7 +9,7 @@ import {
   type ScaleTime,
   type NumberValue,
 } from "d3";
-import type { SeriesOptions, LineChartOptions } from "../types.ts";
+import type { SeriesOptions, LineChartOptions, CartesianPlaneConfig } from "../types.ts";
 
 /**
  * Gets the x-axis domain from the dataset.
@@ -62,11 +62,6 @@ const getYDomain = (dataset, series) => {
   return [Math.min(...values), Math.max(...values)];
 };
 
-// export type LineAxesSeriesConfig = {
-//   xSerie: SeriesOptions;
-//   ySeries: SeriesOptions[];
-// };
-
 export abstract class CartesianPlane {
   #svgSelection: Selection<SVGSVGElement, unknown, null, undefined>;
   #xScale: ScaleLinear<number, number> | ScaleTime<number, number>;
@@ -78,31 +73,43 @@ export abstract class CartesianPlane {
 
   /**
    * Creates an instance of CartesianPlane.
-   * @param svgSelection - The D3 selection of the SVG element.
-   * @param dataset - The data array for the chart.
-   * @param seriesConfig - Object with xSerie and ySeries arrays.
-   * @param options - Configuration options for the chart.
+   * @param config - Configuration object containing all necessary parameters for chart initialization.
+   * @param config.svgSelection - The D3 selection of the SVG element where the chart will be rendered.
+   * @param config.dataset - The data array for the chart. Must be a non-empty array of objects.
+   * @param config.seriesConfig - Series configuration object.
+   * @param config.seriesConfig.xSerie - Configuration for the x-axis series including field accessor and label.
+   * @param config.seriesConfig.ySeries - Array of y-axis series configurations, each with field accessor, label, and optional color.
+   * @param config.options - Optional chart configuration options including margins, styling, and behavior settings.
+   * @param config.options.margin - Chart margins in pixels (default: {top: 30, right: 30, bottom: 30, left: 30}).
+   * @param config.options.isCurved - Whether lines should be curved (default: false).
+   * @param config.options.tickSize - Size of axis ticks in pixels (default: 5).
+   * @param config.options.tickPadding - Padding between ticks and labels in pixels (default: 10).
+   * @param config.options.isChartStatic - Whether the chart should be static without interactions (default: false).
+   * @param config.options.transitionTime - Duration of chart transitions in milliseconds (default: 1000).
+   * @throws {Error} When dataset is not a non-empty array.
+   * @throws {Error} When seriesConfig is missing required xSerie or ySeries properties.
    * @example
    * ```ts
    * const svg = d3.select("svg");
-   * const chart = new TimeChart(svg, data, {
-   *   xSerie: { field: "date" },
-   *   ySeries: [
-   *     { field: "sales", color: "#1f77b4" },
-   *     { field: "cost", color: "#ff7f0e" }
-   *   ]
+   * const chart = new TimeChart({
+   *   svgSelection: svg,
+   *   dataset: data,
+   *   seriesConfig: {
+   *     xSerie: { field: d => d.date, label: "Date" },
+   *     ySeries: [
+   *       { field: d => d.sales, color: "#1f77b4", label: "Sales" },
+   *       { field: d => d.cost, color: "#ff7f0e", label: "Cost" }
+   *     ]
+   *   },
+   *   options: {
+   *     margin: { top: 20, right: 40, bottom: 40, left: 60 },
+   *     isCurved: true
+   *   }
    * });
    * ```
    */
-  constructor(
-    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-    dataset: Record<string, unknown>[],
-    seriesConfig: {
-      xSerie: SeriesOptions;
-      ySeries: SeriesOptions[];
-    },
-    options: Partial<LineChartOptions> = {}
-  ) {
+  constructor(config: CartesianPlaneConfig<LineChartOptions>) {
+    const { svgSelection, dataset, seriesConfig, options = {} } = config;
     const {
       margin = { top: 30, right: 30, bottom: 30, left: 30 },
       isCurved = false,

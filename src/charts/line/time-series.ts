@@ -1,6 +1,6 @@
 import { timeFormat, axisBottom, type Selection, type NumberValue } from "d3";
 import { LineChart } from "./line-series.ts";
-import type { LineChartOptions, SeriesOptions } from "../../types.ts";
+import type { LineChartOptions, SeriesOptions, CartesianPlaneConfig } from "../../types.ts";
 
 /**
  * A class for creating a time series chart using D3.js.
@@ -10,31 +10,32 @@ import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 export class TimeChart extends LineChart {
   /**
    * Creates an instance of TimeChart.
-   * @param dataset - The data array for the chart.
-   * @param seriesConfig - Object with xSerie and ySeries arrays.
-   * @param options - Configuration options for the chart.
+   * @param config - Configuration object containing all necessary parameters for chart initialization.
+   * @param config.svgSelection - The D3 selection of the SVG element where the chart will be rendered.
+   * @param config.dataset - The data array for the chart. Must be a non-empty array of objects.
+   * @param config.seriesConfig - Series configuration object.
+   * @param config.seriesConfig.xSerie - Configuration for the x-axis series including field accessor and label.
+   * @param config.seriesConfig.ySeries - Array of y-axis series configurations, each with field accessor, label, and optional color.
+   * @param config.options - Optional chart configuration options including margins, styling, and behavior settings.
    * @example
    * ```ts
-   * const chart = new TimeChart(data, {
-   *   xSerie: { field: d => d.date, label: "Date" },
-   *   ySeries: [
-   *     { field: d => d.sales, color: "#1f77b4", label: "Sales" },
-   *     { field: d => d.cost, color: "#ff7f0e", label: "Cost" }
-   *   ]
+   * const svg = d3.select("svg");
+   * const chart = new TimeChart({
+   *   svgSelection: svg,
+   *   dataset: data,
+   *   seriesConfig: {
+   *     xSerie: { field: d => d.date, label: "Date" },
+   *     ySeries: [
+   *       { field: d => d.sales, color: "#1f77b4", label: "Sales" },
+   *       { field: d => d.cost, color: "#ff7f0e", label: "Cost" }
+   *     ]
+   *   }
    * });
    * // Use chart.drawLine, chart.drawLines, chart.drawXAxis, and chart.drawYAxis to render the chart.
    * ```
    */
-  constructor(
-    svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-    dataset: Record<string, unknown>[],
-    seriesConfig: {
-      xSerie: SeriesOptions;
-      ySeries: SeriesOptions[];
-    },
-    options: Partial<LineChartOptions> = {}
-  ) {
-    super(svgSelection, dataset, seriesConfig, options);
+  constructor(config: CartesianPlaneConfig<LineChartOptions>) {
+    super(config);
     this._svgSelection.attr("class", "time-chart");
   }
 
