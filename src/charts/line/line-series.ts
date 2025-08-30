@@ -184,20 +184,11 @@ export class LineChart extends CartesianPlane {
             .attr("d", ({ coordinates }) => lineGenerator(coordinates))
             .style("stroke", ({ color }) => color)
             .each((_, i, ns) => {
-              const el = ns[i] as SVGPathElement | null;
-              const pathSelection = select(el);
+              if (this._options.isChartStatic) return;
+              const path = select(ns[i]);
+              const totalLength = path.node()?.getTotalLength() ?? 0;
 
-              if (!el || typeof (el as any).getTotalLength !== "function") {
-                // getTotalLength not available (e.g. jsdom SSR) — skip dash animation
-                pathSelection
-                  .attr("stroke-dasharray", null)
-                  .attr("stroke-dashoffset", null);
-                return;
-              }
-
-              const totalLength = el.getTotalLength();
-
-              pathSelection
+              path
                 .attr("stroke-dasharray", totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
