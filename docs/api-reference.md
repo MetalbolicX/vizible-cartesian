@@ -92,57 +92,110 @@ Each object uses similar configuration options. The following constructors are a
 ### LineChart
 
 ```ts
-new LineChart(
-  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-  dataset: Record<string, unknown>[],
+import type { CartesianPlaneConfig, LineChartOptions } from "vizible-cartesian";
+
+new LineChart(config: CartesianPlaneConfig<LineChartOptions>);
+```
+
+**Example:**
+
+```ts
+const chart = new LineChart({
+  svgSelection: d3.select("svg"),
+  dataset: data,
   seriesConfig: {
-    xSerie: SeriesOptions;
-    ySeries: SeriesOptions[];
+    xSerie: { field: d => d.x, label: "X Axis" },
+    ySeries: [
+      { field: d => d.y1, color: "#1f77b4", label: "Y1 Axis" },
+      { field: d => d.y2, color: "#ff7f0e", label: "Y2 Axis" }
+    ]
   },
-  options?: Partial<LineChartOptions>
-)
+  options: {
+    margin: { top: 20, right: 40, bottom: 40, left: 60 },
+    isCurved: true
+  }
+});
 ```
 
 ### TimeChart
 
 ```ts
-new TimeChart(
-  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-  dataset: Record<string, unknown>[],
+import type { CartesianPlaneConfig, LineChartOptions } from "vizible-cartesian";
+
+new TimeChart(config: CartesianPlaneConfig<LineChartOptions>);
+```
+
+**Example:**
+
+```ts
+const chart = new TimeChart({
+  svgSelection: d3.select("svg"),
+  dataset: data,
   seriesConfig: {
-    xSerie: SeriesOptions;
-    ySeries: SeriesOptions[];
+    xSerie: { field: d => d.date, label: "Date" },
+    ySeries: [
+      { field: d => d.sales, color: "#1f77b4", label: "Sales" },
+      { field: d => d.cost, color: "#ff7f0e", label: "Cost" }
+    ]
   },
-  options?: Partial<LineChartOptions>
-)
+  options: {
+    margin: { top: 20, right: 40, bottom: 40, left: 60 },
+    isCurved: true
+  }
+});
 ```
 
 ### ScatterChart
 
 ```ts
-new ScatterChart(
-  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-  dataset: Record<string, unknown>[],
+import type { ScatterChartConfig, ChartOptions } from "vizible-cartesian";
+
+new ScatterChart(config: ScatterChartConfig<ChartOptions>);
+```
+
+**Example:**
+
+```ts
+const chart = new ScatterChart({
+  svgSelection: d3.select("svg"),
+  dataset: data,
   seriesConfig: {
-    xSerie: SeriesOptions;
-    ySeries: ScatterChartOptions[];
+    xSerie: { field: d => d.time, label: "Time" },
+    ySeries: [
+      { field: d => d.intensity, color: "#1f77b4", label: "Intensity", radii: 5 }
+    ]
   },
-  options?: Partial<ChartOptions>
-)
+  options: {
+    margin: { top: 20, right: 40, bottom: 40, left: 60 }
+  }
+});
 ```
 
 ### CustomScatterChart
 
 ```ts
-new CustomScatterChart(
-  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>,
-  dataset: Record<string, unknown>[],
+import type { CustomScatterChartConfig, ChartOptions } from "vizible-cartesian";
+
+new CustomScatterChart(config: CustomScatterChartConfig<ChartOptions>);
+```
+
+**Example:**
+
+```ts
+const chart = new CustomScatterChart({
+  svgSelection: d3.select("svg"),
+  dataset: data,
   seriesConfig: {
-    xSerie: SeriesOptions;
-    ySeries: CustomerScatterChartOptions[];
+    xSerie: { field: d => d.x, label: "X Axis" },
+    ySeries: [
+      { field: d => d.y, color: "steelblue", label: "Y Axis", size: 1.5 },
+      { field: d => d.z, color: "red", label: "Z Axis", icon: "M10 10 H 90 V 90 H 10 L 10 10", size: 0.6 }
+    ]
   },
-  options?: Partial<ChartOptions>
-)
+  options: {
+    margin: { top: 20, right: 40, bottom: 40, left: 60 }
+  }
+});
 ```
 
 ## Chart Methods
