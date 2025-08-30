@@ -134,9 +134,6 @@ export class LineChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    // for (const { field, color, label } of this._ySeries) {
-    //   this.#renderSerie(field, color, label);
-    // }
     const seriesGroup = this._svgSelection
       .selectAll(".series")
       .data([null])
@@ -179,10 +176,9 @@ export class LineChart extends CartesianPlane {
             .attr("data-label", ({ label }) => label)
             .attr("d", ({ coordinates }) => lineGenerator(coordinates))
             .style("stroke", ({ color }) => color)
-            .each(function () {
-              // Animation for each individual path element
-              const path = select(this);
-              const totalLength = (this as SVGPathElement).getTotalLength();
+            .each((_, i, ns) => {
+              const path = select(ns[i]);
+              const totalLength = (ns[i] as SVGPathElement).getTotalLength();
 
               path
                 .attr("stroke-dasharray", totalLength)
@@ -193,8 +189,8 @@ export class LineChart extends CartesianPlane {
             }),
         (update) =>
           update
-            .each(function () {
-              select(this)
+            .each((_, i, ns) => {
+              select(ns[i])
                 .attr("stroke-dasharray", null)
                 .attr("stroke-dashoffset", null);
             })
