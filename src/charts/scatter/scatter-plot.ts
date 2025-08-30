@@ -2,10 +2,8 @@ import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type {
   ChartOptions,
   ScatterChartOptions,
-  SeriesOptions,
   ScatterChartConfig,
 } from "../../types.ts";
-import { type Selection } from "d3";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.

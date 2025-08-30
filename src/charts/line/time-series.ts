@@ -1,6 +1,9 @@
-import { timeFormat, axisBottom, type Selection, type NumberValue } from "d3";
+import { timeFormat, axisBottom, type NumberValue } from "d3";
 import { LineChart } from "./line-series.ts";
-import type { LineChartOptions, SeriesOptions, CartesianPlaneConfig } from "../../types.ts";
+import type {
+  LineChartOptions,
+  CartesianPlaneConfig,
+} from "../../types.ts";
 
 /**
  * A class for creating a time series chart using D3.js.
@@ -48,9 +51,7 @@ export class TimeChart extends LineChart {
    * chart.renderXAxis(d3.select("svg"), "%b %d, %Y");
    * ```
    */
-  public override renderXAxis(
-    formatCode?: string
-  ): void {
+  public override renderXAxis(formatCode?: string): void {
     const { margin, tickSize, tickPadding } = this._options;
     const { height: h } = this._size;
     const axis = axisBottom(this._xScale)

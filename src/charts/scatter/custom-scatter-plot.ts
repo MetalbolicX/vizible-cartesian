@@ -2,10 +2,8 @@ import { ScatterChart } from "./scatter-plot.ts";
 import type {
   ChartOptions,
   CustomerScatterChartOptions,
-  SeriesOptions,
   CustomScatterChartConfig,
 } from "../../types.ts";
-import { type Selection } from "d3";
 
 /**
  * A class for creating a scatter chart with numerical or date x-axis using D3.js.
