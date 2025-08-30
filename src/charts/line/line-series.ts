@@ -130,7 +130,7 @@ export class LineChart extends CartesianPlane {
    */
   public renderCursor(): void {
     if (this._options.isChartStatic) return;
-    this._svgSelection.on("mousemove", this.#handleCursor);
+    this._svgSelection.on("pointermove", this.#handleCursor);
   }
 
   /**
@@ -175,38 +175,10 @@ export class LineChart extends CartesianPlane {
           })),
         },
       ])
-      .join(
-        (enter) =>
-          enter
-            .append("path")
-            .attr("class", "serie")
-            .attr("data-label", ({ label }) => label)
-            .attr("d", ({ coordinates }) => lineGenerator(coordinates))
-            .style("stroke", ({ color }) => color)
-            .each((_, i, ns) => {
-              if (this._options.isChartStatic) return;
-              const path = select(ns[i]);
-              const totalLength = path.node()?.getTotalLength() ?? 0;
-
-              path
-                .attr("stroke-dasharray", totalLength)
-                .attr("stroke-dashoffset", totalLength)
-                .transition()
-                .duration(transitionTime)
-                .attr("stroke-dashoffset", 0);
-            }),
-        (update) =>
-          update
-            .each((_, i, ns) => {
-              select(ns[i])
-                .attr("stroke-dasharray", null)
-                .attr("stroke-dashoffset", null);
-            })
-            .transition()
-            .duration(transitionTime)
-            .style("stroke", ({ color }) => color)
-            .attr("d", ({ coordinates }) => lineGenerator(coordinates)),
-        (exit) => exit.remove()
-      );
+      .join("path")
+      .attr("class", "serie")
+      .attr("data-label", ({ label }) => label)
+      .attr("d", ({ coordinates }) => lineGenerator(coordinates))
+      .style("stroke", ({ color }) => color);
   }
 }
