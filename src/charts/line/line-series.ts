@@ -1,4 +1,11 @@
-import { line, curveBasis, pointer, type Selection, select, bisector } from "d3";
+import {
+  line,
+  curveBasis,
+  pointer,
+  type Selection,
+  select,
+  bisector,
+} from "d3";
 import { CartesianPlane } from "../../utils/cartesian-plane.ts";
 import type { LineChartOptions, SeriesOptions } from "../../types.ts";
 
@@ -177,10 +184,20 @@ export class LineChart extends CartesianPlane {
             .attr("d", ({ coordinates }) => lineGenerator(coordinates))
             .style("stroke", ({ color }) => color)
             .each((_, i, ns) => {
-              const path = select(ns[i]);
-              const totalLength = (ns[i] as SVGPathElement).getTotalLength();
+              const el = ns[i] as SVGPathElement | null;
+              const pathSelection = select(el);
 
-              path
+              if (!el || typeof (el as any).getTotalLength !== "function") {
+                // getTotalLength not available (e.g. jsdom SSR) — skip dash animation
+                pathSelection
+                  .attr("stroke-dasharray", null)
+                  .attr("stroke-dashoffset", null);
+                return;
+              }
+
+              const totalLength = el.getTotalLength();
+
+              pathSelection
                 .attr("stroke-dasharray", totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
