@@ -1,3 +1,4 @@
+import type { Selection } from "d3";
 /**
  * Chart configuration options for all chart types.
  * @property margin - The margin object specifying top, right, bottom, left in pixels.
@@ -66,7 +67,7 @@ export interface CustomerScatterChartOptions extends SeriesOptions {
  */
 export interface CartesianPlaneConfig<T extends ChartOptions = LineChartOptions> {
   /** The D3 selection of the SVG element */
-  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>;
   /** The data array for the chart */
   dataset: Record<string, unknown>[];
   /** Series configuration containing x and y series definitions */
@@ -87,7 +88,7 @@ export interface CartesianPlaneConfig<T extends ChartOptions = LineChartOptions>
  */
 export interface ScatterChartConfig<T extends ChartOptions = ChartOptions> {
   /** The D3 selection of the SVG element */
-  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>;
   /** The data array for the chart */
   dataset: Record<string, unknown>[];
   /** Series configuration containing x and y series definitions for scatter charts */
@@ -108,7 +109,7 @@ export interface ScatterChartConfig<T extends ChartOptions = ChartOptions> {
  */
 export interface CustomScatterChartConfig<T extends ChartOptions = ChartOptions> {
   /** The D3 selection of the SVG element */
-  svgSelection: import("d3").Selection<SVGSVGElement, unknown, null, undefined>;
+  svgSelection: Selection<SVGSVGElement, unknown, null, undefined>;
   /** The data array for the chart */
   dataset: Record<string, unknown>[];
   /** Series configuration containing x and y series definitions for custom scatter charts */
