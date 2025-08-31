@@ -52,93 +52,6 @@ export class CustomScatterChart extends ScatterChart {
   }
 
   /**
-   * Renders a scatter plot for a given y series key.
-   * @param yKey - The key of the y series to draw.
-   * @param [pointColor="steelblue"] - The color of the points.
-   * @param [icon=""] - The SVG path for the icon to use for each point.
-   * @param [size=1] - The size scaling factor for the icon.
-   */
-  #renderSerie(
-    yField: (data: Record<string, unknown>) => number | Date,
-    pointColor: string = "steelblue",
-    icon: string = "",
-    size: number = 1,
-    label: string = ""
-  ): void {
-    const { field: xField } = this._xSerie;
-    const data = this._dataset.map((d) => ({
-      x: xField(d) as number,
-      y: yField(d),
-      color: pointColor,
-      radius:
-        typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
-      icon: d["icon"] ?? icon,
-      label,
-    }));
-
-    const transitionTime =
-      !this._options.isChartStatic && this._options.transitionTime
-        ? this._options.transitionTime
-        : 0;
-
-    this._svgSelection
-      .selectAll<SVGGElement, unknown>(".series")
-      .data([null])
-      .join("g")
-      .attr("class", "series")
-      .selectAll<
-        SVGPathElement,
-        {
-          x: number;
-          y: number;
-          color: string;
-          radius: number;
-          icon: string;
-          label: string;
-        }
-      >(`.scatter-point[data-label="${label}"]`)
-      .data(data)
-      .join(
-        (enter) =>
-          enter
-            .append("path")
-            .attr("class", "scatter-point")
-            .attr("data-label", ({ label }) => label)
-            .attr("d", ({ icon, radius }) => {
-              if (typeof icon === "string" && icon.length > 0) {
-                return icon;
-              }
-              // Draw a circle path as fallback
-              return `M 0 0 m -${radius}, 0 a ${radius},${radius} 0 1,0 ${
-                2 * radius
-              },0 a ${radius},${radius} 0 1,0 -${2 * radius},0`;
-            })
-            .attr("fill", ({ color }) => color)
-            .transition()
-            .duration(transitionTime)
-            .attr(
-              "transform",
-              ({ x, y }) =>
-                `translate(${this._xScale(x as number)},${this._yScale(
-                  y
-                )}) scale(${size})`
-            ),
-        (update) =>
-          update
-            .transition()
-            .duration(transitionTime)
-            .attr(
-              "transform",
-              ({ x, y }) =>
-                `translate(${this._xScale(x as number)},${this._yScale(
-                  y
-                )}) scale(${size})`
-            ),
-        (exit) => exit.remove()
-      );
-  }
-
-  /**
    * Renders the series on the chart.
    * Renders all series in the scatter chart.
    * @example
@@ -147,16 +60,49 @@ export class CustomScatterChart extends ScatterChart {
    * ```
    */
   public override renderSeries(): void {
-    for (const { field, color, icon, size, label } of this._ySeries) {
-      const validatedSize = typeof size === "number" && size > 0 ? size : 1;
-      this.#renderSerie(
-        field,
-        color ?? "steelblue",
-        icon ?? "",
-        validatedSize,
-        label
+    const seriesGroup = this._svgSelection
+      .selectAll(".series")
+      .data([null])
+      .join("g")
+      .attr("class", "series");
+
+    seriesGroup
+      .selectAll(".series-group")
+      .data(this._ySeries)
+      .join("g")
+      .attr("class", "series-group")
+      .attr("data-label", ({ label }) => label)
+      .selectAll<SVGPathElement, unknown>(".scatter-point")
+      .data(({ field, color, icon, size, label }) => {
+        const { field: xField } = this._xSerie;
+        return this._dataset.map((d) => ({
+          x: xField(d) as number,
+          y: field(d) as number,
+          color: color ?? "steelblue",
+          radius: typeof d["radii"] === "number" && !isNaN(d["radii"]) ? d["radii"] : 4,
+          size: typeof size === "number" && size > 0 ? size : 1,
+          icon: icon ?? "",
+          label,
+        }));
+      })
+      .join("path")
+      .attr("class", "scatter-point")
+      .attr("data-label", ({ label }) => label)
+      .attr("d", ({ icon, radius }) => {
+        if (typeof icon === "string" && icon.length > 0) {
+          return icon;
+        }
+        // Draw a circle path as fallback
+        return `M 0 0 m -${radius}, 0 a ${radius},${radius} 0 1,0 ${
+          2 * radius
+        },0 a ${radius},${radius} 0 1,0 -${2 * radius},0`;
+      })
+      .attr("fill", ({ color }) => color)
+      .attr(
+        "transform",
+        ({ x, y, size }) =>
+          `translate(${this._xScale(x as number)},${this._yScale(y)}) scale(${size})`
       );
-    }
   }
 
   protected override get _ySeries() {
