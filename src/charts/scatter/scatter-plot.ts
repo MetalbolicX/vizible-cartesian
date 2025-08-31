@@ -52,74 +52,6 @@ export class ScatterChart extends CartesianPlane {
   }
 
   /**
-   * Renders a scatter plot for a given y series key.
-   * @param yKey - The key of the y series to draw.
-   * @param [pointColor="steelblue"] - The color of the points.
-   * @param [radii=4] - The radius of the points.
-   */
-  #renderSerie(
-    yField: (data: Record<string, unknown>) => number | Date,
-    pointColor: string = "steelblue",
-    radii: number = 4,
-    label: string = ""
-  ): void {
-    const { field: xField } = this._xSerie;
-    const data = this._dataset.map((d) => ({
-      x: xField(d) as number | Date,
-      y: yField(d) as number,
-      color: pointColor,
-      radius:
-        typeof d["radii"] === "number" && !isNaN(d["radii"])
-          ? d["radii"]
-          : radii,
-      label,
-    }));
-
-    const transitionTime =
-      !this._options.isChartStatic && this._options.transitionTime
-        ? this._options.transitionTime
-        : 0;
-
-    this._svgSelection
-      .selectAll<SVGGElement, unknown>(".series")
-      .data([null])
-      .join("g")
-      .attr("class", "series")
-      .selectAll<
-        SVGCircleElement,
-        {
-          x: number | Date;
-          y: number;
-          color: string;
-          radius: number;
-          label: string;
-        }
-      >(`.scatter-point[data-label="${label}"]`)
-      .data(data)
-      .join(
-        (enter) =>
-          enter
-            .append("circle")
-            .attr("class", "scatter-point")
-            .attr("data-label", ({ label }) => label)
-            .attr("fill", ({ color }) => color)
-            .attr("r", 0)
-            .attr("cx", ({ x }) => this._xScale(x))
-            .attr("cy", ({ y }) => this._yScale(y))
-            .transition()
-            .duration(transitionTime)
-            .attr("r", ({ radius }) => radius),
-        (update) =>
-          update
-            .transition()
-            .duration(transitionTime)
-            .attr("cx", ({ x }) => this._xScale(x))
-            .attr("cy", ({ y }) => this._yScale(y)),
-        (exit) => exit.remove()
-      );
-  }
-
-  /**
    * Renders all series in the scatter chart.
    * @example
    * ```ts
@@ -127,9 +59,39 @@ export class ScatterChart extends CartesianPlane {
    * ```
    */
   public renderSeries(): void {
-    for (const { field, color, radii, label } of this._ySeries) {
-      this.#renderSerie(field, color, radii, label);
-    }
+    const seriesGroup = this._svgSelection
+      .selectAll(".series")
+      .data([null])
+      .join("g")
+      .attr("class", "series");
+
+    seriesGroup
+      .selectAll(".series-group")
+      .data(this._ySeries)
+      .join("g")
+      .attr("class", "series-group")
+      .attr("data-label", ({ label }) => label)
+      .selectAll<
+        SVGCircleElement,
+        { x: number; y: number; color: string; radius: number; label: string }
+      >(".scatter-point")
+      .data(({ field, color, radii, label }) => {
+        const { field: xField } = this._xSerie;
+        return this._dataset.map((d) => ({
+          x: xField(d) as number,
+          y: field(d) as number,
+          color: color ?? "steelblue",
+          radius: radii ?? 4,
+          label,
+        }));
+      })
+      .join("circle")
+      .attr("class", "scatter-point")
+      .attr("data-label", ({ label }) => label)
+      .attr("fill", ({ color }) => color)
+      .attr("r", ({ radius }) => radius)
+      .attr("cx", ({ x }) => this._xScale(x))
+      .attr("cy", ({ y }) => this._yScale(y));
   }
 
   protected override get _ySeries() {

@@ -148,11 +148,6 @@ export class LineChart extends CartesianPlane {
 
     this._options.isCurved && lineGenerator.curve(curveBasis);
 
-    const transitionTime: number =
-      !this._options.isChartStatic && this._options.transitionTime
-        ? this._options.transitionTime
-        : 0;
-
     seriesGroup
       .selectAll(".series-group")
       .data(this._ySeries)
