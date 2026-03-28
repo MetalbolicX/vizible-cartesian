@@ -125,5 +125,6 @@
     "Invoke-Expression": false,
     "iex": false
   },
-  "chat.tools.terminal.ignoreDefaultAutoApproveRules": false
+  "chat.tools.terminal.ignoreDefaultAutoApproveRules": false,
+  "chat.tools.terminal.enforceTimeoutFromModel": true
 }

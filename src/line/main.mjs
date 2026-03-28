@@ -5,15 +5,16 @@ import { processNumericData, getExtents } from "./dataUtils.mjs";
 import { createScales } from "./scales.mjs";
 import { observeResize } from "./responsiveness.mjs";
 import {
-  renderSVG,
   renderBoundsGroup,
-  renderXAxis,
-  renderYAxis,
+  renderLegend,
   renderLine,
   renderPoints,
-  renderXAxisLabel,
-  renderYAxisLabel,
+  renderSVG,
   renderTitle,
+  renderXAxis,
+  renderXAxisLabel,
+  renderYAxis,
+  renderYAxisLabel,
 } from "./components/index.mjs";
 import { addTooltip, addZoomPan } from "./interactivity/index.mjs";
 
@@ -60,6 +61,7 @@ export const main = (container) => {
       .call(renderTitle, { ...dims, title: "Numeric X/Y Chart" })
       .call(renderXAxisLabel, { ...dims, label: "X Value" })
       .call(renderYAxisLabel, { ...dims, label: "Y Value" });
+    // .call(renderLegend, { ...dims, legend: "f(x)" });
 
     // Interactivity
     bounds.call(addTooltip, validData, xScale, yScale, xAccessor, yAccessor, {
