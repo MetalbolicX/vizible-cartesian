@@ -60,8 +60,15 @@ export const main = (container) => {
     svg
       .call(renderTitle, { ...dims, title: "Numeric X/Y Chart" })
       .call(renderXAxisLabel, { ...dims, label: "X Value" })
-      .call(renderYAxisLabel, { ...dims, label: "Y Value" });
-    // .call(renderLegend, { ...dims, legend: "f(x)" });
+      .call(renderYAxisLabel, { ...dims, label: "Y Value" })
+      .call(renderLegend, {
+        items: [{ label: "f(x)", color: "steelblue" }],
+        x: dims.innerWidth - 100,
+        y: 10,
+        fontSize: 12,
+        swatchSize: 12,
+        gap: 6,
+      });
 
     // Interactivity
     bounds.call(addTooltip, validData, xScale, yScale, xAccessor, yAccessor, {
