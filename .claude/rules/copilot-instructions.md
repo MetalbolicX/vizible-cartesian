@@ -4,7 +4,11 @@ paths:
   - 'src/**/*'
 ---
 
-# Source Clean Code Practices
+# Project Planning
+
+This project is to create a series of functional programming helper functions in Typescript to render elements of a chart using D3.js and web standards. The goal is to provide a clean, reusable, and efficient codebase that can be easily maintained and extended in the future.
+
+## Coding Conventions
 
 ## 1. Operational Discipline
 
@@ -37,3 +41,18 @@ async function fetchCatalog(signal: AbortSignal): Promise<Catalog> {
   return response.json();
 }
 </example>
+
+## Tecch Stack
+
+- **Language**: TypeScript.
+- **Visualization**: D3.js.
+
+## Other Considerations
+
+- Always use idempotent render logic.
+- Use functional patterns logic.
+- Inline styles for maximum portability.
+- Use `.mts` extension for TypeScript modules to leverage ES module syntax and tree-shaking benefits.
+- Idempotency: Every render function must use D3's `.data([null]).join(...)` pattern so it can be called repeatedly without duplicating elements.
+- Functional Composition: Each part of the chart is a pure (or predictably side-effecting) function that takes its parent selection and necessary config/data.
+- Inline Styling: Avoid external CSS dependencies by applying styles directly via `.attr()` or `.style()` for maximum portability.
