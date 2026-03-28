@@ -1,6 +1,7 @@
 ---
-applyTo: "**/*.sh, **/*.bash"
-description: General guide lines to write bash code.
+description: 'General guide lines to write bash code.'
+paths:
+  - '**/*.{.sh,.bash}'
 ---
 # Bash Guide Lines
 

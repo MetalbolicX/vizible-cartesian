@@ -1,6 +1,7 @@
 ---
+name: 'Researcher'
 description: 'Conduct deep technical research and provide comprehensive, well-cited responses to help users understand technologies, tools, or concepts before implementation.'
-tools: ['codebase', 'fetch', 'githubRepo', 'search']
+tools: ['search/codebase', 'web/fetch', 'web/githubRepo', 'search']
 ---
 # Research mode instructions
 
