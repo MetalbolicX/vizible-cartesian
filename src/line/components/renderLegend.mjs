@@ -1,21 +1,32 @@
 "use strict";
 
 /**
- * Renders or updates a legend within an SVG element using D3 selection.
+ * Render or update a vertical legend inside the given D3 SVG selection.
  *
- * @param {Object} svg - D3 selection object of the SVG element.
- * @param {Object} options - Configuration options for the legend.
- * @param {Array} options.items - Array of legend items, each with a label and color.
- * @param {number} [options.x=0] - X position of the legend.
- * @param {number} [options.y=0] - Y position of the legend.
- * @param {number} [options.fontSize=12] - Font size of the legend labels.
- * @param {number} [options.swatchSize=12] - Size of the color swatches.
- * @param {number} [options.gap=6] - Gap between legend entries.
- * @returns {Object} D3 selection object of the rendered legend.
+ * Creates/updates a single "g.legend" group translated to (x, y). For each
+ * item in options.items it creates/updates a "g.legend-entry" row containing
+ * a "rect.swatch" (filled with item.color) and a "text.legend-label" (showing
+ * item.label). Rows are stacked vertically using swatchSize + gap as row height.
+ *
+ * @param {import("d3-selection").Selection<SVGGElement|SVGSVGElement, any, null, undefined>} svg
+ *   D3 selection of an SVG container or group where the legend will be rendered.
+ * @param {Object} options - Legend configuration options.
+ * @param {Array<LegendItem>} options.items - Array of legend entries.
+ * @param {number} [options.x=0] - X translation of the legend group.
+ * @param {number} [options.y=0] - Y translation of the legend group.
+ * @param {number} [options.fontSize=12] - Font size in pixels for the labels.
+ * @param {number} [options.swatchSize=12] - Width and height in pixels for the color swatch.
+ * @param {number} [options.gap=6] - Gap in pixels between swatch and label and between rows.
+ *
+ * @typedef {Object} LegendItem
+ * @property {string} label - Text label for the legend entry.
+ * @property {string} color - CSS color used to fill the swatch.
+ *
+ * @returns {void} Mutates the provided SVG selection by creating/updating legend DOM elements.
  */
 export const renderLegend = (
   svg,
-  { items, x = 0, y = 0, fontSize = 12, swatchSize = 12, gap = 6 }
+  { items, x = 0, y = 0, fontSize = 12, swatchSize = 12, gap = 6 },
 ) => {
   const legendGroup = svg
     .selectAll("g.legend")

@@ -1,17 +1,20 @@
 "use strict";
 
 /**
- * Renders or updates the X-axis label within an SVG element using D3 selection.
+ * Render or update the X axis label inside the given SVG container.
  *
- * @param {Object} svg - D3 selection object of the SVG element.
- * @param {Object} options - Configuration options for the X-axis label.
- * @param {number} options.width - Width of the SVG element.
- * @param {number} options.height - Height of the SVG element.
- * @param {Object} options.margins - Margins of the SVG element.
- * @param {string} options.label - Text for the X-axis label.
- * @param {number} [options.fontSize=13] - Font size of the label.
- * @param {string} [options.fill="#555"] - Fill color of the label.
- * @returns {Object} D3 selection object of the rendered X-axis label.
+ * Centers the label horizontally between the left and right margins and
+ * positions it near the bottom of the drawing area.
+ *
+ * @param {import('d3-selection').Selection<SVGSVGElement|SVGGElement, any, any, any>} svg - D3 selection to render the label into.
+ * @param {Object} options - Configuration options.
+ * @param {number} options.width - Total width of the drawing area (including margins).
+ * @param {number} options.height - Total height of the drawing area (including margins).
+ * @param {{ left: number, right: number }} options.margins - Margins object (must include left and right).
+ * @param {string} options.label - Text content for the X axis label.
+ * @param {number} [options.fontSize=13] - Font size for the label (pixels).
+ * @param {string} [options.fill="#555"] - Fill color for the label text.
+ * @returns {import('d3-selection').Selection<SVGTextElement, unknown, null, undefined>} The D3 selection for the created or updated text element.
  */
 export const renderXAxisLabel = (
   svg,
@@ -30,15 +33,16 @@ export const renderXAxisLabel = (
     .text(label);
 
 /**
- * Renders or updates the Y-axis label within an SVG element using D3 selection.
- * @param {Object} svg - D3 selection object of the SVG element.
- * @param {Object} options - Configuration options for the Y-axis label.
- * @param {number} options.height - Height of the SVG element.
- * @param {Object} options.margins - Margins of the SVG element.
- * @param {string} options.label - Text for the Y-axis label.
- * @param {number} [options.fontSize=13] - Font size of the label.
- * @param {string} [options.fill="#555"] - Fill color of the label.
- * @returns {Object} D3 selection object of the rendered Y-axis label.
+ * Render or update a vertical Y-axis label inside an SVG selection.
+ *
+ * @param {import('d3-selection').Selection<SVGSVGElement|SVGGElement, any, any, any>} svg - D3 selection to render the label into.
+ * @param {Object} options - Options for layout and styling.
+ * @param {number} options.height - Total height of the chart area.
+ * @param {{top:number,right:number,bottom:number,left:number}} options.margins - Chart margins used to position the label.
+ * @param {string} options.label - Text content for the Y-axis label.
+ * @param {number} [options.fontSize=13] - Font size for the label text.
+ * @param {string} [options.fill="#555"] - Fill color for the label text.
+ * @returns {import('d3-selection').Selection<SVGTextElement, any, any, any>} The D3 text selection for the rendered Y-axis label.
  */
 export const renderYAxisLabel = (
   svg,

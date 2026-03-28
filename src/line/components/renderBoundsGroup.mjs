@@ -1,13 +1,13 @@
 "use strict";
 
 /**
- * Renders or updates a bounds group within an SVG element using D3 selection.
+ * Ensures a single SVG group element with class "bounds" exists and positions it using the provided margins.
+ * Creates the group if missing or reuses the existing one via a data join, and applies a translate transform
+ * using margins.left and margins.top.
  *
- * @param {Object} svg - D3 selection object of the SVG element.
- * @param {Object} margins - Margins to apply to the bounds group.
- * @param {number} margins.left - Left margin.
- * @param {number} margins.top - Top margin.
- * @returns {Object} D3 selection object of the rendered bounds group.
+ * @param {import("d3-selection").Selection} svg - D3 selection of the SVG (or container) to append/select the group in.
+ * @param {{top:number, right:number, bottom:number, left:number}} margins - Margin object used to compute the translation.
+ * @returns {import("d3-selection").Selection} The D3 selection representing the bounds group.
  */
 export const renderBoundsGroup = (svg, margins) =>
   svg

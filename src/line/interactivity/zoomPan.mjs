@@ -2,18 +2,24 @@
 import { zoom } from "d3";
 
 /**
- * Adds zoom and pan functionality to an SVG element using D3.
+ * Attach pan and zoom behavior to an SVG selection using D3's zoom.
  *
- * @param {Object} svg - D3 selection object of the SVG element.
- * @param {Object} options - Configuration options for zoom and pan.
- * @param {Object} options.xScale - D3 scale for the X-axis.
- * @param {Object} options.yScale - D3 scale for the Y-axis.
- * @param {number} options.innerWidth - Width of the bounded area for zooming.
- * @param {number} options.innerHeight - Height of the bounded area for zooming.
- * @param {Function} options.onZoom - Callback function invoked on zoom events.
- * @returns {Object} D3 zoom behavior object with an added reset helper.
+ * The function creates a zoom behavior with a fixed scale extent and extent
+ * based on the provided inner dimensions. On every zoom event it calls the
+ * provided onZoom callback with the rescaled x and y scales.
+ *
+ * The returned zoom behavior is augmented with a `reset()` helper that resets
+ * the applied transform on the SVG.
+ *
+ * @param {import('d3-selection').Selection<SVGSVGElement, any, any, any>} svg - The SVG selection to attach the zoom to.
+ * @param {Object} options - Configuration options.
+ * @param {import('d3-scale').ScaleContinuousNumeric<number, number>} options.xScale - X scale to be rescaled during zoom/pan.
+ * @param {import('d3-scale').ScaleContinuousNumeric<number, number>} options.yScale - Y scale to be rescaled during zoom/pan.
+ * @param {number} options.innerWidth - Inner drawing width used to set the zoom extent.
+ * @param {number} options.innerHeight - Inner drawing height used to set the zoom extent.
+ * @param {function(import('d3-scale').ScaleContinuousNumeric<number, number>, import('d3-scale').ScaleContinuousNumeric<number, number>): void} options.onZoom - Callback invoked on zoom events with the rescaled x and y scales.
+ * @returns {import('d3-zoom').ZoomBehavior<Element, unknown> & { reset: () => void }} The configured D3 zoom behavior augmented with a `reset()` method.
  */
-
 export const addZoomPan = (
   svg,
   { xScale, yScale, innerWidth, innerHeight, onZoom },

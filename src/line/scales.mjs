@@ -9,20 +9,18 @@ const SCALE_FACTORIES = {
 };
 
 /**
- * Creates and configures x and y scales for a Cartesian chart.
+ * Create X and Y scales for mapping data domains to pixel ranges.
  *
- * @param {Object} options - Configuration options for scale creation
- * @param {number[]} options.xDomain - The domain values for the x scale [min, max]
- * @param {number[]} options.yDomain - The domain values for the y scale [min, max]
- * @param {number} options.innerWidth - The width of the chart area in pixels
- * @param {number} options.innerHeight - The height of the chart area in pixels
- * @param {string} [options.xType="linear"] - The type of x scale (e.g., "linear", "log", "pow")
- * @param {string} [options.yType="linear"] - The type of y scale (e.g., "linear", "log", "pow")
- * @param {number} [options.xExponent=2] - The exponent for power scales on the x axis
- * @param {number} [options.yExponent=2] - The exponent for power scales on the y axis
- * @returns {Object} An object containing configured scale functions
- * @returns {Function} returns.xScale - The configured x scale function
- * @returns {Function} returns.yScale - The configured y scale function
+ * @param {Object} options - Options for scale creation.
+ * @param {[number, number]|[Date, Date]} options.xDomain - Two-element array specifying the input domain for the X scale.
+ * @param {[number, number]|[Date, Date]} options.yDomain - Two-element array specifying the input domain for the Y scale.
+ * @param {number} options.innerWidth - Width of the inner drawing area in pixels; X range will be [0, innerWidth].
+ * @param {number} options.innerHeight - Height of the inner drawing area in pixels; Y range will be [innerHeight, 0].
+ * @param {string} [options.xType="linear"] - Identifier for the X scale factory to use (e.g. "linear", "log", "pow"); unknown types fall back to a linear factory.
+ * @param {string} [options.yType="linear"] - Identifier for the Y scale factory to use; unknown types fall back to a linear factory.
+ * @param {number} [options.xExponent=2] - Exponent parameter passed to the X scale factory (used by power scales).
+ * @param {number} [options.yExponent=2] - Exponent parameter passed to the Y scale factory (used by power scales).
+ * @returns {{ xScale: Function, yScale: Function }} An object with `xScale` and `yScale` functions. Each returned scale is a chainable scale-like function (supports methods such as .domain(), .range(), and .nice()) that maps domain values to pixel coordinates.
  */
 export const createScales = ({
   xDomain,

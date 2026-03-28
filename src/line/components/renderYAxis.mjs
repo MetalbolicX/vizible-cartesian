@@ -2,16 +2,28 @@
 import { axisLeft } from "d3";
 
 /**
- * Renders or updates the Y-axis within a bounds group using D3 selection.
+ * Render a left Y axis into a provided bounds group using the given D3 scale.
  *
- * @param {Object} boundsGroup - D3 selection object of the bounds group.
- * @param {Object} yScale - D3 scale for the Y-axis.
- * @param {Object} [options] - Configuration options for the Y-axis.
- * @param {number} [options.tickCount=5] - Number of ticks on the Y-axis.
- * @param {Function} [options.tickFormat] - Custom tick format function.
- * @returns {Object} D3 selection object of the rendered Y-axis.
+ * Creates or updates a single <g> element with class "y-axis" under the provided
+ * boundsGroup and invokes a D3 left-axis generator configured with the provided
+ * scale, tick count, and optional tick formatter.
+ *
+ * @param {import('d3-selection').Selection<SVGGElement, any, HTMLElement, any>} boundsGroup
+ *   D3 selection of the container group where the axis will be rendered. The function
+ *   will select or create a single child <g> element with class "y-axis".
+ * @param {import('d3-scale').ScaleContinuousNumeric<number, number> |
+ *         import('d3-scale').ScaleTime<number, number> |
+ *         import('d3-scale').ScaleBand<any>} yScale
+ *   D3 scale used to generate the axis (e.g., scaleLinear, scaleTime, scaleBand).
+ * @param {Object} [options]
+ *   Optional configuration object.
+ * @param {number} [options.tickCount=5]
+ *   Approximate number of ticks to request from the axis generator.
+ * @param {(d: any, i: number) => string} [options.tickFormat]
+ *   Optional tick formatting function passed to the axis generator.
+ *
+ * @returns {void}
  */
-
 export const renderYAxis = (
   boundsGroup,
   yScale,

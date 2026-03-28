@@ -2,12 +2,16 @@
 import { select } from "d3";
 
 /**
- * Renders or updates an SVG element within a container using D3 selection.
+ * Renders (creates or updates) a single SVG element inside the given container using D3.
+ *
+ * Ensures exactly one <svg> is bound to the container, sets its width and height
+ * to the container's clientWidth and clientHeight, applies the provided background
+ * color, and sets overflow to "visible".
  *
  * @param {HTMLElement} container - The DOM element that will contain the SVG.
- * @param {Object} options - Configuration options for the SVG rendering.
- * @param {string} [options.background="white"] - The background color of the SVG element.
- * @returns {Object} D3 selection object of the rendered SVG element.
+ * @param {Object} [options] - Optional configuration.
+ * @param {string} [options.background="white"] - Background color for the SVG.
+ * @returns {Object} D3 selection for the created or updated <svg> element.
  */
 export const renderSVG = (container, { background = "white" } = {}) =>
   select(container)

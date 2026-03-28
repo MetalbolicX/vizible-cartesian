@@ -2,19 +2,26 @@
 import { line, select } from "d3";
 
 /**
- * Renders or updates a line within a bounds group using D3 selection.
+ * Render a single line path into a given bounds group using provided scales and accessors.
  *
- * @param {Object} boundsGroup - D3 selection object of the bounds group.
- * @param {Array} validData - Array of data points to be plotted.
- * @param {Object} xScale - D3 scale for the X-axis.
- * @param {Object} yScale - D3 scale for the Y-axis.
- * @param {Function} xAccessor - Function to access the X value from a data point.
- * @param {Function} yAccessor - Function to access the Y value from a data point.
- * @param {Object} [options] - Configuration options for the line.
- * @param {string} [options.stroke="steelblue"] - Stroke color of the line.
- * @param {number} [options.strokeWidth=2] - Stroke width of the line.
- * @param {number} [options.transitionDuration=1000] - Duration of the transition in milliseconds.
- * @returns {Object} D3 selection object of the rendered line.
+ * This function binds the provided data array as a single datum to a path.chart-line element
+ * and manages enter, update, and exit lifecycle. On enter and update the path is drawn using
+ * a d3 line generator and animated with a stroke-dasharray / stroke-dashoffset transition to
+ * create a "drawing" effect. The path is created with no fill and configurable stroke, strokeWidth,
+ * and transition duration. Exiting elements are removed.
+ *
+ * @param {import('d3-selection').Selection} boundsGroup - The container selection (typically a <g>)
+ *   where the line path will be appended/updated.
+ * @param {Array} validData - Array of data objects to be rendered as the line.
+ * @param {Function} xScale - Scale function mapping x values to pixel coordinates.
+ * @param {Function} yScale - Scale function mapping y values to pixel coordinates.
+ * @param {Function} xAccessor - Accessor function: (d) => xValue for each datum.
+ * @param {Function} yAccessor - Accessor function: (d) => yValue for each datum.
+ * @param {Object} [options] - Optional configuration.
+ * @param {string} [options.stroke='steelblue'] - Stroke color for the line.
+ * @param {number} [options.strokeWidth=2] - Stroke width for the line.
+ * @param {number} [options.transitionDuration=1000] - Transition duration in milliseconds for the draw animation.
+ * @returns {import('d3-selection').Selection} The joined selection for the line path (enter/update/exit result).
  */
 export const renderLine = (
   boundsGroup,

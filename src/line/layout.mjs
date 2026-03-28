@@ -1,19 +1,17 @@
 "use strict";
 
 /**
- * Calculates and returns dimensions for a chart container including margins
- * @param {HTMLElement} container - The DOM element containing the chart
- * @param {Object} margins - The margin values for the chart
- * @param {number} margins.left - Left margin in pixels
- * @param {number} margins.right - Right margin in pixels
- * @param {number} margins.top - Top margin in pixels
- * @param {number} margins.bottom - Bottom margin in pixels
- * @returns {Object} An object containing dimension information
- * @returns {number} returns.width - The full width of the container
- * @returns {number} returns.height - The full height of the container
- * @returns {number} returns.innerWidth - The width minus left and right margins
- * @returns {number} returns.innerHeight - The height minus top and bottom margins
- * @returns {Object} returns.margins - The margins object passed as parameter
+ * Compute outer and inner drawing dimensions from a container element and margin values.
+ *
+ * @param {Element|HTMLElement|SVGElement} container - DOM element used to determine available size via getBoundingClientRect().
+ * @param {{top:number, right:number, bottom:number, left:number}} margins - Margins to subtract from the container's width and height.
+ * @returns {{width:number, height:number, innerWidth:number, innerHeight:number, margins:{top:number, right:number, bottom:number, left:number}}}
+ *   An object containing:
+ *   - width: full container width
+ *   - height: full container height
+ *   - innerWidth: width minus horizontal margins (clamped to >= 0)
+ *   - innerHeight: height minus vertical margins (clamped to >= 0)
+ *   - margins: the original margins object
  */
 export const getDimensions = (container, margins) => {
   const { width, height } = container.getBoundingClientRect();

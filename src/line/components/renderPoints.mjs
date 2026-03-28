@@ -1,23 +1,26 @@
 "use strict";
 
 /**
- * Renders or updates points within a bounds group using D3 selection.
+ * Render point circles for a dataset inside a D3 group.
  *
- * @param {Object} boundsGroup - D3 selection object of the bounds group.
- * @param {Array} validData - Array of data points to be plotted.
- * @param {Object} xScale - D3 scale for the X-axis.
- * @param {Object} yScale - D3 scale for the Y-axis.
- * @param {Function} xAccessor - Function to access the X value from a data point.
- * @param {Function} yAccessor - Function to access the Y value from a data point.
- * @param {Object} [options] - Configuration options for the points.
- * @param {number} [options.radius=4] - Radius of the points.
- * @param {string} [options.fill="steelblue"] - Fill color of the points.
- * @param {string} [options.stroke="white"] - Stroke color of the points.
- * @param {number} [options.strokeWidth=1.5] - Stroke width of the points.
- * @param {number} [options.opacity=0.85] - Opacity of the points.
- * @returns {Object} D3 selection object of the rendered points.
+ * Binds the provided data to circle elements, using the xAccessor as the key,
+ * and updates/creates circles with position and styling based on the provided
+ * scales, accessors, and options.
+ *
+ * @param {import("d3-selection").Selection<SVGGElement, any, any, any>} boundsGroup - D3 group selection to contain the points.
+ * @param {Array<any>} validData - Array of data objects to render as points.
+ * @param {Function} xScale - D3 scale function mapping x values to pixel coordinates.
+ * @param {Function} yScale - D3 scale function mapping y values to pixel coordinates.
+ * @param {Function} xAccessor - Function(d) => xValue; also used as the data key for join.
+ * @param {Function} yAccessor - Function(d) => yValue.
+ * @param {Object} [options] - Optional rendering options.
+ * @param {number} [options.radius=4] - Circle radius in pixels.
+ * @param {string} [options.fill="steelblue"] - Circle fill color.
+ * @param {string} [options.stroke="white"] - Circle stroke color.
+ * @param {number} [options.strokeWidth=1.5] - Circle stroke width.
+ * @param {number} [options.opacity=0.85] - Circle opacity.
+ * @returns {import("d3-selection").Selection<SVGCircleElement, any, any, any>} Selection of the rendered circle elements.
  */
-
 export const renderPoints = (
   boundsGroup,
   validData,
