@@ -1,5 +1,5 @@
 "use strict";
-import { line } from "d3";
+import { line, select } from "d3";
 
 /**
  * Renders or updates a line within a bounds group using D3 selection.
@@ -22,21 +22,49 @@ export const renderLine = (
   yScale,
   xAccessor,
   yAccessor,
-  { stroke = "steelblue", strokeWidth = 2 } = {}
+  { stroke = "steelblue", strokeWidth = 2 } = {},
 ) => {
   const pathGenerator = line()
     .x((d) => xScale(xAccessor(d)))
     .y((d) => yScale(yAccessor(d)));
 
-  boundsGroup
+  return boundsGroup
     .selectAll("path.chart-line")
     .data([validData])
-    .join("path")
-    .attr("class", "chart-line")
-    .attr("d", pathGenerator)
-    .attr("fill", "none")
-    .attr("stroke", stroke)
-    .attr("stroke-width", strokeWidth)
-    .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round");
+    .join(
+      (enter) =>
+        enter
+          .append("path")
+          .attr("class", "chart-line")
+          .attr("fill", "none")
+          .attr("stroke", stroke)
+          .attr("stroke-width", strokeWidth)
+          .attr("stroke-linejoin", "round")
+          .attr("stroke-linecap", "round")
+          .attr("d", pathGenerator)
+          .each(function () {
+            const path = select(this);
+            const totalLength = this.getTotalLength();
+            path
+              .attr("stroke-dasharray", totalLength)
+              .attr("stroke-dashoffset", totalLength)
+              .transition()
+              .duration(1000)
+              .attr("stroke-dashoffset", 0);
+          }),
+      (update) =>
+        update.each(function () {
+          const path = select(this);
+          const totalLength = this.getTotalLength();
+          path
+            .attr("stroke-dasharray", totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(750)
+            .attr("d", pathGenerator)
+            .attr("stroke", stroke)
+            .attr("stroke-dashoffset", 0);
+        }),
+      (exit) => exit.remove(),
+    );
 };

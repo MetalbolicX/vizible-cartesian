@@ -1,3 +1,4 @@
 {
   "editor.formatOnSave": true,
+  "inlineChat.defaultModel": "GPT-5 mini (copilot)"
 }
