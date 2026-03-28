@@ -1,4 +1,5 @@
 "use strict";
+
 /**
  * Renders or updates the X-axis label within an SVG element using D3 selection.
  *
@@ -12,7 +13,10 @@
  * @param {string} [options.fill="#555"] - Fill color of the label.
  * @returns {Object} D3 selection object of the rendered X-axis label.
  */
-export const renderXAxisLabel = (svg, { width, height, margins, label, fontSize = 13, fill = "#555" }) =>
+export const renderXAxisLabel = (
+  svg,
+  { width, height, margins, label, fontSize = 13, fill = "#555" },
+) =>
   svg
     .selectAll("text.x-label")
     .data([null])
@@ -36,7 +40,10 @@ export const renderXAxisLabel = (svg, { width, height, margins, label, fontSize 
  * @param {string} [options.fill="#555"] - Fill color of the label.
  * @returns {Object} D3 selection object of the rendered Y-axis label.
  */
-export const renderYAxisLabel = (svg, { height, margins, label, fontSize = 13, fill = "#555" }) =>
+export const renderYAxisLabel = (
+  svg,
+  { height, margins, label, fontSize = 13, fill = "#555" },
+) =>
   svg
     .selectAll("text.y-label")
     .data([null])

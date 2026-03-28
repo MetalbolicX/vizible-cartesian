@@ -1,4 +1,5 @@
 "use strict";
+
 /**
  * Renders or updates a bounds group within an SVG element using D3 selection.
  *

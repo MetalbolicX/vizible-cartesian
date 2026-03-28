@@ -1,4 +1,5 @@
 "use strict";
+
 /**
  * Calculates and returns dimensions for a chart container including margins
  * @param {HTMLElement} container - The DOM element containing the chart

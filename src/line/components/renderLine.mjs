@@ -15,7 +15,6 @@ import { line } from "d3";
  * @param {number} [options.strokeWidth=2] - Stroke width of the line.
  * @returns {Object} D3 selection object of the rendered line.
  */
-
 export const renderLine = (
   boundsGroup,
   validData,

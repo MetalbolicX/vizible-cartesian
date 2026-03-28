@@ -14,10 +14,16 @@ import { zoom } from "d3";
  * @returns {Object} D3 zoom behavior object with an added reset helper.
  */
 
-export const addZoomPan = (svg, { xScale, yScale, boundedWidth, boundedHeight, onZoom }) => {
+export const addZoomPan = (
+  svg,
+  { xScale, yScale, boundedWidth, boundedHeight, onZoom },
+) => {
   const zoomBehavior = zoom()
     .scaleExtent([0.5, 32])
-    .extent([[0, 0], [boundedWidth, boundedHeight]])
+    .extent([
+      [0, 0],
+      [boundedWidth, boundedHeight],
+    ])
     .on("zoom", (event) => {
       const { transform: t } = event;
       onZoom(t.rescaleX(xScale), t.rescaleY(yScale));

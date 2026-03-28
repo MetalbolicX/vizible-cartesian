@@ -1,4 +1,5 @@
 "use strict";
+
 /**
  * Renders or updates the chart title within an SVG element using D3 selection.
  *
@@ -15,7 +16,7 @@
 
 export const renderTitle = (
   svg,
-  { width, margins, title, fontSize = 16, fill = "#222", fontWeight = "bold" }
+  { width, margins, title, fontSize = 16, fill = "#222", fontWeight = "bold" },
 ) =>
   svg
     .selectAll("text.chart-title")

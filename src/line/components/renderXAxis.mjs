@@ -13,7 +13,12 @@ import { axisBottom } from "d3";
  * @returns {Object} D3 selection object of the rendered X-axis.
  */
 
-export const renderXAxis = (boundsGroup, xScale, boundedHeight, { tickCount = 5, tickFormat } = {}) => {
+export const renderXAxis = (
+  boundsGroup,
+  xScale,
+  boundedHeight,
+  { tickCount = 5, tickFormat } = {},
+) => {
   const axis = axisBottom(xScale).ticks(tickCount);
   if (tickFormat) axis.tickFormat(tickFormat);
 

@@ -12,7 +12,11 @@ import { axisLeft } from "d3";
  * @returns {Object} D3 selection object of the rendered Y-axis.
  */
 
-export const renderYAxis = (boundsGroup, yScale, { tickCount = 5, tickFormat } = {}) => {
+export const renderYAxis = (
+  boundsGroup,
+  yScale,
+  { tickCount = 5, tickFormat } = {},
+) => {
   const axis = axisLeft(yScale).ticks(tickCount);
   if (tickFormat) axis.tickFormat(tickFormat);
 

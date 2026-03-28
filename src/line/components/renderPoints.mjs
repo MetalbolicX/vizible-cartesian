@@ -1,4 +1,5 @@
 "use strict";
+
 /**
  * Renders or updates points within a bounds group using D3 selection.
  *
@@ -24,7 +25,13 @@ export const renderPoints = (
   yScale,
   xAccessor,
   yAccessor,
-  { radius = 4, fill = "steelblue", stroke = "white", strokeWidth = 1.5, opacity = 0.85 } = {}
+  {
+    radius = 4,
+    fill = "steelblue",
+    stroke = "white",
+    strokeWidth = 1.5,
+    opacity = 0.85,
+  } = {},
 ) =>
   boundsGroup
     .selectAll("circle.point")
