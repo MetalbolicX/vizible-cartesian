@@ -11,18 +11,17 @@
  * @returns {Object} An object containing dimension information
  * @returns {number} returns.width - The full width of the container
  * @returns {number} returns.height - The full height of the container
- * @returns {number} returns.boundedWidth - The width minus left and right margins
- * @returns {number} returns.boundedHeight - The height minus top and bottom margins
+ * @returns {number} returns.innerWidth - The width minus left and right margins
+ * @returns {number} returns.innerHeight - The height minus top and bottom margins
  * @returns {Object} returns.margins - The margins object passed as parameter
  */
 export const getDimensions = (container, margins) => {
-  const width = container.clientWidth;
-  const height = container.clientHeight;
+  const { width, height } = container.getBoundingClientRect();
   return {
     width,
     height,
-    boundedWidth: Math.max(0, width - margins.left - margins.right),
-    boundedHeight: Math.max(0, height - margins.top - margins.bottom),
+    innerWidth: Math.max(0, width - margins.left - margins.right),
+    innerHeight: Math.max(0, height - margins.top - margins.bottom),
     margins,
   };
 };

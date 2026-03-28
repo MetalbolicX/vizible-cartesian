@@ -8,21 +8,21 @@ import { zoom } from "d3";
  * @param {Object} options - Configuration options for zoom and pan.
  * @param {Object} options.xScale - D3 scale for the X-axis.
  * @param {Object} options.yScale - D3 scale for the Y-axis.
- * @param {number} options.boundedWidth - Width of the bounded area for zooming.
- * @param {number} options.boundedHeight - Height of the bounded area for zooming.
+ * @param {number} options.innerWidth - Width of the bounded area for zooming.
+ * @param {number} options.innerHeight - Height of the bounded area for zooming.
  * @param {Function} options.onZoom - Callback function invoked on zoom events.
  * @returns {Object} D3 zoom behavior object with an added reset helper.
  */
 
 export const addZoomPan = (
   svg,
-  { xScale, yScale, boundedWidth, boundedHeight, onZoom },
+  { xScale, yScale, innerWidth, innerHeight, onZoom },
 ) => {
   const zoomBehavior = zoom()
     .scaleExtent([0.5, 32])
     .extent([
       [0, 0],
-      [boundedWidth, boundedHeight],
+      [innerWidth, innerHeight],
     ])
     .on("zoom", (event) => {
       const { transform: t } = event;

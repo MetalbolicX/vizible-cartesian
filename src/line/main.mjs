@@ -33,8 +33,8 @@ export const main = (container) => {
     const { xScale, yScale } = createScales({
       xDomain,
       yDomain,
-      boundedWidth: dims.boundedWidth,
-      boundedHeight: dims.boundedHeight,
+      innerWidth: dims.innerWidth,
+      innerHeight: dims.innerHeight,
     });
 
     // Static structure
@@ -42,8 +42,8 @@ export const main = (container) => {
     const bounds = renderBoundsGroup(svg, MARGINS);
 
     // Axes
-    renderXAxis(bounds, xScale, dims.boundedHeight);
-    renderYAxis(bounds, yScale);
+    renderXAxis(bounds, xScale, dims.innerHeight);
+    renderYAxis(bounds, yScale, dims.innerWidth);
 
     // Visuals
     renderLine(bounds, validData, xScale, yScale, xAccessor, yAccessor, {
@@ -60,18 +60,18 @@ export const main = (container) => {
 
     // Interactivity
     addTooltip(bounds, validData, xScale, yScale, xAccessor, yAccessor, {
-      boundedWidth: dims.boundedWidth,
-      boundedHeight: dims.boundedHeight,
+      innerWidth: dims.innerWidth,
+      innerHeight: dims.innerHeight,
     });
 
     addZoomPan(svg, {
       xScale,
       yScale,
-      boundedWidth: dims.boundedWidth,
-      boundedHeight: dims.boundedHeight,
+      innerWidth: dims.innerWidth,
+      innerHeight: dims.innerHeight,
       onZoom: (newX, newY) => {
-        renderXAxis(bounds, newX, dims.boundedHeight);
-        renderYAxis(bounds, newY);
+        renderXAxis(bounds, newX, dims.innerHeight);
+        renderYAxis(bounds, newY, dims.innerWidth);
         renderLine(bounds, validData, newX, newY, xAccessor, yAccessor, {
           stroke: "steelblue",
         });

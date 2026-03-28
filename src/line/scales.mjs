@@ -14,8 +14,8 @@ const SCALE_FACTORIES = {
  * @param {Object} options - Configuration options for scale creation
  * @param {number[]} options.xDomain - The domain values for the x scale [min, max]
  * @param {number[]} options.yDomain - The domain values for the y scale [min, max]
- * @param {number} options.boundedWidth - The width of the chart area in pixels
- * @param {number} options.boundedHeight - The height of the chart area in pixels
+ * @param {number} options.innerWidth - The width of the chart area in pixels
+ * @param {number} options.innerHeight - The height of the chart area in pixels
  * @param {string} [options.xType="linear"] - The type of x scale (e.g., "linear", "log", "pow")
  * @param {string} [options.yType="linear"] - The type of y scale (e.g., "linear", "log", "pow")
  * @param {number} [options.xExponent=2] - The exponent for power scales on the x axis
@@ -27,8 +27,8 @@ const SCALE_FACTORIES = {
 export const createScales = ({
   xDomain,
   yDomain,
-  boundedWidth,
-  boundedHeight,
+  innerWidth,
+  innerHeight,
   xType = "linear",
   yType = "linear",
   xExponent = 2,
@@ -36,12 +36,12 @@ export const createScales = ({
 }) => {
   const xScale = (SCALE_FACTORIES[xType] ?? SCALE_FACTORIES.linear)(xExponent)
     .domain(xDomain)
-    .range([0, boundedWidth])
+    .range([0, innerWidth])
     .nice();
 
   const yScale = (SCALE_FACTORIES[yType] ?? SCALE_FACTORIES.linear)(yExponent)
     .domain(yDomain)
-    .range([boundedHeight, 0])
+    .range([innerHeight, 0])
     .nice();
 
   return { xScale, yScale };

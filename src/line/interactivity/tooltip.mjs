@@ -15,8 +15,8 @@ import { pointer, bisector } from "d3";
  * @param {Function} xAccessor - Function to extract X value from data object
  * @param {Function} yAccessor - Function to extract Y value from data object
  * @param {Object} [options={}] - Configuration options
- * @param {number} [options.boundedWidth] - Width of the chart bounds in pixels
- * @param {number} [options.boundedHeight] - Height of the chart bounds in pixels
+ * @param {number} [options.innerWidth] - Width of the chart bounds in pixels
+ * @param {number} [options.innerHeight] - Height of the chart bounds in pixels
  * @param {Function} [options.formatX=String] - Function to format X values for display
  * @param {Function} [options.formatY=String] - Function to format Y values for display
  * @returns {void}
@@ -28,7 +28,7 @@ export const addTooltip = (
   yScale,
   xAccessor,
   yAccessor,
-  { boundedWidth, boundedHeight, formatX = String, formatY = String } = {}
+  { innerWidth, innerHeight, formatX = String, formatY = String } = {},
 ) => {
   const bisect = bisector(xAccessor).center;
 
@@ -44,7 +44,7 @@ export const addTooltip = (
     .join("line")
     .attr("class", "cursor-line")
     .attr("y1", 0)
-    .attr("y2", boundedHeight)
+    .attr("y2", innerHeight)
     .attr("stroke", "#999")
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "4 3")
@@ -111,8 +111,8 @@ export const addTooltip = (
     .data([null])
     .join("rect")
     .attr("class", "mouse-capture")
-    .attr("width", boundedWidth)
-    .attr("height", boundedHeight)
+    .attr("width", innerWidth)
+    .attr("height", innerHeight)
     .attr("fill", "transparent")
     .on("mousemove", (event) => {
       const [mx] = pointer(event);
@@ -129,17 +129,20 @@ export const addTooltip = (
       textX.text(`x: ${formatX(xAccessor(d))}`);
       textY.text(`y: ${formatY(yAccessor(d))}`);
 
-      const textW = Math.max(
-        textX.node().getComputedTextLength(),
-        textY.node().getComputedTextLength()
-      ) + PAD;
+      const textW =
+        Math.max(
+          textX.node().getComputedTextLength(),
+          textY.node().getComputedTextLength(),
+        ) + PAD;
 
       tooltipBg.attr("width", textW).attr("height", BOX_H);
 
-      const bx = cx + 10 + textW > boundedWidth ? cx - textW - 10 : cx + 10;
+      const bx = cx + 10 + textW > innerWidth ? cx - textW - 10 : cx + 10;
       const by = Math.max(0, cy - BOX_H / 2);
 
-      tooltipGroup.attr("transform", `translate(${bx},${by})`).attr("display", null);
+      tooltipGroup
+        .attr("transform", `translate(${bx},${by})`)
+        .attr("display", null);
     })
     .on("mouseleave", () => {
       cursorLine.attr("display", "none");
