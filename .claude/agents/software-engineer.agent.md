@@ -1,7 +1,13 @@
 ---
 name: 'Software Engineer'
 description: 'Design and implement software solutions with a focus on maintainability, readability, and pragmatic engineering principles.'
-tools: [read, edit, bash]
+tools:
+  - search/codebase
+  - vscode/extensions
+  - read/problems
+  - search/searchResults
+  - search/usages
+  - edit/editFiles
 ---
 # Agent Profile: The Pragmatic Architect
 
