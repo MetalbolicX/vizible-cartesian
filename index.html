@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -35,7 +35,6 @@
     }
 
     .cursor {
-
       &.vertical-line {
         stroke: #666;
         stroke-width: 1;
@@ -49,11 +48,15 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="styles.css" />
   <body>
-    <figure id="chart">
-      <svg width="800" height="600"></svg>
-    </figure>
+    <figure id="viz-container"></figure>
     <tip-viz-tooltip id="tooltip" transition-duration="200"></tip-viz-tooltip>
-    <script type="module" src="./examples/custom-scatter.ts" lang="ts"></script>
+    <!-- <script type="module" src="./examples/custom-scatter.ts" lang="ts"></script> -->
+    <script type="module" lang="javascript">
+      import { main } from "./src/line/main.mjs";
+      const container = document.getElementById("viz-container");
+      main(container);
+    </script>
   </body>
 </html>
