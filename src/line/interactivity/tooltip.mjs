@@ -2,23 +2,34 @@
 import { pointer, bisector } from "d3";
 
 /**
- * Adds an interactive tooltip to a D3 chart that displays data values on mouseover.
+ * Adds an interactive tooltip to a chart group that follows the mouse and displays
+ * the nearest data point's x/y values.
  *
- * The tooltip includes a vertical cursor line, a dot at the data point, and a box
- * displaying formatted X and Y values. The tooltip follows the mouse and intelligently
- * positions itself to avoid going off the right edge of the chart.
+ * This function:
+ * - Ensures a tooltip layer (groups, line, dot, tooltip box, and background text)
+ *   exists inside the provided boundsGroup.
+ * - Adds an invisible mouse-capture rect that listens for mousemove/mouseleave.
+ * - On mousemove, uses a bisector on the provided validData and xAccessor to
+ *   locate the nearest datum to the pointer, positions a vertical cursor line and
+ *   a dot on the line, updates formatted x/y text, sizes the tooltip background,
+ *   and positions the tooltip so it remains inside the provided inner bounds.
+ * - On mouseleave, hides cursor and tooltip elements.
  *
- * @param {d3.Selection} boundsGroup - D3 selection of the bounds group container
- * @param {Array} validData - Array of data objects to display in the tooltip
- * @param {d3.ScaleLinear} xScale - D3 scale for X axis
- * @param {d3.ScaleLinear} yScale - D3 scale for Y axis
- * @param {Function} xAccessor - Function to extract X value from data object
- * @param {Function} yAccessor - Function to extract Y value from data object
- * @param {Object} [options={}] - Configuration options
- * @param {number} [options.innerWidth] - Width of the chart bounds in pixels
- * @param {number} [options.innerHeight] - Height of the chart bounds in pixels
- * @param {Function} [options.formatX=String] - Function to format X values for display
- * @param {Function} [options.formatY=String] - Function to format Y values for display
+ * Notes:
+ * - validData should be sorted by the x value (ascending) so the bisector works correctly.
+ * - xScale must provide an invert(value) method (e.g., linear or time scales).
+ *
+ * @param {d3.Selection} boundsGroup - D3 selection of the container <g> where tooltip elements are appended.
+ * @param {Array<Object>} validData - Array of data objects (sorted by x) used to find the nearest point.
+ * @param {Object} xScale - D3 scale mapping data x -> pixel x and providing invert(pixelX) -> data x.
+ * @param {Object} yScale - D3 scale mapping data y -> pixel y.
+ * @param {Function} xAccessor - Function(d) => x value from a datum.
+ * @param {Function} yAccessor - Function(d) => y value from a datum.
+ * @param {Object} [options] - Optional configuration.
+ * @param {number} options.innerWidth - Inner drawing width in pixels (used to constrain tooltip).
+ * @param {number} options.innerHeight - Inner drawing height in pixels (used for cursor line length).
+ * @param {Function} [options.formatX=String] - Formatter for displayed x values (receives xAccessor(d)).
+ * @param {Function} [options.formatY=String] - Formatter for displayed y values (receives yAccessor(d)).
  * @returns {void}
  */
 export const addTooltip = (

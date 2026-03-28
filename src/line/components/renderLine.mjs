@@ -13,6 +13,7 @@ import { line, select } from "d3";
  * @param {Object} [options] - Configuration options for the line.
  * @param {string} [options.stroke="steelblue"] - Stroke color of the line.
  * @param {number} [options.strokeWidth=2] - Stroke width of the line.
+ * @param {number} [options.transitionDuration=1000] - Duration of the transition in milliseconds.
  * @returns {Object} D3 selection object of the rendered line.
  */
 export const renderLine = (
@@ -22,7 +23,7 @@ export const renderLine = (
   yScale,
   xAccessor,
   yAccessor,
-  { stroke = "steelblue", strokeWidth = 2 } = {},
+  { stroke = "steelblue", strokeWidth = 2, transitionDuration = 1000 } = {},
 ) => {
   const pathGenerator = line()
     .x((d) => xScale(xAccessor(d)))
@@ -49,7 +50,7 @@ export const renderLine = (
               .attr("stroke-dasharray", totalLength)
               .attr("stroke-dashoffset", totalLength)
               .transition()
-              .duration(1000)
+              .duration(transitionDuration)
               .attr("stroke-dashoffset", 0);
           }),
       (update) =>
@@ -60,7 +61,7 @@ export const renderLine = (
             .attr("stroke-dasharray", totalLength)
             .attr("stroke-dashoffset", totalLength)
             .transition()
-            .duration(750)
+            .duration(transitionDuration)
             .attr("d", pathGenerator)
             .attr("stroke", stroke)
             .attr("stroke-dashoffset", 0);
