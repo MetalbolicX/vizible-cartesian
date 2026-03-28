@@ -18,8 +18,8 @@ import {
 import { addTooltip, addZoomPan } from "./interactivity/index.mjs";
 
 const MARGINS = { top: 50, right: 60, bottom: 70, left: 55 };
-const xAccessor = (d) => d.x;
-const yAccessor = (d) => d.y;
+const xAccessor = ({ x }) => x;
+const yAccessor = ({ y }) => y;
 const validData = processNumericData(rawData, xAccessor, yAccessor);
 
 /**
@@ -42,40 +42,43 @@ export const main = (container) => {
     const bounds = renderBoundsGroup(svg, MARGINS);
 
     // Axes
-    renderXAxis(bounds, xScale, dims.innerHeight);
-    renderYAxis(bounds, yScale, dims.innerWidth);
+    bounds
+      .call(renderXAxis, xScale, dims.innerHeight)
+      .call(renderYAxis, yScale, dims.innerWidth);
 
     // Visuals
-    renderLine(bounds, validData, xScale, yScale, xAccessor, yAccessor, {
-      stroke: "steelblue",
-    });
-    renderPoints(bounds, validData, xScale, yScale, xAccessor, yAccessor, {
-      fill: "steelblue",
-    });
+    bounds
+      .call(renderLine, validData, xScale, yScale, xAccessor, yAccessor, {
+        stroke: "steelblue",
+      })
+      .call(renderPoints, validData, xScale, yScale, xAccessor, yAccessor, {
+        fill: "steelblue",
+      });
 
     // Labels & title
-    renderXAxisLabel(svg, { ...dims, label: "X Value" });
-    renderYAxisLabel(svg, { ...dims, label: "Y Value" });
-    renderTitle(svg, { ...dims, title: "Numeric X/Y Chart" });
+    svg
+      .call(renderTitle, { ...dims, title: "Numeric X/Y Chart" })
+      .call(renderXAxisLabel, { ...dims, label: "X Value" })
+      .call(renderYAxisLabel, { ...dims, label: "Y Value" });
 
     // Interactivity
-    addTooltip(bounds, validData, xScale, yScale, xAccessor, yAccessor, {
+    bounds.call(addTooltip, validData, xScale, yScale, xAccessor, yAccessor, {
       innerWidth: dims.innerWidth,
       innerHeight: dims.innerHeight,
     });
 
-    addZoomPan(svg, {
+    svg.call(addZoomPan, {
       xScale,
       yScale,
       innerWidth: dims.innerWidth,
       innerHeight: dims.innerHeight,
       onZoom: (newX, newY) => {
-        renderXAxis(bounds, newX, dims.innerHeight);
-        renderYAxis(bounds, newY, dims.innerWidth);
-        renderLine(bounds, validData, newX, newY, xAccessor, yAccessor, {
+        bounds.call(renderXAxis, newX, dims.innerHeight);
+        bounds.call(renderYAxis, newY, dims.innerWidth);
+        bounds.call(renderLine, validData, newX, newY, xAccessor, yAccessor, {
           stroke: "steelblue",
         });
-        renderPoints(bounds, validData, newX, newY, xAccessor, yAccessor, {
+        bounds.call(renderPoints, validData, newX, newY, xAccessor, yAccessor, {
           fill: "steelblue",
         });
       },
