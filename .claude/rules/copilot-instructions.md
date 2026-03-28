@@ -45,7 +45,7 @@ async function fetchCatalog(signal: AbortSignal): Promise<Catalog> {
 ## Tecch Stack
 
 - **Language**: TypeScript.
-- **Visualization**: D3.js.
+- **Visualization**: D3.js v7.
 
 ## Other Considerations
 
