@@ -2,54 +2,49 @@
 import { line, select } from "d3";
 
 /**
- * Render a single line path into a given bounds group using provided scales and accessors.
+ * Render multiple line series into a bounds group.
  *
- * This function binds the provided data array as a single datum to a path.chart-line element
- * and manages enter, update, and exit lifecycle. On enter and update the path is drawn using
- * a d3 line generator and animated with a stroke-dasharray / stroke-dashoffset transition to
- * create a "drawing" effect. The path is created with no fill and configurable stroke, strokeWidth,
- * and transition duration. Exiting elements are removed.
+ * Binds the series array using each item's `label` as the D3 key, producing one
+ * <path.chart-line> per series. On enter the line is drawn with a stroke-dashoffset
+ * animation. On update the path transitions to the new geometry. Exiting paths are removed.
  *
- * @param {import('d3-selection').Selection} boundsGroup - The container selection (typically a <g>)
- *   where the line path will be appended/updated.
- * @param {Array} validData - Array of data objects to be rendered as the line.
- * @param {Function} xScale - Scale function mapping x values to pixel coordinates.
- * @param {Function} yScale - Scale function mapping y values to pixel coordinates.
- * @param {Function} xAccessor - Accessor function: (d) => xValue for each datum.
- * @param {Function} yAccessor - Accessor function: (d) => yValue for each datum.
- * @param {Object} [options] - Optional configuration.
- * @param {string} [options.stroke='steelblue'] - Stroke color for the line.
- * @param {number} [options.strokeWidth=2] - Stroke width for the line.
- * @param {number} [options.transitionDuration=1000] - Transition duration in milliseconds for the draw animation.
- * @returns {import('d3-selection').Selection} The joined selection for the line path (enter/update/exit result).
+ * @param {import('d3-selection').Selection} boundsGroup
+ * @param {Array<{label: string, stroke: string, accessor: Function, data: Array}>} series
+ *   Processed series array — each item must have `.data` (filtered rows) and `.accessor` (y-accessor).
+ * @param {Function} xScale
+ * @param {Function} yScale
+ * @param {Function} xAccessor  Shared x-accessor applied to every series row.
+ * @param {Object}  [options]
+ * @param {number}  [options.strokeWidth=2]
+ * @param {number}  [options.transitionDuration=1000]
  */
 export const renderLine = (
   boundsGroup,
-  validData,
+  series,
   xScale,
   yScale,
   xAccessor,
-  yAccessor,
-  { stroke = "steelblue", strokeWidth = 2, transitionDuration = 1000 } = {},
+  { strokeWidth = 2, transitionDuration = 1000 } = {},
 ) => {
-  const pathGenerator = line()
-    .x((d) => xScale(xAccessor(d)))
-    .y((d) => yScale(yAccessor(d)));
+  const buildPath = (serie) =>
+    line()
+      .x((d) => xScale(xAccessor(d)))
+      .y((d) => yScale(serie.accessor(d)))(serie.data);
 
   return boundsGroup
     .selectAll("path.chart-line")
-    .data([validData])
+    .data(series, (d) => d.label)
     .join(
       (enter) =>
         enter
           .append("path")
-          .attr("class", "chart-line")
+          .attr("class", (d) => `chart-line chart-line--${d.label}`)
           .attr("fill", "none")
-          .attr("stroke", stroke)
-          .attr("stroke-width", strokeWidth)
+          .attr("stroke", (d) => d.stroke ?? "steelblue")
+          .attr("stroke-width", (d) => d.strokeWidth ?? strokeWidth)
           .attr("stroke-linejoin", "round")
           .attr("stroke-linecap", "round")
-          .attr("d", pathGenerator)
+          .attr("d", (d) => buildPath(d))
           .each(function () {
             const path = select(this);
             const totalLength = this.getTotalLength();
@@ -61,16 +56,17 @@ export const renderLine = (
               .attr("stroke-dashoffset", 0);
           }),
       (update) =>
-        update.each(function () {
+        update.each(function (d) {
           const path = select(this);
+          const newPathD = buildPath(d);
           const totalLength = this.getTotalLength();
           path
             .attr("stroke-dasharray", totalLength)
             .attr("stroke-dashoffset", totalLength)
             .transition()
             .duration(transitionDuration)
-            .attr("d", pathGenerator)
-            .attr("stroke", stroke)
+            .attr("d", newPathD)
+            .attr("stroke", d.stroke ?? "steelblue")
             .attr("stroke-dashoffset", 0);
         }),
       (exit) => exit.remove(),

@@ -1,14 +1,23 @@
 "use strict";
 
 export const data = [
-  { x: 1, y: 4.2 },
-  { x: 2, y: 7.8 },
-  { x: 3, y: null }, // intentionally invalid – filtered out
-  { x: 4, y: 12.1 },
-  { x: 5, y: 9.3 },
-  { x: 6, y: 15.6 },
-  { x: 7, y: 11.0 },
-  { x: 8, y: 18.4 },
-  { x: 9, y: 16.2 },
-  { x: 10, y: 22.5 },
+  { date: new Date("2023-01-01"), revenue: 100, cost: 10 },
+  { date: new Date("2023-01-02"), revenue: 120, cost: 5 },
+  { date: new Date("2023-01-03"), revenue: 80, cost: 15 },
+  { date: new Date("2023-01-04"), revenue: 95, cost: 30 },
+  { date: new Date("2023-01-05"), revenue: 140, cost: 22 },
+  { date: new Date("2023-01-06"), revenue: 110, cost: 18 },
+  { date: new Date("2023-01-07"), revenue: 130, cost: 12 },
 ];
+
+export const chartConfig = {
+  data,
+  xSerie: {
+    accessor: (d) => d.date,
+    label: "Date",
+  },
+  ySeries: [
+    { accessor: (d) => d.revenue, label: "Revenue", stroke: "steelblue" },
+    { accessor: (d) => d.cost, label: "Cost", stroke: "tomato" },
+  ],
+};

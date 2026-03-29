@@ -1,5 +1,4 @@
 export * from "./renderAxisLabel.mjs";
-export * from "./renderAxisLabel.mjs";
 export * from "./renderBoundsGroup.mjs";
 export * from "./renderLegend.mjs";
 export * from "./renderLine.mjs";

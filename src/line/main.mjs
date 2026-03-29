@@ -1,7 +1,7 @@
 "use strict";
-import { data as rawData } from "./data.mjs";
+import { chartConfig } from "./data.mjs";
 import { getDimensions } from "./layout.mjs";
-import { processNumericData, getExtents } from "./dataUtils.mjs";
+import { processAllSeries, getMultiSeriesExtents } from "./dataUtils.mjs";
 import { createScales } from "./scales.mjs";
 import { observeResize } from "./responsiveness.mjs";
 import {
@@ -19,23 +19,56 @@ import {
 import { addTooltip, addZoomPan } from "./interactivity/index.mjs";
 
 const MARGINS = { top: 50, right: 60, bottom: 70, left: 55 };
-const xAccessor = ({ x }) => x;
-const yAccessor = ({ y }) => y;
-const validData = processNumericData(rawData, xAccessor, yAccessor);
+
+const { data: rawData, xSerie, ySeries } = chartConfig;
+
+// Data processing is pure — run once, outside the render cycle.
+const processedSeries = processAllSeries(rawData, xSerie.accessor, ySeries);
 
 /**
- * Entrypoint function to render the line chart within a specified container element.
- * @param {*} container - The DOM element that will contain the rendered chart. The function sets up the entire chart including scales, axes, line and points rendering, labels, title, and interactivity features like tooltips and zoom/pan. It also observes container resizing to re-render the chart responsively.
+ * Initialize and render a multi-series Cartesian line chart inside the given container.
+ *
+ * Sets up dimensions and scales, renders static SVG structure (background, bounds),
+ * draws axes, lines and points for each series, attaches title/labels/legend, and
+ * wires interactivity (tooltip, zoom & pan). Also observes the container for resize
+ * events and re-renders on change.
+ *
+ * @param {HTMLElement|SVGElement} container - DOM element to mount the chart into.
+ * @returns {void}
+ *
+ * @remarks
+ * - Expects utilities and constants such as getDimensions, MARGINS, getMultiSeriesExtents,
+ *   createScales, renderSVG, renderBoundsGroup, renderXAxis, renderYAxis, renderLine,
+ *   renderPoints, renderTitle, renderXAxisLabel, renderYAxisLabel, renderLegend,
+ *   addTooltip, addZoomPan, and observeResize to be available in scope.
+ * - The onZoom handler updates axes and re-renders lines/points with the new scales.
+ *
+ * @example
+ * // Mount chart
+ * import { main } from './line/main.mjs';
+ * const container = document.querySelector('#chart');
+ * main(container);
+ *
+ * @note Regarding circular dependencies:
+ * Based on this snippet, renderLine is invoked as a standalone render helper and there
+ * is no evidence of a circular dependency between main and renderLine. A circular
+ * dependency would only occur if renderLine (or a module it imports) directly imported
+ * or referenced main (or another module that imports it). Ensure renderLine is a
+ * self-contained renderer (not importing main) to avoid circular imports.
  */
 export const main = (container) => {
   const render = () => {
     const dims = getDimensions(container, MARGINS);
-    const { xDomain, yDomain } = getExtents(validData, xAccessor, yAccessor);
+    const { xDomain, yDomain } = getMultiSeriesExtents(
+      processedSeries,
+      xSerie.accessor,
+    );
     const { xScale, yScale } = createScales({
       xDomain,
       yDomain,
       innerWidth: dims.innerWidth,
       innerHeight: dims.innerHeight,
+      xType: "time",
     });
 
     // Static structure
@@ -49,29 +82,28 @@ export const main = (container) => {
 
     // Visuals
     bounds
-      .call(renderLine, validData, xScale, yScale, xAccessor, yAccessor, {
-        stroke: "steelblue",
-      })
-      .call(renderPoints, validData, xScale, yScale, xAccessor, yAccessor, {
-        fill: "steelblue",
-      });
+      .call(renderLine, processedSeries, xScale, yScale, xSerie.accessor)
+      .call(renderPoints, processedSeries, xScale, yScale, xSerie.accessor);
 
-    // Labels & title
+    // Labels, title, legend
     svg
-      .call(renderTitle, { ...dims, title: "Numeric X/Y Chart" })
-      .call(renderXAxisLabel, { ...dims, label: "X Value" })
-      .call(renderYAxisLabel, { ...dims, label: "Y Value" })
+      .call(renderTitle, { ...dims, title: "Revenue & Cost Over Time" })
+      .call(renderXAxisLabel, { ...dims, label: xSerie.label })
+      .call(renderYAxisLabel, { ...dims, label: "Value" })
       .call(renderLegend, {
-        items: [{ label: "f(x)", color: "steelblue" }],
-        x: dims.innerWidth - 100,
-        y: 10,
+        items: processedSeries.map(({ label, stroke }) => ({
+          label,
+          color: stroke,
+        })),
+        x: MARGINS.left + dims.innerWidth - 90,
+        y: MARGINS.top + 12,
         fontSize: 12,
         swatchSize: 12,
         gap: 6,
       });
 
     // Interactivity
-    bounds.call(addTooltip, validData, xScale, yScale, xAccessor, yAccessor, {
+    bounds.call(addTooltip, processedSeries, xScale, yScale, xSerie.accessor, {
       innerWidth: dims.innerWidth,
       innerHeight: dims.innerHeight,
     });
@@ -82,14 +114,12 @@ export const main = (container) => {
       innerWidth: dims.innerWidth,
       innerHeight: dims.innerHeight,
       onZoom: (newX, newY) => {
-        bounds.call(renderXAxis, newX, dims.innerHeight);
-        bounds.call(renderYAxis, newY, dims.innerWidth);
-        bounds.call(renderLine, validData, newX, newY, xAccessor, yAccessor, {
-          stroke: "steelblue",
-        });
-        bounds.call(renderPoints, validData, newX, newY, xAccessor, yAccessor, {
-          fill: "steelblue",
-        });
+        bounds
+          .call(renderXAxis, newX, dims.innerHeight)
+          .call(renderYAxis, newY, dims.innerWidth);
+        bounds
+          .call(renderLine, processedSeries, newX, newY, xSerie.accessor)
+          .call(renderPoints, processedSeries, newX, newY, xSerie.accessor);
       },
     });
   };

@@ -9,18 +9,18 @@ const SCALE_FACTORIES = {
 };
 
 /**
- * Create X and Y scales for mapping data domains to pixel ranges.
+ * Create and configure x and y scales for a cartesian line chart.
  *
- * @param {Object} options - Options for scale creation.
- * @param {[number, number]|[Date, Date]} options.xDomain - Two-element array specifying the input domain for the X scale.
- * @param {[number, number]|[Date, Date]} options.yDomain - Two-element array specifying the input domain for the Y scale.
- * @param {number} options.innerWidth - Width of the inner drawing area in pixels; X range will be [0, innerWidth].
- * @param {number} options.innerHeight - Height of the inner drawing area in pixels; Y range will be [innerHeight, 0].
- * @param {string} [options.xType="linear"] - Identifier for the X scale factory to use (e.g. "linear", "log", "pow"); unknown types fall back to a linear factory.
- * @param {string} [options.yType="linear"] - Identifier for the Y scale factory to use; unknown types fall back to a linear factory.
- * @param {number} [options.xExponent=2] - Exponent parameter passed to the X scale factory (used by power scales).
- * @param {number} [options.yExponent=2] - Exponent parameter passed to the Y scale factory (used by power scales).
- * @returns {{ xScale: Function, yScale: Function }} An object with `xScale` and `yScale` functions. Each returned scale is a chainable scale-like function (supports methods such as .domain(), .range(), and .nice()) that maps domain values to pixel coordinates.
+ * @param {Object} options - Configuration options.
+ * @param {[number, number]} options.xDomain - The input domain for the x scale.
+ * @param {[number, number]} options.yDomain - The input domain for the y scale.
+ * @param {number} options.innerWidth - The width of the drawable inner area (pixels).
+ * @param {number} options.innerHeight - The height of the drawable inner area (pixels).
+ * @param {string} [options.xType="linear"] - The x scale type key to select from SCALE_FACTORIES (e.g. "linear", "pow").
+ * @param {string} [options.yType="linear"] - The y scale type key to select from SCALE_FACTORIES.
+ * @param {number} [options.xExponent=2] - Exponent used for power-type x scales.
+ * @param {number} [options.yExponent=2] - Exponent used for power-type y scales.
+ * @returns {{ xScale: Function, yScale: Function }} An object containing configured xScale and yScale. Each scale is a factory instance with domain, range, and niceness applied; xScale maps domain to [0, innerWidth], yScale maps domain to [innerHeight, 0].
  */
 export const createScales = ({
   xDomain,
